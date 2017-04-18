@@ -149,11 +149,13 @@
     <ClCompile Include="Bonus.cpp" />
     <ClCompile Include="inputUtilities.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NaivePlayer.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Ship.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bonus.h" />
+    <ClInclude Include="NaivePlayer.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
     <ClInclude Include="inputUtilities.h" />
     <ClInclude Include="Player.h" />
@@ -164,6 +166,7 @@
     <Text Include="students.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="AdvancedProgramming_Ex2.pdf" />
     <None Include="game.sboard" />
     <None Include="movesA.attack-a" />
     <None Include="movesB.attack-b" />

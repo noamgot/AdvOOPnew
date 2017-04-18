@@ -25,6 +25,11 @@ std::pair<int, int> Player::attack()
     return make_pair(-1,-1);
 }
 
+bool Player::init(const std::string & path)
+{
+	return false;
+}
+
 void Player::notifyOnAttackResult(int player, int row, int col, AttackResult result)
 {
 

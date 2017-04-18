@@ -30,6 +30,9 @@
     <ClCompile Include="Ship.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NaivePlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bonus.h">
@@ -47,6 +50,9 @@
     <ClInclude Include="Ship.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NaivePlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CmakeLists.txt" />
@@ -56,5 +62,6 @@
     <None Include="game.sboard" />
     <None Include="movesA.attack-a" />
     <None Include="movesB.attack-b" />
+    <None Include="AdvancedProgramming_Ex2.pdf" />
   </ItemGroup>
 </Project>

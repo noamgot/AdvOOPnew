@@ -14,6 +14,7 @@ using namespace std;
 
 class Player : IBattleshipGameAlgo
 {
+protected:
     char board[ROW_SIZE][COL_SIZE] = {{0}};
     std::queue<std::pair<int, int>> movesQueue;
     std::vector<Ship> shipsList;
@@ -25,6 +26,7 @@ class Player : IBattleshipGameAlgo
 public:
     virtual void setBoard(int player, const char **board, int numRows, int numCols) override; // called once to notify player on his board
     virtual std::pair<int, int> attack() override; // ask player for his move
+	virtual bool init(const std::string& path) override;
     virtual void notifyOnAttackResult(int player, int row, int col, AttackResult result) override; // notify on last move result
     void setMoves(vector<pair<int,int>> moves);
     bool registerHit(std::pair<int,int> coords, eShipType shipType, AttackResult& res); //Updates the ship that got hit (or sank).
