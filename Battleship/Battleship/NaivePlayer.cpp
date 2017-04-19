@@ -2,19 +2,30 @@
 
 bool NaivePlayer::allowedToAttack(int i, int j)
 {
-	if (this->board[i][j] == WATER)
+	bool up = true, down = true, right = true, left = true;
+	if (this->board[i][j] != WATER) // do not self-hit ships
 	{
-		if (i > 0 && i < COL_SIZE-1 && j > 0 && j < COL_SIZE-1)
-		{
-			if (this->board[i-1][j] == WATER && this->board[i][j-1] == WATER
-				&& this->board[i][j+1] == WATER && this->board[i+1][j] == WATER)
-			{
-				return true;
-			}
-		}
-				
+		return false;
 	}
-	return false;
+	// update side booleans if possible
+	if (i > 0)
+	{
+		up = (this->board[i - 1][j] == WATER);
+	}
+	if (i < ROW_SIZE-1)
+	{
+		down = (this->board[i + 1][j] == WATER);
+	}
+	if (j > 0)
+	{
+		left = (this->board[i][j - 1] == WATER);
+	}
+	if (j < COL_SIZE-1)
+	{
+		right = (this->board[i][j + 1] == WATER);
+	}
+	// return true iff all sides are water (i.e clear to attack)
+	return up && down && right && left;
 }
 
 void NaivePlayer::initAttackQueue()
