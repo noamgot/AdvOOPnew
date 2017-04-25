@@ -1,89 +1,88 @@
 #include "InputUtilities.h"
 
 #define MAX_PATH_LEN 1024
+#define BUFF_SIZE 4096
 
 using namespace std;
 
 int searchFiles(const string dirPath, string& atkPathA, string& atkPathB, string& boardPath)
 {
-    string boardSuffix(".sboard");
-    string aSuffix(".attack-a");
-    string bSuffix(".attack-b");
-    string sysDIR("dir 2> errors.txt \"" + dirPath + "\" /b /a-d > file_names.txt");
-    const char* sysDIRc = sysDIR.c_str();
-    string line;
-    size_t lineSize;
-    size_t pos;
-    int ret = 0;
+	string boardSuffix(".sboard");
+	string aSuffix(".attack-a");
+	string bSuffix(".attack-b");
+	string sysDIR("2>NUL dir /a-d /b \"" + dirPath + "\"");
+	string sysDIRpathChk("dir /a \"" + dirPath + "\"");
+	string line;
+	size_t lineSize;
+	size_t pos;
+	int errChk = 5;
+	int errCount = 0;
+	int ret = 0;
+	char buffer[BUFF_SIZE];
+	string fileName;
+	
+	// check for any errors in the directory path
+	// TODO: Find better solution to check whether a folder is empty or has an invalid path
+	FILE* errList = _popen(sysDIRpathChk.c_str(), "r");
+	while (fgets(buffer, BUFF_SIZE - 1, errList))
+	{
+		errCount++;
+	}
+	if (errCount < errChk)
+	{
+		cout << "Wrong Path " << dirPath << endl;
+		_pclose(errList);
+		return -1;
+	}
+	_pclose(errList);
 
-    system(sysDIRc);
+	// parse directory contents
+	FILE* fileList = _popen(sysDIR.c_str(), "r");
+	while (fgets(buffer, BUFF_SIZE - 1, fileList))
+	{
+		line = string(buffer);
+		line.pop_back();
 
-    // check for any errors in the directory path
-    ifstream errors("errors.txt");
-    getline(errors, line);
-    if (line != "")
-    {
-        cout << "Wrong Path " << dirPath << endl;
-        errors.close();
-        if (remove("errors.txt") != 0)
-        {
-            cout << "Error deleting errors.txt file" << endl;
-        }
-        return -1;
-    }
-    errors.close();
-    if (remove("errors.txt") != 0)
-    {
-        cout << "Error deleting errors.txt file" << endl;
-    }
+		lineSize = line.length();
+		pos = line.rfind(boardSuffix);
+		if ((boardPath == "") && (pos != -1) && (pos == lineSize - boardSuffix.length()))
+		{
+			boardPath = line;
+		}
 
-    // parse directory contents
-    ifstream filenames("file_names.txt");
-    while (getline(filenames, line))
-    {
-        lineSize = line.length();
+		pos = line.rfind(aSuffix);
+		if ((atkPathA == "") && (pos != -1) && (pos == lineSize - aSuffix.length()))
+		{
+			atkPathA = line;
+		}
 
-        pos = line.rfind(boardSuffix);
-        if ((boardPath == "") && (pos != -1) && (pos == lineSize-boardSuffix.length()))
-        {
-            boardPath = line;
-        }
+		pos = line.rfind(bSuffix);
+		if ((atkPathB == "") && (pos != -1) && (pos == lineSize - bSuffix.length()))
+		{
+			atkPathB = line;
+		}
+	}
+	_pclose(fileList);
 
-        pos = line.rfind(aSuffix);
-        if ((atkPathA == "") && (pos != -1) && (pos == lineSize-aSuffix.length()))
-        {
-            atkPathA = line;
-        }
+	if (boardPath == "")
+	{
+		cout << "Missing board file (*.sboard) looking in path: " << dirPath << endl;
+		ret = -1;
+	}
+	if (atkPathA == "")
+	{
+		cout << "Missing attack file for player A (*.attack-a) looking in path: " << dirPath << endl;
+		ret = -1;
+	}
+	if (atkPathB == "")
+	{
+		cout << "Missing attack file for player B (*.attack-b) looking in path: " << dirPath << endl;
+		ret = -1;
+	}
 
-        pos = line.rfind(bSuffix);
-        if ((atkPathB == "") && (pos != -1) && (pos == lineSize-bSuffix.length()))
-        {
-            atkPathB = line;
-        }
-    }
-
-    if (boardPath == "")
-    {
-        cout << "Missing board file (*.sboard) looking in path: " << dirPath << endl;
-        ret = -1;
-    }
-    if (atkPathA == "")
-    {
-        cout << "Missing attack file for player A (*.attack-a) looking in path: " << dirPath << endl;
-        ret = -1;
-    }
-    if (atkPathB == "")
-    {
-        cout << "Missing attack file for player B (*.attack-b) looking in path: " << dirPath << endl;
-        ret = -1;
-    }
-    filenames.close();
-    if (remove("file_names.txt") != 0)
-    {
-        cout << "Error deleting file_names.txt file" << endl;
-    }
-    return ret;
+	return ret;
 }
+
 
 string getDirPath()
 {
@@ -101,6 +100,11 @@ string getDirPath()
 void initBoard(const string boardPath, string* board)
 {
     ifstream boardFile(boardPath);
+	if (!boardFile.is_open())
+	{
+		std::cout << "Error while trying to open board file" << std::endl;
+		return;
+	}
     char chars[9] = {' ','B','P','M','D','b','p','m','d'};
     set<char> charSet;
     charSet.insert(chars, chars+9);
@@ -250,8 +254,6 @@ int checkBoardValidity(string* board)
         }
     }
 
-    //cout << "Player A has " << shipCountA << " ships" <<endl;
-    //cout << "Player B has " << shipCountB << " ships" << endl;
     // Print possible errors
     for (int i = 0; i < 4; i++)
     {
@@ -302,9 +304,18 @@ void initAttack(const string atkPath, vector<pair<int,int>>& attacks)
     char nextChr;
     int x,y;
     ifstream atkFile(atkPath);
+	if (!atkFile.is_open())
+	{
+		std::cout << "Error while trying to open attack file" << std::endl;
+		return;
+	}
 
     while(getline(atkFile, line))
     {
+		if (line == "")
+		{
+			continue;
+		}
         if (line . back() == '\r')
         {
             line . back() = ' ';
