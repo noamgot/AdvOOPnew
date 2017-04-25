@@ -27,16 +27,16 @@ enum class eShipType
 
 class Ship
 {
-    int size;
+    int mSize;
     //  a map of coordinates = if <x,y> is true it means this coordinate was not hit
-    std::map<std::pair<int,int>, bool > coordinates;
-    eShipType type;
+    std::map<std::pair<int,int>, bool > mCoordinates;
+    eShipType mType;
 
 public:
     Ship(int size, eShipType type, std::map<std::pair<int,int>, bool> coordinates);
     Ship();
-    eShipType getType();
-    std::map<std::pair<int,int>, bool> getCoordinates();
+    eShipType getType() const;
+    std::map<std::pair<int,int>, bool> getCoordinates() const;
 
     /*Update the ship's after it gets a hit. return true if a real hit occurs
      * (i.e a "living" ship tile is hit) */

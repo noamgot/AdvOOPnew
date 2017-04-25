@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     bool gotDirPath = false;
     char **boardA = new char *[ROW_SIZE];
     char **boardB = new char *[ROW_SIZE];
-    for (int i = 0; i < COL_SIZE; ++i)
+    for (int i = 0; i < ROW_SIZE; ++i)
     {
         boardA[i] = new char[COL_SIZE];
         boardB[i] = new char[COL_SIZE];
@@ -133,10 +133,10 @@ int main(int argc, char** argv)
 
 
     //now we pass the individual boards, attack vectors and ship liststo the players
-    A.setBoard((const char **)boardA, ROW_SIZE, COL_SIZE);
+    A.setBoard(0,(const char **)boardA, ROW_SIZE, COL_SIZE);
     A.initShipsList();
     A.setMoves(MovesA);
-    B.setBoard((const char **)boardB, ROW_SIZE, COL_SIZE);
+    B.setBoard(1,(const char **)boardB, ROW_SIZE, COL_SIZE);
     B.initShipsList();
     B.setMoves(MovesB);
 
@@ -270,8 +270,8 @@ int main(int argc, char** argv)
     // delete all local boards
     for (int i = 0; i < COL_SIZE; ++i)
     {
-        delete boardA[i];
-        delete boardB[i];
+        delete[] boardA[i];
+        delete[] boardB[i];
     }
     delete[] boardA;
     delete[] boardB;

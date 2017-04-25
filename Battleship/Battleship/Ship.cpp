@@ -1,21 +1,25 @@
 #include "Ship.h"
 
-Ship::Ship(int size, eShipType type, std::map<std::pair<int,int>, bool> coordinates)
+Ship::Ship(int size, eShipType type, std::map<std::pair<int,int>, bool> coordinates) :
+	mSize(size),
+	mType(type),
+	mCoordinates(coordinates) 
 {
-    this->size = size;
-    this->type = type;
-    this->coordinates = coordinates;
+}
+
+Ship::Ship()
+{
 }
 
 
-//void Ship::setType(eShipType type)
+//void Ship::setType(eShipType mType)
 //{
-//    this->type = type;
+//    this->mType = mType;
 //}
 //
-//void Ship::setCoordinates(std::map<std::pair<int,int>, bool> coordinates)
+//void Ship::setCoordinates(std::map<std::pair<int,int>, bool> mCoordinates)
 //{
-//    this->coordinates = coordinates;
+//    this->mCoordinates = mCoordinates;
 //}
 //
 //void Ship::setSize(int size)
@@ -23,14 +27,14 @@ Ship::Ship(int size, eShipType type, std::map<std::pair<int,int>, bool> coordina
 //    this->size = size;
 //}
 
-eShipType Ship::getType()
+eShipType Ship::getType() const
 {
-    return this->type;
+    return this->mType;
 }
 
-std::map<std::pair<int,int>, bool> Ship::getCoordinates()
+std::map<std::pair<int,int>, bool> Ship::getCoordinates() const
 {
-    return this->coordinates;
+    return this->mCoordinates;
 }
 
 //int Ship::getSize()
@@ -41,16 +45,16 @@ std::map<std::pair<int,int>, bool> Ship::getCoordinates()
 bool Ship::handleHit(std::pair<int,int> coords, AttackResult& res)
 {
     // update only until size == 0 (don't allow negative size)
-    bool initialTileStatus = this->coordinates[coords];
-    if (this->size > 0)
+    bool initialTileStatus = this->mCoordinates[coords];
+    if (this->mSize > 0)
     {
         res = AttackResult::Hit;
         if(initialTileStatus) // if the hit tile was "alive"
         {
             // update ship coordinates and size and report "sink" if the ship is sunk
-            this->coordinates[coords] = false;
-            this->size--;
-            if (this->size == 0)
+            this->mCoordinates[coords] = false;
+            this->mSize--;
+            if (this->mSize == 0)
             {
                 res = AttackResult::Sink;
             }
@@ -69,8 +73,5 @@ bool Ship::handleHit(std::pair<int,int> coords, AttackResult& res)
 //
 //}
 
-Ship::Ship()
-{
 
-}
 

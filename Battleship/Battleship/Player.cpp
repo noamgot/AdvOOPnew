@@ -1,13 +1,19 @@
 #include "Player.h"
 
+Player::Player() : mShipsCount(DEFAULT_SHIPS_COUNT)
+{
+	// zero the board
+	memset(this->mBoard, 0, sizeof(char)*ROW_SIZE*COL_SIZE);
+}
+
 void Player::setBoard(int player, const char **board, int numRows, int numCols)
 {
-	this->playerNum = player;
+	this->mPlayerNum = player;
     for (int i = 0; i < numRows; ++i)
     {
         for (int j = 0; j < numCols; ++j)
         {
-            this->board[i][j] = board[i][j];
+            this->mBoard[i][j] = board[i][j];
         }
     }
 
@@ -16,10 +22,10 @@ void Player::setBoard(int player, const char **board, int numRows, int numCols)
 // get next attack from the player's moves queue
 std::pair<int, int> Player::attack()
 {
-    if(movesQueue.size() > 0)
+    if(mMovesQueue.size() > 0)
     {
-        std::pair<int,int>& nextAttack(movesQueue.front());//= movesQueue.front();
-        movesQueue.pop();
+        std::pair<int,int>& nextAttack(mMovesQueue.front());//= movesQueue.front();
+        mMovesQueue.pop();
         return nextAttack;
     }
     return make_pair(-1,-1);
@@ -42,14 +48,14 @@ void Player::setMoves(vector<pair<int, int>> moves)
         //remember moves are from 1 to ROW/COL SIZE while the board is from 0 to ROW/COL SIZE -1
         // we assume that if we got here all the moves are valid
         std::pair<int,int> move = make_pair(moves[i].first-1, moves[i].second-1);
-        this->movesQueue.push(move);
+        this->mMovesQueue.push(move);
     }
     moves.clear();
 }
 
-bool Player::hasMoves()
+bool Player::hasMoves() const
 {
-    return !movesQueue.empty();
+    return !mMovesQueue.empty();
 }
 
 //char ** Player::getBoard()
@@ -72,15 +78,15 @@ bool Player::registerHit(std::pair<int,int> coords, eShipType shipType, AttackRe
     bool validAttack = false;
     for(; i < DEFAULT_SHIPS_COUNT; i++)
     {
-        if(this->shipsList[i].getType() == shipType)
+        if(this->mShipsList[i].getType() == shipType)
         {
             //Make sure this coordinate belongs to this ship
-            if(this->shipsList[i].getCoordinates().count(coords) == 1)
+            if(this->mShipsList[i].getCoordinates().count(coords) == 1)
             {
-                validAttack = this->shipsList[i].handleHit(coords, res);
+                validAttack = this->mShipsList[i].handleHit(coords, res);
                 if(res == AttackResult::Sink)
                 {
-                    this->shipsCount--;
+                    this->mShipsCount--;
                 }
                 break;
             }
@@ -89,9 +95,9 @@ bool Player::registerHit(std::pair<int,int> coords, eShipType shipType, AttackRe
     return validAttack;
 }
 
-bool Player::hasShips()
+bool Player::hasShips() const
 {
-    return (this->shipsCount > 0);
+    return (this->mShipsCount > 0);
 }
 
 
@@ -145,15 +151,15 @@ void Player::initShipsList()
     {
         for (int j = 0; j < COL_SIZE; ++j)
         {
-            c = this->board[i][j];
+            c = this->mBoard[i][j];
             if (c != WATER)
             {
-                if ((i > 0 && board[i-1][j] == c) || (j > 0 && board[i][j-1] == c)) // already encountered this ship
+                if ((i > 0 && mBoard[i-1][j] == c) || (j > 0 && mBoard[i][j-1] == c)) // already encountered this ship
                 {
                     continue;
                 }
-                ship = handleShipDiscovery(i,j, this->board);
-                this->shipsList.push_back(ship);
+                ship = handleShipDiscovery(i,j, this->mBoard);
+                this->mShipsList.push_back(ship);
             }
         }
     }
