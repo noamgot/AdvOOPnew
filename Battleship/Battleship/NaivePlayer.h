@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Player.h"
+#include "DeterministPlayer.h"
 
 
-class NaivePlayer : Player
+class NaivePlayer : public DeterministPlayer
 {
 	bool allowedToAttack(int i, int j) const;
 public:

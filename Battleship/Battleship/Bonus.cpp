@@ -1,6 +1,8 @@
 #include <iostream>
 #include "Bonus.h"
-#include "Player.h"
+#include "AbstractPlayer.h"
+
+#define DEFAULT_LINE_CLEAR_LENGTH 100
 
 void wherexy(int& x, int& y){
     CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo;
@@ -44,9 +46,9 @@ void printSign(int x, int y, eColor color, char sign, DWORD sleepTime, bool play
 
 void clearLastLine()
 {
-	char s[100];
-	memset(s, ' ', 100); // fill with space bars
-	s[99] = 0;
+	char s[DEFAULT_LINE_CLEAR_LENGTH];
+	memset(s, ' ', DEFAULT_LINE_CLEAR_LENGTH); // fill with space bars
+	s[DEFAULT_LINE_CLEAR_LENGTH-1] = 0;
 	cout << s << "\r";
 }
 

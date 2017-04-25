@@ -1,5 +1,5 @@
-#ifndef HW1_INPUTUTILITIES_H
-#define HW1_INPUTUTILITIES_H
+#ifndef INPUTUTILITIES_H
+#define INPUTUTILITIES_H
 
 #include <iostream>
 #include <fstream>
@@ -11,7 +11,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <cstdio>
-#include "Player.h"
+#include "AbstractPlayer.h"
 
 #define BAD_STRING "!@#" // for getDirPath
 
@@ -41,4 +41,4 @@ int checkBoardValidity(string* board);
 /* Fills the attacks vector with the attack moves inside the .attack-a/b file located at atkPath */
 void initAttack(const string atkPath, vector<pair<int,int>>& attacks);
 
-#endif //HW1_INPUTUTILITIES_H
+#endif //INPUTUTILITIES_H

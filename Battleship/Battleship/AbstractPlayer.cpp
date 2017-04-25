@@ -1,12 +1,16 @@
-#include "Player.h"
+#include "AbstractPlayer.h"
 
-Player::Player() : mShipsCount(DEFAULT_SHIPS_COUNT)
+AbstractPlayer::AbstractPlayer() : mShipsCount(DEFAULT_SHIPS_COUNT)
 {
 	// zero the board
 	memset(this->mBoard, 0, sizeof(char)*ROW_SIZE*COL_SIZE);
 }
 
-void Player::setBoard(int player, const char **board, int numRows, int numCols)
+AbstractPlayer::~AbstractPlayer()
+{
+}
+
+void AbstractPlayer::setBoard(int player, const char **board, int numRows, int numCols)
 {
 	this->mPlayerNum = player;
     for (int i = 0; i < numRows; ++i)
@@ -19,46 +23,12 @@ void Player::setBoard(int player, const char **board, int numRows, int numCols)
 
 }
 
-// get next attack from the player's moves queue
-std::pair<int, int> Player::attack()
-{
-    if(mMovesQueue.size() > 0)
-    {
-        std::pair<int,int>& nextAttack(mMovesQueue.front());//= movesQueue.front();
-        mMovesQueue.pop();
-        return nextAttack;
-    }
-    return make_pair(-1,-1);
-}
-
-bool Player::init(const std::string & path)
+bool AbstractPlayer::init(const std::string & path)
 {
 	return false;
 }
 
-void Player::notifyOnAttackResult(int player, int row, int col, AttackResult result)
-{
-
-}
-
-void Player::setMoves(vector<pair<int, int>> moves)
-{
-    for (size_t i = 0; i < moves.size(); ++i)
-    {
-        //remember moves are from 1 to ROW/COL SIZE while the board is from 0 to ROW/COL SIZE -1
-        // we assume that if we got here all the moves are valid
-        std::pair<int,int> move = make_pair(moves[i].first-1, moves[i].second-1);
-        this->mMovesQueue.push(move);
-    }
-    moves.clear();
-}
-
-bool Player::hasMoves() const
-{
-    return !mMovesQueue.empty();
-}
-
-//char ** Player::getBoard()
+//char ** AbstractPlayer::getBoard()
 //{
 //    char **retBoard = new char *[ROW_SIZE];
 //    for (int i = 0; i < ROW_SIZE; ++i)
@@ -72,7 +42,7 @@ bool Player::hasMoves() const
 //    return retBoard;
 //}
 
-bool Player::registerHit(std::pair<int,int> coords, eShipType shipType, AttackResult& res)
+bool AbstractPlayer::registerHit(std::pair<int,int> coords, eShipType shipType, AttackResult& res)
 {
     int i = 0;
     bool validAttack = false;
@@ -95,7 +65,7 @@ bool Player::registerHit(std::pair<int,int> coords, eShipType shipType, AttackRe
     return validAttack;
 }
 
-bool Player::hasShips() const
+bool AbstractPlayer::hasShips() const
 {
     return (this->mShipsCount > 0);
 }
@@ -143,7 +113,7 @@ Ship handleShipDiscovery(int iOrig, int jOrig, char board[][COL_SIZE])
     return Ship(size, type, coordinates);
 }
 
-void Player::initShipsList()
+void AbstractPlayer::initShipsList()
 {
     Ship ship;
     char c;

@@ -147,19 +147,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bonus.cpp" />
-    <ClCompile Include="inputUtilities.cpp" />
+    <ClCompile Include="DeterministPlayer.cpp" />
+    <ClCompile Include="FilePlayer.cpp" />
+    <ClCompile Include="GameUtilities.cpp" />
+    <ClCompile Include="InputUtilities.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NaivePlayer.cpp" />
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="AbstractPlayer.cpp" />
     <ClCompile Include="Ship.cpp" />
+    <ClCompile Include="SmartPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bonus.h" />
+    <ClInclude Include="DeterministPlayer.h" />
+    <ClInclude Include="FilePlayer.h" />
+    <ClInclude Include="GameUtilities.h" />
     <ClInclude Include="NaivePlayer.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
-    <ClInclude Include="inputUtilities.h" />
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="InputUtilities.h" />
+    <ClInclude Include="AbstractPlayer.h" />
     <ClInclude Include="Ship.h" />
+    <ClInclude Include="SmartPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CmakeLists.txt" />
