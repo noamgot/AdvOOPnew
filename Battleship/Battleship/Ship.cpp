@@ -29,12 +29,12 @@ Ship::Ship()
 
 eShipType Ship::getType() const
 {
-    return this->mType;
+	return this->mType;
 }
 
 std::map<std::pair<int,int>, bool> Ship::getCoordinates() const
 {
-    return this->mCoordinates;
+	return this->mCoordinates;
 }
 
 //int Ship::getSize()
@@ -44,28 +44,46 @@ std::map<std::pair<int,int>, bool> Ship::getCoordinates() const
 
 bool Ship::handleHit(std::pair<int,int> coords, AttackResult& res)
 {
-    // update only until size == 0 (don't allow negative size)
-    bool initialTileStatus = this->mCoordinates[coords];
-    if (this->mSize > 0)
-    {
-        res = AttackResult::Hit;
-        if(initialTileStatus) // if the hit tile was "alive"
-        {
-            // update ship coordinates and size and report "sink" if the ship is sunk
-            this->mCoordinates[coords] = false;
-            this->mSize--;
-            if (this->mSize == 0)
-            {
-                res = AttackResult::Sink;
-            }
-        }
-    }
-    else // ship is already sunk
-    {
-        res = AttackResult::Miss;
-    }
-    return initialTileStatus;
+	// update only until size == 0 (don't allow negative size)
+	bool initialTileStatus = this->mCoordinates[coords];
+	if (this->mSize > 0)
+	{
+		res = AttackResult::Hit;
+		if(initialTileStatus) // if the hit tile was "alive"
+		{
+			// update ship coordinates and size and report "sink" if the ship is sunk
+			this->mCoordinates[coords] = false;
+			this->mSize--;
+			if (this->mSize == 0)
+			{
+				res = AttackResult::Sink;
+			}
+		}
+	}
+	else // ship is already sunk
+	{
+		res = AttackResult::Miss;
+	}
+	return initialTileStatus;
 }
+
+eShipType Ship::charToShipType(char c)
+{
+	switch (toupper(c))
+	{
+	case BOAT:
+		return eShipType::SHIP_TYPE_B;
+	case MISSLE_SHIP:
+		return eShipType::SHIP_TYPE_P;
+	case SUBMARINE:
+		return eShipType::SHIP_TYPE_M;
+	case DESTROYER:
+		return eShipType::SHIP_TYPE_D;
+	default: // should not get here
+		return eShipType::SHIP_TYPE_ERROR;
+	}
+}
+
 
 //bool Ship::isAlive()
 //{

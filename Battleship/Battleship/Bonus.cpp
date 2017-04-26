@@ -34,7 +34,8 @@ void printSign(int x, int y, eColor color, char sign, DWORD sleepTime, bool play
     {
         int origX, origY;
         wherexy(origX, origY);
-        gotoxy(x, y);
+		// need to give a (-1) offset to x,y
+        gotoxy(x-1, y-1);
         setTextColor(color);
         std::cout << sign;
         Sleep(sleepTime);
@@ -85,7 +86,13 @@ void printOpeningMessage()
 			"*                             *\n" << \
 			"*         BATTLESHIP          *\n" << \
 			"*                             *\n" << \
-			"*   Version 1.0, April 2017   *\n" << \
+			"*   Version 2.0, May 2017     *\n" << \
+			"*                             *\n" << \
+			"*        Created by:          *\n" << \
+			"*        Ben Ohayon           *\n" << \
+			"*        Uri Bracha           *\n" << \
+			"*       Noam Gottlieb         *\n" << \
+			"*                             *\n" << \
 			"*   (c)all rights reserved    *\n" << \
 			"*                             *\n" << \
 			"*******************************";

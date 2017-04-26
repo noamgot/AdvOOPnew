@@ -6,5 +6,6 @@ public:
 	FilePlayer();
 	~FilePlayer();
 	void setMoves(vector<pair<int, int>> moves);
+	bool init(const std::string& path) override;
 };
 

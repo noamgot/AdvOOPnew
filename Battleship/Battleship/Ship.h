@@ -42,6 +42,9 @@ public:
      * (i.e a "living" ship tile is hit) */
     bool handleHit(std::pair<int,int> coords, AttackResult& res);
 
+	// translate a given character to the corresponding ship type
+	static eShipType charToShipType(char c);
+
     //void setType(eShipType type);
     //void setCoordinates(std::map<std::pair<int,int>, bool> coordinates);
     //void setSize(int size);

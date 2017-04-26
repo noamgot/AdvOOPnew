@@ -36,6 +36,10 @@ public:
     void initShipsList();
 
     //char ** getBoard();
+
+private:
+	// a helper function to the initShipList method
+	Ship handleShipDiscovery(int iOrig, int jOrig, const char board[][COL_SIZE]);
 };
 
 
