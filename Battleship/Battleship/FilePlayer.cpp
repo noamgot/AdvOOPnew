@@ -11,15 +11,17 @@ FilePlayer::~FilePlayer()
 {
 }
 
-void FilePlayer::setMoves(vector<pair<int, int>> moves)
+void FilePlayer::setMoves(std::vector<std::pair<int, int>> moves)
 {
 	for (size_t i = 0; i < moves.size(); ++i)
 	{
 		// we assume that if we got here all the moves are valid
-		std::pair<int, int> move = make_pair(moves[i].first, moves[i].second);
+		std::pair<int, int> move = std::make_pair(moves[i].first, moves[i].second);
 		this->mMovesQueue.push(move);
 	}
 }
+
+//void FilePlayer::setBoard(int player, const char ** board, int numRows, int numCols) {}
 
 bool FilePlayer::init(const std::string & path)
 {

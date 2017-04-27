@@ -2,6 +2,7 @@
 #define HW1_BONUS_H
 
 #include <windows.h>
+#include <string>
 using namespace std;
 
 

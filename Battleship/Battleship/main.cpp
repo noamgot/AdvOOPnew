@@ -35,11 +35,11 @@ int main(int argc, char** argv)
 	{ // we accept the arguments in any order, and we assume that if a folder path is given it is the first argument
 		for (int i = 1; i < argc; ++i)
 		{
-			if (!strcmp(argv[i], PARAM_QUIET))
+			if (!strcmp(argv[i], GameUtilities::PARAM_QUIET.c_str()))
 			{
 				playWithGraphics = false;
 			}
-			else if (!strcmp(argv[i], PARAM_DELAY))
+			else if (!strcmp(argv[i], GameUtilities::PARAM_DELAY.c_str()))
 			{
 				if (i+1 < argc )
 				{
@@ -90,22 +90,22 @@ int main(int argc, char** argv)
 	//setting up individual boards
 	initIndividualBoards(board,boardA,boardB);
 	// setting up attack vectors
+	//TODO @Ben - change to queues instead vectors
 	initAttack(atkPathA, MovesA);
 	initAttack(atkPathB, MovesB);
 
-
-	//now we pass the individual boards, attack vectors and ship liststo the players
-	A.setBoard(0,(const char **)boardA, ROW_SIZE, COL_SIZE);
+	//now we pass the individual boards, attack vectors and ship lists to the players
+	A.setBoard(0,const_cast<const char **>(boardA), ROW_SIZE, COL_SIZE);
 	A.initShipsList();
 	A.setMoves(MovesA);
-	B.setBoard(1,(const char **)boardB, ROW_SIZE, COL_SIZE);
+	B.setBoard(1,const_cast<const char **>(boardB), ROW_SIZE, COL_SIZE);
 	B.initShipsList();
 	B.setMoves(MovesB);
 
 	// Let the game begin!!!
 	int attackerNum = 0;
 	int defenderNum = 1;
-	int sinkScore = 0;
+	int sinkScore;
 	int scores[2] = {0}; // index 0 = A, index 1 = B
 	FilePlayer *pPlayers[2] = { &A, &B };
 	char hitChar;
@@ -128,7 +128,7 @@ int main(int argc, char** argv)
 		{
 			//cout << "Player " << attackerName << " has ran out of moves - SWITCHING PLAYER" << endl;
 			attackerName = attackerNum ? "A" : "B";
-			changeCurrentPlayer(&attackerNum, &defenderNum);
+			GameUtilities::changeCurrentPlayer(&attackerNum, &defenderNum);
 			continue;
 		}
 
@@ -163,7 +163,7 @@ int main(int argc, char** argv)
 		}
 		else // Hit xor Sink xor double hit xor hit a sunken ship
 		{
-			bool validAttack = pPlayers[(isupper(hitChar) ? 0 : 1)]->registerHit(currentMove, charToShipType(hitChar), attackResult);
+			bool validAttack = pPlayers[(isupper(hitChar) ? 0 : 1)]->registerHit(currentMove, GameUtilities::charToShipType(hitChar), attackResult);
 			//notify players on attack results
 			A.notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, attackResult);
 			B.notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, attackResult);
@@ -171,7 +171,7 @@ int main(int argc, char** argv)
 			{
 				//Sink
 				// calculate the score
-				sinkScore = calculateSinkScore(hitChar);
+				sinkScore = GameUtilities::calculateSinkScore(hitChar);
 				if (sinkScore == -1) // for debug - should not get here
 				{
 					cout << "Error: Unexpected char on board: " << hitChar << endl;
@@ -214,7 +214,7 @@ int main(int argc, char** argv)
 		}
 		//Change player
 		attackerName = attackerNum ? "A" : "B";
-		changeCurrentPlayer(&attackerNum, &defenderNum);
+		GameUtilities::changeCurrentPlayer(&attackerNum, &defenderNum);
 	}
 	if (playWithGraphics)
 	{

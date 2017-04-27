@@ -1,8 +1,16 @@
 
 #include "GameUtilities.h"
+#include "Bonus.h"
+#include <iostream>
 
+using namespace std;
 
-eShipType charToShipType(char c)
+// initialize static consts
+
+const string GameUtilities::PARAM_QUIET = "-quiet";
+const string GameUtilities::PARAM_DELAY = "-delay";
+
+eShipType GameUtilities::charToShipType(char c)
 {
 	switch (toupper(c))
 	{
@@ -19,7 +27,7 @@ eShipType charToShipType(char c)
 	}
 }
 
-int calculateSinkScore(char c)
+int GameUtilities::calculateSinkScore(char c)
 {
 	switch (toupper(c))
 	{
@@ -36,8 +44,26 @@ int calculateSinkScore(char c)
 	}
 }
 
-void changeCurrentPlayer(int *attackerNum, int *defenderNum)
+void GameUtilities::changeCurrentPlayer(int *attackerNum, int *defenderNum)
 {
 	*attackerNum = *attackerNum ? 0 : 1;
 	*defenderNum = *defenderNum ? 0 : 1;
+}
+
+
+void GameUtilities::printGameResults(AbstractPlayer *pPlayers[], int scores[], bool playWithGraphics)
+{	
+	if (playWithGraphics)
+	{
+		clearLastLine();
+	}
+	if (!pPlayers[0]->hasShips())
+	{
+		cout << "Player B won" << endl;
+	}
+	else if (!pPlayers[1]->hasShips())
+	{
+		cout << "Player A won" << endl;
+	}
+	cout << "Points:\nPlayer A:" << scores[0] << "\nPlayer B:" << scores[1] << endl;
 }

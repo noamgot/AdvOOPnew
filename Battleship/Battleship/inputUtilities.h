@@ -13,6 +13,8 @@
 #include <cstdio>
 #include "AbstractPlayer.h"
 
+using namespace std;
+
 #define BAD_STRING "!@#" // for getDirPath
 
 /* Searches the current working directory for the game configuration files:

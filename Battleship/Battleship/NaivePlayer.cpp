@@ -2,7 +2,9 @@
 
 bool NaivePlayer::allowedToAttack(int i, int j) const
 {
-	bool up = true, down = true, right = true, left = true;
+	auto up = true, down = true, right = true, left = true;
+	auto rows = this->mNumOfRows;
+	auto cols = this->mNumOfCols;
 	if (this->mBoard[i][j] != WATER) // do not self-hit ships
 	{
 		return false;
@@ -12,7 +14,7 @@ bool NaivePlayer::allowedToAttack(int i, int j) const
 	{
 		up = (this->mBoard[i - 1][j] == WATER);
 	}
-	if (i < ROW_SIZE-1)
+	if (i < rows-1)
 	{
 		down = (this->mBoard[i + 1][j] == WATER);
 	}
@@ -20,7 +22,7 @@ bool NaivePlayer::allowedToAttack(int i, int j) const
 	{
 		left = (this->mBoard[i][j - 1] == WATER);
 	}
-	if (j < COL_SIZE-1)
+	if (j < cols-1)
 	{
 		right = (this->mBoard[i][j + 1] == WATER);
 	}
@@ -36,7 +38,7 @@ void NaivePlayer::initAttackQueue()
 		{
 			if (allowedToAttack(i, j))
 			{
-				this->mMovesQueue.push(make_pair(i, j));
+				this->mMovesQueue.push(std::make_pair(i+1, j+1));
 			}
 		}
 	}

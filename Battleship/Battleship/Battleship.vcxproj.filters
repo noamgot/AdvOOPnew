@@ -30,9 +30,6 @@
     <ClCompile Include="AbstractPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DeterministPlayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FilePlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -62,9 +59,6 @@
     <ClInclude Include="AbstractPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DeterministPlayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FilePlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -83,9 +77,10 @@
     <Text Include="students.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="game.sboard" />
-    <None Include="movesA.attack-a" />
-    <None Include="movesB.attack-b" />
     <None Include="AdvancedProgramming_Ex2.pdf" />
+    <None Include="clean_movesA.attack-a" />
+    <None Include="clean_movesB.attack-b" />
+    <None Include="good_board_1.sboard" />
+    <None Include="good_board_2.sboard" />
   </ItemGroup>
 </Project>

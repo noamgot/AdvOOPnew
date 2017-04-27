@@ -7,7 +7,7 @@ Ship::Ship(int size, eShipType type, std::map<std::pair<int,int>, bool> coordina
 {
 }
 
-Ship::Ship()
+Ship::Ship(): mSize(0), mType()
 {
 }
 
@@ -45,7 +45,7 @@ std::map<std::pair<int,int>, bool> Ship::getCoordinates() const
 bool Ship::handleHit(std::pair<int,int> coords, AttackResult& res)
 {
 	// update only until size == 0 (don't allow negative size)
-	bool initialTileStatus = this->mCoordinates[coords];
+	auto initialTileStatus = this->mCoordinates[coords];
 	if (this->mSize > 0)
 	{
 		res = AttackResult::Hit;

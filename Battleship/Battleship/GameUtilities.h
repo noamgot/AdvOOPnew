@@ -1,12 +1,27 @@
 #pragma once
 
 #include "Ship.h"
+#include "AbstractPlayer.h"
 
-#define PARAM_QUIET "-quiet"
-#define PARAM_DELAY "-delay"
+using namespace std;
 
-eShipType charToShipType(char c);
 
-int calculateSinkScore(char c);
+class GameUtilities
+{
+	
+public:
+	static const string PARAM_QUIET;
+	static const string PARAM_DELAY;
 
-void changeCurrentPlayer(int *attackerNum, int *defenderNum);
+	static eShipType charToShipType(char c);
+
+	static int calculateSinkScore(char c);
+
+	static void changeCurrentPlayer(int *attackerNum, int *defenderNum);
+
+	static void printGameResults(AbstractPlayer *pPlayers[], int scores[], bool playWithGraphics);
+
+};
+
+
+

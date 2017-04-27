@@ -147,7 +147,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bonus.cpp" />
-    <ClCompile Include="DeterministPlayer.cpp" />
     <ClCompile Include="FilePlayer.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="InputUtilities.cpp" />
@@ -159,7 +158,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bonus.h" />
-    <ClInclude Include="DeterministPlayer.h" />
     <ClInclude Include="FilePlayer.h" />
     <ClInclude Include="GameUtilities.h" />
     <ClInclude Include="NaivePlayer.h" />
@@ -175,9 +173,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="AdvancedProgramming_Ex2.pdf" />
-    <None Include="game.sboard" />
-    <None Include="movesA.attack-a" />
-    <None Include="movesB.attack-b" />
+    <None Include="clean_movesA.attack-a" />
+    <None Include="clean_movesB.attack-b" />
+    <None Include="good_board_1.sboard" />
+    <None Include="good_board_2.sboard" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
