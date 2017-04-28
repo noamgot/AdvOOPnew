@@ -37,10 +37,10 @@ std::map<std::pair<int,int>, bool> Ship::getCoordinates() const
 	return this->mCoordinates;
 }
 
-//int Ship::getSize()
-//{
-//    return this->size;
-//}
+int Ship::getSize()
+{
+    return this->mSize;
+}
 
 bool Ship::handleHit(std::pair<int,int> coords, AttackResult& res)
 {

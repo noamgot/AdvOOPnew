@@ -58,7 +58,7 @@ public:
 	//void setType(eShipType type);
 	//void setCoordinates(std::map<std::pair<int,int>, bool> coordinates);
 	//void setSize(int size);
-	//int getSize();
+	int getSize();
 	//bool isAlive();
 
 

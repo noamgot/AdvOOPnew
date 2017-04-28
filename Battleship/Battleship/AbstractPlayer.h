@@ -2,13 +2,25 @@
 #define ABSTRACTPLAYER_H
 
 #include <queue>
+#include <algorithm>
 #include "IBattleshipGameAlgo.h"
-#include "Ship.h"
+#include "Ship.h"	
 
 //using namespace std;
 #define ROW_SIZE 10
 #define COL_SIZE 10
 #define DEFAULT_SHIPS_COUNT 5
+
+enum class Direction
+{
+	VERTICAL,
+	HORIZONAL,
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	NONE
+};
 
 class AbstractPlayer : public IBattleshipGameAlgo
 {
@@ -33,6 +45,7 @@ public:
 
 	virtual bool init(const std::string& path) override;
 
+
 	//Updates the ship that got hit (or sank).
 	bool registerHit(std::pair<int,int> coords, eShipType shipType, AttackResult& res); 
 
@@ -43,7 +56,7 @@ public:
 	//char ** getBoard();
 
 	
-	bool hasMoves() const; // checks if the player has more moves to play
+	virtual bool hasMoves() const; // checks if the player has more moves to play
 
 	/*static char **AbstractPlayer::allocateBoard(char **board, int numRows, int numCols);
 
@@ -52,6 +65,7 @@ public:
 	static void AbstractPlayer::deleteBoard(char **board, int numRows);*/
 
 private:
+	//@Noam - why is there a private function in an interface class?
 	// a helper function to the initShipList method
 	static Ship handleShipDiscovery(int iOrig, int jOrig, std::vector<std::vector<char>>& board);
 };
