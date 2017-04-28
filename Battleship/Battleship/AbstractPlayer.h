@@ -1,13 +1,25 @@
 #pragma once
 
 #include <queue>
+#include <algorithm>
 #include "IBattleshipGameAlgo.h"
-#include "Ship.h"
+#include "Ship.h"	
 
 //using namespace std;
 #define ROW_SIZE 10
 #define COL_SIZE 10
 #define DEFAULT_SHIPS_COUNT 5
+
+enum class Direction
+{
+	VERTICAL,
+	HORIZONAL,
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	NONE
+};
 
 class AbstractPlayer : public IBattleshipGameAlgo
 {
@@ -40,7 +52,7 @@ public:
 	//char ** getBoard();
 
 	
-	bool hasMoves() const; // checks if the player has more moves to play
+	virtual bool hasMoves() const; // checks if the player has more moves to play
 
 private:
 

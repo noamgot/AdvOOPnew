@@ -157,6 +157,7 @@
     <ClCompile Include="AbstractPlayer.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="SmartPlayer.cpp" />
+    <ClCompile Include="WeightedPosition.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
@@ -170,6 +171,7 @@
     <ClInclude Include="AbstractPlayer.h" />
     <ClInclude Include="Ship.h" />
     <ClInclude Include="SmartPlayer.h" />
+    <ClInclude Include="WeightePosition.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CmakeLists.txt" />
