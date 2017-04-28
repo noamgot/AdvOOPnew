@@ -1,5 +1,4 @@
-#ifndef INPUTUTILITIES_H
-#define INPUTUTILITIES_H
+#pragma once
 
 #include <iostream>
 #include <fstream>
@@ -43,4 +42,3 @@ int checkBoardValidity(string* board);
 /* Fills the attacks vector with the attack moves inside the .attack-a/b file located at atkPath */
 void initAttack(const string atkPath, vector<pair<int,int>>& attacks);
 
-#endif //INPUTUTILITIES_H

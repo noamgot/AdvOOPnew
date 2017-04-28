@@ -146,11 +146,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Bonus.cpp" />
+    <ClCompile Include="Board.cpp" />
+    <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="FilePlayer.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="InputUtilities.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MarkedShip.cpp" />
     <ClCompile Include="NaivePlayer.cpp" />
     <ClCompile Include="AbstractPlayer.cpp" />
     <ClCompile Include="Ship.cpp" />
@@ -158,9 +160,11 @@
     <ClCompile Include="WeightedPosition.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bonus.h" />
+    <ClInclude Include="Board.h" />
+    <ClInclude Include="Graphics.h" />
     <ClInclude Include="FilePlayer.h" />
     <ClInclude Include="GameUtilities.h" />
+    <ClInclude Include="MarkedShip.h" />
     <ClInclude Include="NaivePlayer.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
     <ClInclude Include="InputUtilities.h" />

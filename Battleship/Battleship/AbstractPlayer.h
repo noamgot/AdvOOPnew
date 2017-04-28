@@ -1,5 +1,4 @@
-#ifndef ABSTRACTPLAYER_H
-#define ABSTRACTPLAYER_H
+#pragma once
 
 #include <queue>
 #include <algorithm>
@@ -71,4 +70,3 @@ private:
 };
 
 
-#endif //ABSTRACTPLAYER_H

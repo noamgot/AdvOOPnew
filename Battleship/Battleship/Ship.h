@@ -1,5 +1,4 @@
-#ifndef SHIP_H
-#define SHIP_H
+#pragma once
 
 #include <map>
 #include "IBattleshipGameAlgo.h"
@@ -64,5 +63,3 @@ public:
 
 };
 
-
-#endif //SHIP_H
