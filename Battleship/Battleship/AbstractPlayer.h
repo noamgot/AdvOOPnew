@@ -1,5 +1,4 @@
-#ifndef ABSTRACTPLAYER_H
-#define ABSTRACTPLAYER_H
+#pragma once
 
 #include <queue>
 #include "IBattleshipGameAlgo.h"
@@ -57,4 +56,3 @@ private:
 };
 
 
-#endif //ABSTRACTPLAYER_H

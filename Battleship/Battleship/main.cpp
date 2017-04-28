@@ -1,5 +1,5 @@
 #include "InputUtilities.h"
-#include "Bonus.h"
+#include "Graphics.h"
 #include "GameUtilities.h"
 #include "NaivePlayer.h"
 #include "FilePlayer.h"
@@ -10,74 +10,20 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	string dirPath;
-	string atkPathA;
-	string atkPathB;
-	string boardPath;
+	string dirPath, atkPathA, atkPathB, boardPath;
 	string* board = new string[ROW_SIZE];
-	vector<pair<int,int>> MovesA;
-	vector<pair<int,int>> MovesB;
-	FilePlayer A;
-	FilePlayer B;
-	DWORD sleepTime = DEFAULT_SLEEP_TIME;
-	bool playWithGraphics = true;
-	bool gotDirPath = false;
-	char **boardA = new char *[ROW_SIZE];
-	char **boardB = new char *[ROW_SIZE];
-	for (int i = 0; i < ROW_SIZE; ++i)
-	{
-		boardA[i] = new char[COL_SIZE];
-		boardB[i] = new char[COL_SIZE];
-	}
+	vector<pair<int, int>> MovesA, MovesB;
+	FilePlayer A, B;
+	auto sleepTime = Graphics::DEFAULT_GRAPHICS_DELAY;
+	auto playWithGraphics = true;
+	auto boardA = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
+	auto boardB = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
 
 	//processing program arguments
-	if (argc >= 2)
-	{ // we accept the arguments in any order, and we assume that if a folder path is given it is the first argument
-		for (int i = 1; i < argc; ++i)
-		{
-			if (!strcmp(argv[i], GameUtilities::PARAM_QUIET.c_str()))
-			{
-				playWithGraphics = false;
-			}
-			else if (!strcmp(argv[i], GameUtilities::PARAM_DELAY.c_str()))
-			{
-				if (i+1 < argc )
-				{
-					char *p;
-					long delay = strtol(argv[i+1], &p, 10);
-					if (!*p)
-					{
-						sleepTime = (DWORD)delay;
-					}
-					// if there's no integer after PARAM_DELAY - we ignore this parameter...
-				}
-			}
-			else if (i == 1)
-			{ // we assume that if there's a folder path it is the first argument
-				dirPath = argv[1];
-				if (searchFiles(dirPath, atkPathA, atkPathB, boardPath) < 0)
-				{
-					return EXIT_FAILURE;
-				}
-				boardPath = dirPath + "/" + boardPath;
-				atkPathA = dirPath + "/" + atkPathA;
-				atkPathB = dirPath + "/" + atkPathB;
-				gotDirPath = true;
-			}
-		}
-	}
-	if (!gotDirPath) // directory path given
+	if (GameUtilities::processInputArguments(argc, argv, playWithGraphics, sleepTime, 
+												boardPath, atkPathA, atkPathB) < 0)
 	{
-		dirPath = getDirPath();
-		if (dirPath == BAD_STRING) //error occurred in getDirPath()
-		{
-			perror("Error");
-			return EXIT_FAILURE;
-		}
-		if (searchFiles(dirPath, atkPathA, atkPathB, boardPath) < 0)
-		{
-			return EXIT_FAILURE;
-		}
+		return EXIT_FAILURE;
 	}
 
 	// setting up the main board
@@ -103,8 +49,7 @@ int main(int argc, char** argv)
 	B.setMoves(MovesB);
 
 	// Let the game begin!!!
-	int attackerNum = 0;
-	int defenderNum = 1;
+	auto attackerNum = 0, defenderNum = 1;
 	int sinkScore;
 	int scores[2] = {0}; // index 0 = A, index 1 = B
 	FilePlayer *pPlayers[2] = { &A, &B };
@@ -114,10 +59,10 @@ int main(int argc, char** argv)
 
 	if (playWithGraphics)
 	{
-		printOpeningMessage();
-		Sleep(3*DEFAULT_SLEEP_TIME);
+		Graphics::printOpeningMessage();
+		Sleep(3*Graphics::DEFAULT_GRAPHICS_DELAY);
 		// print the initial game board
-		printBoard(board);
+		Graphics::printBoard(board);
 		Sleep(sleepTime);
 	}
 	//The game goes on until one of the players has no more ships or both ran out of moves.
@@ -132,7 +77,7 @@ int main(int argc, char** argv)
 			continue;
 		}
 
-		std::pair<int, int> currentMove = pPlayers[attackerNum]->attack();
+		auto currentMove = pPlayers[attackerNum]->attack();
 		// should always pass this check - it's for debug purposes
 		if (currentMove.first < 1 || currentMove.first > ROW_SIZE ||
 				currentMove.second < 1 || currentMove.second > COL_SIZE )
@@ -146,11 +91,11 @@ int main(int argc, char** argv)
 		hitChar = board[currentMove.first-1][currentMove.second-1];
 		if (playWithGraphics)
 		{
-			clearLastLine();
+			Graphics::clearLastLine();
 			cout << attackerName << " shoots at (" << (currentMove.first) << "," << (currentMove.second) << ") - ";
 			Sleep(sleepTime);
 		}
-		printSign(currentMove.first, currentMove.second, COLOR_RED, BOMB_SIGN, sleepTime, playWithGraphics);
+		Graphics::printSign(currentMove.first, currentMove.second, COLOR_RED, Graphics::BOMB_SIGN, sleepTime, playWithGraphics);
 
 		if (hitChar == WATER)
 		{
@@ -159,11 +104,11 @@ int main(int argc, char** argv)
 			{
 				cout << "MISS\r";
 			}
-			printSign(currentMove.first, currentMove.second, COLOR_DEFAULT_WHITE, WATER, sleepTime, playWithGraphics);
+			Graphics::printSign(currentMove.first, currentMove.second, COLOR_DEFAULT_WHITE, WATER, sleepTime, playWithGraphics);
 		}
 		else // Hit xor Sink xor double hit xor hit a sunken ship
 		{
-			bool validAttack = pPlayers[(isupper(hitChar) ? 0 : 1)]->registerHit(currentMove, GameUtilities::charToShipType(hitChar), attackResult);
+			auto validAttack = pPlayers[(isupper(hitChar) ? 0 : 1)]->registerHit(currentMove, GameUtilities::charToShipType(hitChar), attackResult);
 			//notify players on attack results
 			A.notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, attackResult);
 			B.notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, attackResult);
@@ -183,7 +128,7 @@ int main(int argc, char** argv)
 				{
 					cout << (!isupper(hitChar) == attackerNum ? "SELF-SINK" : "SINK") << "\r";
 					Sleep(sleepTime);
-					clearLastLine();
+					Graphics::clearLastLine();
 					cout << "CURRENT SCORE: A-" << scores[0] << ", B-" << scores[1] << "\r";
 					Sleep(sleepTime);
 				}
@@ -203,7 +148,7 @@ int main(int argc, char** argv)
 					}
 				}
 			}
-			printSign(currentMove.first, currentMove.second, (isupper(hitChar) ? COLOR_GREEN : COLOR_YELLOW), HIT_SIGN,
+			Graphics::printSign(currentMove.first, currentMove.second, (isupper(hitChar) ? COLOR_GREEN : COLOR_YELLOW), Graphics::HIT_SIGN,
 				sleepTime, playWithGraphics);
 			// in case where there was a "real" hit (i.e a "living" tile got a hit) and it wasn't a self it,
 			// the attacker gets another turn
@@ -218,7 +163,7 @@ int main(int argc, char** argv)
 	}
 	if (playWithGraphics)
 	{
-		clearLastLine();
+		Graphics::clearLastLine();
 	}
 	if(!pPlayers[0]->hasShips())
 	{
@@ -231,13 +176,8 @@ int main(int argc, char** argv)
 	cout << "Points:\nPlayer A:" << scores[0] << "\nPlayer B:" << scores[1] << endl;
 
 	// delete all local boards
-	for (int i = 0; i < COL_SIZE; ++i)
-	{
-		delete[] boardA[i];
-		delete[] boardB[i];
-	}
-	delete[] boardA;
-	delete[] boardB;
+	GameUtilities::deleteBoard(boardA, ROW_SIZE);
+	GameUtilities::deleteBoard(boardB, ROW_SIZE);
 	delete[] board;
 
 	return EXIT_SUCCESS;

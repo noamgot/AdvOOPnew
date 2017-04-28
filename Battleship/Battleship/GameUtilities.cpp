@@ -1,7 +1,8 @@
 
 #include "GameUtilities.h"
-#include "Bonus.h"
+#include "Graphics.h"
 #include <iostream>
+#include "InputUtilities.h"
 
 using namespace std;
 
@@ -9,6 +10,64 @@ using namespace std;
 
 const string GameUtilities::PARAM_QUIET = "-quiet";
 const string GameUtilities::PARAM_DELAY = "-delay";
+
+int GameUtilities::processInputArguments(int argc, char** argv, bool& playWithGraphics, int& sleepTime,
+                                         string& boardPath, string& atkPathA, string& atkPathB)
+{
+	string dirPath;
+	auto gotDirPath = false;
+	if (argc >= 2)
+	{ // we accept the arguments in any order, and we assume that if a folder path is given it is the first argument
+		for (auto i = 1; i < argc; ++i)
+		{
+			if (!strcmp(argv[i], GameUtilities::PARAM_QUIET.c_str()))
+			{
+				playWithGraphics = false;
+			}
+			else if (!strcmp(argv[i], GameUtilities::PARAM_DELAY.c_str()))
+			{
+				if (i + 1 < argc)
+				{
+					char *p;
+					auto delay = strtol(argv[i + 1], &p, 10);
+					if (!*p)
+					{
+						sleepTime = static_cast<DWORD>(delay);
+					}
+					// if there's no integer after PARAM_DELAY - we ignore this parameter...
+				}
+			}
+			else if (i == 1)
+			{ // we assume that if there's a folder path it is the first argument
+				dirPath = argv[1];
+				if (searchFiles(dirPath, atkPathA, atkPathB, boardPath) < 0)
+				{
+					return -1;
+				}
+				boardPath = dirPath + "/" + boardPath;
+				atkPathA = dirPath + "/" + atkPathA;
+				atkPathB = dirPath + "/" + atkPathB;
+				gotDirPath = true;
+			}
+		}
+	}
+	if (!gotDirPath) // directory path given
+	{
+		dirPath = getDirPath();
+		if (dirPath == BAD_STRING) //error occurred in getDirPath()
+		{
+			perror("Error");
+			return -1;
+		}
+		if (searchFiles(dirPath, atkPathA, atkPathB, boardPath) < 0)
+		{
+			return -1;
+		}
+	}
+
+	//success
+	return 0;
+}
 
 eShipType GameUtilities::charToShipType(char c)
 {
@@ -55,7 +114,7 @@ void GameUtilities::printGameResults(AbstractPlayer *pPlayers[], int scores[], b
 {	
 	if (playWithGraphics)
 	{
-		clearLastLine();
+		Graphics::clearLastLine();
 	}
 	if (!pPlayers[0]->hasShips())
 	{
@@ -66,4 +125,24 @@ void GameUtilities::printGameResults(AbstractPlayer *pPlayers[], int scores[], b
 		cout << "Player A won" << endl;
 	}
 	cout << "Points:\nPlayer A:" << scores[0] << "\nPlayer B:" << scores[1] << endl;
+}
+
+
+char** GameUtilities::allocateBoard(int rows, int cols)
+{
+	auto board = new char *[rows];
+	for (auto i = 0; i < rows; ++i)
+	{
+		board[i] = new char[cols];
+	}
+	return board;
+}
+
+void GameUtilities::deleteBoard(char** board, int rows)
+{
+	for (auto i = 0; i < rows; ++i)
+	{
+		delete[] board[i];
+	}
+	delete[] board;
 }
