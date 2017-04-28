@@ -16,7 +16,7 @@ void FilePlayer::setMoves(std::vector<std::pair<int, int>> moves)
 	for (size_t i = 0; i < moves.size(); ++i)
 	{
 		// we assume that if we got here all the moves are valid
-		std::pair<int, int> move = std::make_pair(moves[i].first, moves[i].second);
+		auto move = std::make_pair(moves[i].first, moves[i].second);
 		this->mMovesQueue.push(move);
 	}
 }
@@ -25,5 +25,6 @@ void FilePlayer::setMoves(std::vector<std::pair<int, int>> moves)
 
 bool FilePlayer::init(const std::string & path)
 {
+	AbstractPlayer::init(path);
 	return false;
 }

@@ -14,9 +14,12 @@ public:
 	static const string PARAM_DELAY;
 
 	static int processInputArguments(int argc, char** argv, bool& playWithGraphics, int& sleepTime,
-	                                 string& boardPath, string& atkPathA, string& atkPathB);
+	                                 string& dirPath, string& boardPath, string& atkPathA, string& atkPathB);
 
 	static eShipType charToShipType(char c);
+
+	/*return true iff the move is ILlegal*/
+	static bool isIllegalMove(std::pair<int, int> move, int rows, int cols);
 
 	static int calculateSinkScore(char c);
 

@@ -4,7 +4,7 @@
 #include <set>
 
 #define MAX_PATH_LEN 1024
-#define BUFF_SIZE 4096
+#define BUFF_SIZE 1024
 
 using namespace std;
 
@@ -13,20 +13,20 @@ int searchFiles(const string dirPath, string& atkPathA, string& atkPathB, string
 	string boardSuffix(".sboard");
 	string aSuffix(".attack-a");
 	string bSuffix(".attack-b");
-	string sysDIR("2>NUL dir /a-d /b \"" + dirPath + "\"");
-	string sysDIRpathChk("dir /a \"" + dirPath + "\"");
+	auto sysDIR("2>NUL dir /a-d /b \"" + dirPath + "\"");
+	auto sysDIRpathChk("dir /a \"" + dirPath + "\"");
 	string line;
 	size_t lineSize;
 	size_t pos;
-	int errChk = 5;
-	int errCount = 0;
-	int ret = 0;
+	auto errChk = 5;
+	auto errCount = 0;
+	auto ret = 0;
 	char buffer[BUFF_SIZE];
 	string fileName;
 	
 	// check for any errors in the directory path
 	// TODO: Find better solution to check whether a folder is empty or has an invalid path
-	FILE* errList = _popen(sysDIRpathChk.c_str(), "r");
+	auto errList = _popen(sysDIRpathChk.c_str(), "r");
 	while (fgets(buffer, BUFF_SIZE - 1, errList))
 	{
 		errCount++;
@@ -41,7 +41,7 @@ int searchFiles(const string dirPath, string& atkPathA, string& atkPathB, string
 
 	// parse directory contents
 	//TODO @Ben - this part can be more efficient - need to break when all paths are found
-	FILE* fileList = _popen(sysDIR.c_str(), "r");
+	auto fileList = _popen(sysDIR.c_str(), "r");
 	while (fgets(buffer, BUFF_SIZE - 1, fileList))
 	{
 		line = string(buffer);
@@ -66,7 +66,6 @@ int searchFiles(const string dirPath, string& atkPathA, string& atkPathB, string
 		if ((atkPathB == "") && (pos != -1) && (pos == lineSize - bSuffix.length()))
 		{
 			atkPathB = line;
-			continue;
 		}
 	}
 	_pclose(fileList);
@@ -118,7 +117,7 @@ void initBoard(const string boardPath, string* board)
 	set<char> charSet;
 	charSet.insert(chars, chars+9);
 
-	for (int i = 0; i < ROW_SIZE; i++)
+	for (auto i = 0; i < ROW_SIZE; i++)
 	{
 		getline(boardFile, board[i]);
 		if (board[i].back() == '\r') board[i].back() = ' '; // handles '\r'
@@ -139,14 +138,15 @@ void initBoard(const string boardPath, string* board)
 			}
 		}
 	}
-	for (int i = 0; i < ROW_SIZE; i++)
+	for (auto i = 0; i < ROW_SIZE; i++)
 	{                        // convert non-valid characters to spaces
-		for (int j = 0; j < COL_SIZE; j++)
+		for (auto j = 0; j < COL_SIZE; j++)
 		{
 			if (charSet.find(board[i][j]) == charSet.end()) board[i][j] = ' ';
 		}
 	}
 	boardFile.close();
+
 }
 
 void initIndividualBoards(string *board, char **boardA, char **boardB)
@@ -325,9 +325,9 @@ void initAttack(const string atkPath, vector<pair<int,int>>& attacks)
 		{
 			continue;
 		}
-		if (line . back() == '\r')
+		if (line.back() == '\r')
 		{
-			line . back() = ' ';
+			line.back() = ' ';
 		}
 		x = -1;
 		y = -1;

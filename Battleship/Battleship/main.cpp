@@ -16,12 +16,10 @@ int main(int argc, char** argv)
 	FilePlayer A, B;
 	auto sleepTime = Graphics::DEFAULT_GRAPHICS_DELAY;
 	auto playWithGraphics = true;
-	auto boardA = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
-	auto boardB = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
 
 	//processing program arguments
 	if (GameUtilities::processInputArguments(argc, argv, playWithGraphics, sleepTime, 
-												boardPath, atkPathA, atkPathB) < 0)
+												dirPath, boardPath, atkPathA, atkPathB) < 0)
 	{
 		return EXIT_FAILURE;
 	}
@@ -33,7 +31,10 @@ int main(int argc, char** argv)
 	{
 		return EXIT_FAILURE;
 	}
+
 	//setting up individual boards
+	auto boardA = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
+	auto boardB = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
 	initIndividualBoards(board,boardA,boardB);
 	// setting up attack vectors
 	//TODO @Ben - change to queues instead vectors
@@ -42,10 +43,9 @@ int main(int argc, char** argv)
 
 	//now we pass the individual boards, attack vectors and ship lists to the players
 	A.setBoard(0,const_cast<const char **>(boardA), ROW_SIZE, COL_SIZE);
-	A.initShipsList();
-	A.setMoves(MovesA);
+	A.init(dirPath);
 	B.setBoard(1,const_cast<const char **>(boardB), ROW_SIZE, COL_SIZE);
-	B.initShipsList();
+	B.init(dirPath);
 	B.setMoves(MovesB);
 
 	// Let the game begin!!!

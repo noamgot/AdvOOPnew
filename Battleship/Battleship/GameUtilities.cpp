@@ -12,9 +12,9 @@ const string GameUtilities::PARAM_QUIET = "-quiet";
 const string GameUtilities::PARAM_DELAY = "-delay";
 
 int GameUtilities::processInputArguments(int argc, char** argv, bool& playWithGraphics, int& sleepTime,
-                                         string& boardPath, string& atkPathA, string& atkPathB)
+                                         string& dirPath, string& boardPath, string& atkPathA, string& atkPathB)
 {
-	string dirPath;
+	
 	auto gotDirPath = false;
 	if (argc >= 2)
 	{ // we accept the arguments in any order, and we assume that if a folder path is given it is the first argument
@@ -84,6 +84,13 @@ eShipType GameUtilities::charToShipType(char c)
 	default:
 		return eShipType::SHIP_TYPE_ERROR;
 	}
+}
+
+bool GameUtilities::isIllegalMove(std::pair<int, int> move, int numOfRows, int numOfCols)
+{
+	auto x = move.first;
+	auto y = move.second;
+	return (x < 1 || x > numOfRows || y < 1 || y > numOfCols);
 }
 
 int GameUtilities::calculateSinkScore(char c)

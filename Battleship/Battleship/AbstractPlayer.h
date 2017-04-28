@@ -22,7 +22,7 @@ protected:
 	//int score = 0;
 public:
 	AbstractPlayer();
-	~AbstractPlayer();
+	virtual ~AbstractPlayer() = 0; // this class is abstract!
 
 	virtual void setBoard(int player, const char **board, int numRows, int numCols) override; // called once to notify player on his board
 	
@@ -37,20 +37,14 @@ public:
 
 	bool hasShips() const; // checks if the player has more living ships
 
-	void initShipsList();
-
 	//char ** getBoard();
 
 	
 	bool hasMoves() const; // checks if the player has more moves to play
 
-	/*static char **AbstractPlayer::allocateBoard(char **board, int numRows, int numCols);
-
-	static char **AbstractPlayer::copyBoard(char **srcBoard, char ** dstBoard, int numRows, int numCols);
-
-	static void AbstractPlayer::deleteBoard(char **board, int numRows);*/
-
 private:
+
+	void initShipsList();
 	// a helper function to the initShipList method
 	static Ship handleShipDiscovery(int iOrig, int jOrig, std::vector<std::vector<char>>& board);
 };
