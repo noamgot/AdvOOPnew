@@ -10,7 +10,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	string dirPath, atkPathA, atkPathB, boardPath;
+	string dirPath, atkPathA, atkPathB, boardPath, dllPathA, dllPathB;
 	string* board = new string[ROW_SIZE];
 	vector<pair<int, int>> MovesA, MovesB;
 	FilePlayer A, B;
