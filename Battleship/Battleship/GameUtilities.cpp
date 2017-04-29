@@ -40,6 +40,10 @@ int GameUtilities::processInputArguments(int argc, char** argv, bool& playWithGr
 			else if (i == 1)
 			{ // we assume that if there's a folder path it is the first argument
 				dirPath = argv[1];
+				if (dirPath.front() == '\\' || dirPath.front() == '/') // if path is relative convert to absolute
+				{
+					dirPath = getDirPath() + dirPath;
+				}
 				if (searchFiles(dirPath, atkPathA, atkPathB, boardPath) < 0)
 				{
 					return -1;

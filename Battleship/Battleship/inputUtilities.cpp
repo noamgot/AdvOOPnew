@@ -1,7 +1,4 @@
 #include "InputUtilities.h"
-#include <direct.h>
-#include <iostream>
-#include <set>
 
 #define MAX_PATH_LEN 1024
 #define BUFF_SIZE 1024
@@ -89,6 +86,51 @@ int searchFiles(const string dirPath, string& atkPathA, string& atkPathB, string
 	return ret;
 }
 
+int searchFilesN(const string dirPath, string& dllPathA, string& dllPathB, string& boardPath)
+{
+	HANDLE dir;
+	WIN32_FIND_DATAA fileData;
+	
+	string dllSuffix = "*.dll";
+	string boardSuffix = "*.sboard";
+	string dirBack = (dirPath.back() == '\\' || dirPath.back() == '/') ? "" : "\\";
+	string path = dirPath + dirBack;
+
+	// find first sboard file
+	dir = FindFirstFileA((path + boardSuffix).c_str(), &fileData);
+	if (dir != INVALID_HANDLE_VALUE) // check if file successfully opened
+	{
+		boardPath = path + fileData.cFileName;
+	}
+	else
+	{
+		if (GetLastError() != ERROR_FILE_NOT_FOUND)	// check if directory path is valid
+		{
+			cout << "Wrong Path: " << dirPath << endl;
+			return -1;
+		}
+		cout << "Missing board file (*.sboard) looking in path: " << dirPath << endl;
+	}
+
+	// find 2 dll files
+	dir = FindFirstFileA((path + dllSuffix).c_str(), &fileData);
+	if (dir == INVALID_HANDLE_VALUE)
+	{
+		cout << "Missing an algorithm(dll) file looking in path: " << dirPath << endl;
+		return -1;
+	}
+	dllPathA = path + fileData.cFileName;
+
+	FindNextFileA(dir, &fileData);
+	if (dir == INVALID_HANDLE_VALUE)
+	{
+		cout << "Missing an algorithm(dll) file looking in path: " << dirPath << endl;
+		return -1;
+	}
+	dllPathB = path + fileData.cFileName;
+
+	return 1;
+}
 
 string getDirPath()
 {
@@ -307,7 +349,7 @@ int checkBoardValidity(string* board)
 	return ret;
 }
 
-void initAttack(const string atkPath, vector<pair<int,int>>& attacks)
+int initAttack(const string atkPath, vector<pair<int,int>>& attacks)
 {
 	string line;
 	char nextChr;
@@ -315,8 +357,8 @@ void initAttack(const string atkPath, vector<pair<int,int>>& attacks)
 	ifstream atkFile(atkPath);
 	if (!atkFile.is_open())
 	{
-		std::cout << "Error while trying to open attack file" << std::endl;
-		return;
+		std::cout << "Error trying to open attack file" << std::endl;
+		return -1;
 	}
 
 	while(getline(atkFile, line))
@@ -354,4 +396,91 @@ void initAttack(const string atkPath, vector<pair<int,int>>& attacks)
 		attacks.push_back(make_pair(y,x));
 	}
 	atkFile.close();
+}
+
+int initAttackNew(const string dirPath, queue<pair<int, int>>& attacks)
+{
+	string line;
+	char nextChr;
+	int x, y;
+
+	HANDLE dir;
+	WIN32_FIND_DATAA fileData;
+
+	string atkSuffix = "*.attack";
+	string dirBack = (dirPath.back() == '\\' || dirPath.back() == '/') ? "" : "\\";
+	string path = dirPath + dirBack;
+
+	// find attack file
+	dir = FindFirstFileA((path + atkSuffix).c_str(), &fileData);
+	if (dir == INVALID_HANDLE_VALUE) // check if file successfully opened
+	{
+		return -1;
+	}
+
+	ifstream atkFile(path + fileData.cFileName);
+	if (!atkFile.is_open())
+	{
+		return -1;
+	}
+
+	while (getline(atkFile, line))
+	{
+		if (line == "")
+		{
+			continue;
+		}
+		if (line.back() == '\r')
+		{
+			line.back() = ' ';
+		}
+		x = -1;
+		y = -1;
+		stringstream lineStream(line);
+		lineStream >> y;  //read y coor
+		if (y < 1 || y > ROW_SIZE)
+		{
+			continue;
+		}
+
+		while (lineStream >> nextChr && nextChr == ' ') {} //seek comma
+
+		if (lineStream.eof() || nextChr != ',')
+		{
+			continue;
+		}
+
+		lineStream >> x;                                    //read x coor
+		if (x < 1 || x > COL_SIZE)
+		{
+			continue;
+		}
+
+		attacks.push(make_pair(y, x));
+	}
+	atkFile.close();
+	return 1;
+}
+
+int loadPlayer(const string dllPath, HINSTANCE& hLib, IBattleshipGameAlgo& player)
+{
+	typedef IBattleshipGameAlgo *(*GetAlgoFuncType)();
+	GetAlgoFuncType getAlgoFunc;
+	
+	hLib = LoadLibraryA(dllPath.c_str());
+	if (!hLib)
+	{
+		cout << "Cannot load dll: " << dllPath << endl;
+		return -1;
+	}
+
+	getAlgoFunc = (GetAlgoFuncType)GetProcAddress(hLib, "GetAlgorithm");
+	if (!getAlgoFunc)
+	{
+		std::cout << "Cannot load function GetAlgorithm()" << std::endl;
+		return -1;
+	}
+
+	player = *getAlgoFunc();
+	return 1;
 }

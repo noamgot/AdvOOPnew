@@ -10,8 +10,8 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	string dirPath, atkPathA, atkPathB, boardPath;
-	auto board = new string[ROW_SIZE];
+	string dirPath, atkPathA, atkPathB, boardPath, dllPathA, dllPathB;
+	string* board = new string[ROW_SIZE];
 	vector<pair<int, int>> MovesA, MovesB;
 	FilePlayer A, B;
 	auto sleepTime = Graphics::DEFAULT_GRAPHICS_DELAY;
@@ -31,7 +31,6 @@ int main(int argc, char** argv)
 	{
 		return EXIT_FAILURE;
 	}
-
 	//setting up individual boards
 	auto boardA = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
 	auto boardB = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
