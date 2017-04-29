@@ -12,7 +12,7 @@ const string GameUtilities::PARAM_QUIET = "-quiet";
 const string GameUtilities::PARAM_DELAY = "-delay";
 
 int GameUtilities::processInputArguments(int argc, char** argv, bool& playWithGraphics, int& sleepTime,
-                                         string& dirPath, string& boardPath, string& atkPathA, string& atkPathB)
+										 string& dirPath, string& boardPath, string& atkPathA, string& atkPathB)
 {
 	
 	auto gotDirPath = false;
@@ -20,11 +20,11 @@ int GameUtilities::processInputArguments(int argc, char** argv, bool& playWithGr
 	{ // we accept the arguments in any order, and we assume that if a folder path is given it is the first argument
 		for (auto i = 1; i < argc; ++i)
 		{
-			if (!strcmp(argv[i], GameUtilities::PARAM_QUIET.c_str()))
+			if (!strcmp(argv[i], PARAM_QUIET.c_str()))
 			{
 				playWithGraphics = false;
 			}
-			else if (!strcmp(argv[i], GameUtilities::PARAM_DELAY.c_str()))
+			else if (!strcmp(argv[i], PARAM_DELAY.c_str()))
 			{
 				if (i + 1 < argc)
 				{
