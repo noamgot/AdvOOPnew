@@ -1,6 +1,7 @@
 #include "FilePlayer.h"
 
 
+const std::string FilePlayer::ATTACK_FILE_SUFFIX(".attack");
 
 FilePlayer::FilePlayer()
 {

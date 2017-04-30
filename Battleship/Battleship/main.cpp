@@ -11,11 +11,11 @@ using namespace std;
 int main(int argc, char** argv)
 {
 	string dirPath, atkPathA, atkPathB, boardPath, dllPathA, dllPathB;
-	string* board = new string[ROW_SIZE];
+	auto board = new string[ROW_SIZE];
 	vector<pair<int, int>> MovesA, MovesB;
-	FilePlayer A, B;
 	auto sleepTime = Graphics::DEFAULT_GRAPHICS_DELAY;
 	auto playWithGraphics = true;
+	FilePlayer A, B;
 
 	//processing program arguments
 	if (GameUtilities::processInputArguments(argc, argv, playWithGraphics, sleepTime, 
@@ -24,6 +24,16 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
+	auto boardA = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
+	auto boardB = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
+
+	if (GameUtilities::initGameBoards(boardPath, board, boardA, boardB) < 0)
+	{
+		return EXIT_FAILURE;
+	}
+
+	
+	/*
 	// setting up the main board
 	initBoard(boardPath, board);
 	// checking board validity
@@ -32,9 +42,9 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 	//setting up individual boards
-	auto boardA = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
-	auto boardB = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
+	
 	initIndividualBoards(board,boardA,boardB);
+	*/
 	// setting up attack vectors
 	//TODO @Ben - change to queues instead vectors
 	initAttack(atkPathA, MovesA);

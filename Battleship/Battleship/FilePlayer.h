@@ -3,6 +3,7 @@
 
 class FilePlayer :	public AbstractPlayer
 {
+	static const std::string ATTACK_FILE_SUFFIX;
 public:
 	FilePlayer();
 	~FilePlayer();

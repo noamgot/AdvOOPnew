@@ -46,7 +46,7 @@ int searchFiles(const string dirPath, string& atkPathA, string& atkPathB, string
 
 		lineSize = line.length();
 		pos = line.rfind(boardSuffix);
-		if ((boardPath == "") && (pos != -1) && (pos == lineSize - boardSuffix.length()))
+		if ((boardPath == "") && (pos != string::npos) && (pos == lineSize - boardSuffix.length()))
 		{
 			boardPath = line;
 			continue;
@@ -88,16 +88,15 @@ int searchFiles(const string dirPath, string& atkPathA, string& atkPathB, string
 
 int searchFilesN(const string dirPath, string& dllPathA, string& dllPathB, string& boardPath)
 {
-	HANDLE dir;
 	WIN32_FIND_DATAA fileData;
 	
 	string dllSuffix = "*.dll";
 	string boardSuffix = "*.sboard";
 	string dirBack = (dirPath.back() == '\\' || dirPath.back() == '/') ? "" : "\\";
-	string path = dirPath + dirBack;
+	auto path = dirPath + dirBack;
 
 	// find first sboard file
-	dir = FindFirstFileA((path + boardSuffix).c_str(), &fileData);
+	auto dir = FindFirstFileA((path + boardSuffix).c_str(), &fileData);
 	if (dir != INVALID_HANDLE_VALUE) // check if file successfully opened
 	{
 		boardPath = path + fileData.cFileName;
@@ -188,7 +187,6 @@ void initBoard(const string boardPath, string* board)
 		}
 	}
 	boardFile.close();
-
 }
 
 void initIndividualBoards(string *board, char **boardA, char **boardB)
@@ -396,6 +394,7 @@ int initAttack(const string atkPath, vector<pair<int,int>>& attacks)
 		attacks.push_back(make_pair(y,x));
 	}
 	atkFile.close();
+	return 0;
 }
 
 int initAttackNew(const string dirPath, queue<pair<int, int>>& attacks)
