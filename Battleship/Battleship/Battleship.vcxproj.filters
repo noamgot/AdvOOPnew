@@ -48,7 +48,7 @@
     <ClCompile Include="Graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MarkedShip.cpp">
+    <ClCompile Include="GameManagerUtilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,7 +86,7 @@
     <ClInclude Include="Graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MarkedShip.h">
+    <ClInclude Include="GameManagerUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -97,8 +97,9 @@
   <ItemGroup>
     <None Include="AdvancedProgramming_Ex2.pdf" />
     <None Include="good_board_1.sboard" />
-    <None Include="good_board_2.sboard" />
     <None Include="clean_movesA.attack" />
     <None Include="clean_movesB.attack" />
+    <None Include="good_board_0.sboard" />
+    <None Include="Naive.sboard" />
   </ItemGroup>
 </Project>

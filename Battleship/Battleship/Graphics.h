@@ -35,7 +35,7 @@ public:
 	static void gotoxy(int x, int y);
 
 	/*prints the initial game board*/
-	static void printBoard(string *board);
+	static void printBoard(string *board, int numRows, int numCols);
 
 	static void printOpeningMessage();
 

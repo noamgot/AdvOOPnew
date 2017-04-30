@@ -3,20 +3,6 @@
 #include <map>
 #include "IBattleshipGameAlgo.h"
 
-//#define BOAT 'B'
-//#define MISSLE_SHIP 'P'
-//#define SUBMARINE 'M'
-//#define DESTROYER 'D'
-//#define WATER ' '
-//TODO @Noam consider moving it to GameUtilities.h ...
-enum eShipChar : char
-{
-	BOAT = 'B',
-	MISSLE_SHIP = 'P',
-	SUBMARINE = 'M',
-	DESTROYER = 'D',
-	WATER = ' '
-};
 
 enum eShipScore
 {
@@ -51,15 +37,9 @@ public:
 	 * (i.e a "living" ship tile is hit) */
 	bool handleHit(std::pair<int,int> coords, AttackResult& res);
 
-	// translate a given character to the corresponding ship type
-	static eShipType charToShipType(char c);
+	
+	
 
-	//void setType(eShipType type);
-	//void setCoordinates(std::map<std::pair<int,int>, bool> coordinates);
-	//void setSize(int size);
 	int getSize();
-	//bool isAlive();
-
-
 };
 

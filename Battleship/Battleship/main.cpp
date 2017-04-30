@@ -1,47 +1,48 @@
-#include "InputUtilities.h"
 #include "Graphics.h"
-#include "GameUtilities.h"
+#include "GameManagerUtilities.h"
 #include "NaivePlayer.h"
 #include "FilePlayer.h"
 #include "SmartPlayer.h"
+#include <iostream>
 
 using namespace std;
+
 
 
 int main(int argc, char** argv)
 {
 	string dirPath, boardPath, board[ROW_SIZE], dllPathA, dllPathB;
-	vector<pair<int, int>> MovesA, MovesB;
 	auto sleepTime = Graphics::DEFAULT_GRAPHICS_DELAY;
-	auto playWithGraphics = true;
-	FilePlayer A, B;
+	auto playWithGraphics = true, retVal = true;
 	//processing program arguments
-	GameUtilities::processInputArguments(argc, argv, playWithGraphics, sleepTime, dirPath);
-	if (GameUtilities::getBoardPath(dirPath, boardPath) < 0)
+	GameManagerUtilities::processInputArguments(argc, argv, playWithGraphics, sleepTime, dirPath);
+	if (GameManagerUtilities::getBoardPath(dirPath, boardPath) < 0)
 	{
 		return EXIT_FAILURE;
 	}
 	auto boardA = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
 	auto boardB = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
 
-	if (GameUtilities::initGameBoards(boardPath, board, boardA, boardB) < 0)
+	if (GameManagerUtilities::initGameBoards(boardPath, board, boardA, boardB) < 0)
+	{
+		return EXIT_FAILURE;
+	}
+
+	IBattleshipGameAlgo *A = new NaivePlayer;
+	IBattleshipGameAlgo *B = new NaivePlayer;
+	IBattleshipGameAlgo *pPlayers[2] = { A, B };
+	PlayerAttributes playerAttributesArr[2];
+
+	retVal = GameManagerUtilities::initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, playerAttributesArr);
+	if (!GameManagerUtilities::initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, playerAttributesArr) || !retVal)
 	{
 		return EXIT_FAILURE;
 	}
 
 
-
-	//now we pass the individual boards, attack vectors and ship lists to the players
-	A.setBoard(0,const_cast<const char **>(boardA), ROW_SIZE, COL_SIZE);
-	A.init(dirPath);
-	B.setBoard(1,const_cast<const char **>(boardB), ROW_SIZE, COL_SIZE);
-	B.init(dirPath);
-
 	// Let the game begin!!!
-	auto attackerNum = 0, defenderNum = 1;
-	int sinkScore;
-	int scores[2] = {0}; // index 0 = A, index 1 = B
-	FilePlayer *pPlayers[2] = { &A, &B };
+	auto attackerNum = 0, defenderNum = 1; // index 0 = A, index 1 = B
+	int sinkScore; 
 	char hitChar;
 	AttackResult attackResult;
 	string attackerName = "A";
@@ -51,29 +52,34 @@ int main(int argc, char** argv)
 		Graphics::printOpeningMessage();
 		Sleep(3*Graphics::DEFAULT_GRAPHICS_DELAY);
 		// print the initial game board
-		Graphics::printBoard(board);
+		Graphics::printBoard(board, ROW_SIZE, COL_SIZE);
 		Sleep(sleepTime);
 	}
 	//The game goes on until one of the players has no more ships or both ran out of moves.
-	while (pPlayers[0]->hasShips() && pPlayers[1]->hasShips() && (pPlayers[0]->hasMoves() || pPlayers[1]->hasMoves()))
+	while (playerAttributesArr[0].shipsCount > 0 && playerAttributesArr[1].shipsCount > 0 && 
+			(playerAttributesArr[0].hasMoves || playerAttributesArr[1].hasMoves))
 	{
 		//Skip if current player is out of moves.
-		if (!pPlayers[attackerNum]->hasMoves())
+		if (!playerAttributesArr[attackerNum].hasMoves)
 		{
-			//cout << "Player " << attackerName << " has ran out of moves - SWITCHING PLAYER" << endl;
 			attackerName = attackerNum ? "A" : "B";
-			GameUtilities::changeCurrentPlayer(attackerNum, defenderNum);
+			GameManagerUtilities::changeCurrentPlayer(attackerNum, defenderNum);
 			continue;
 		}
 
 		auto currentMove = pPlayers[attackerNum]->attack();
-		// should always pass this check - it's for debug purposes
-		if (currentMove.first < 1 || currentMove.first > ROW_SIZE ||
-				currentMove.second < 1 || currentMove.second > COL_SIZE )
+		if (!GameUtilities::isLegalMove(currentMove, ROW_SIZE, COL_SIZE))
 		{
+			if (currentMove.first == -1 && currentMove.second == -1)
+			{
+				// attacker has ran out of moves
+				playerAttributesArr[attackerNum].hasMoves = false;
+				continue;
+			}
+			
 			cout << "Error: Invalid move from player " << attackerName << " - (" << currentMove.first << ","
-				 << currentMove.second << ")" << endl;
-			return EXIT_FAILURE;
+				<< currentMove.second << ")" << endl;
+			return EXIT_FAILURE;				
 		}
 		//remember moves are from 1 to ROW/COL SIZE while the board is from 0 to ROW/COL SIZE -1
 		// hence we need to give a (-1) offset to the move coordinates
@@ -94,31 +100,34 @@ int main(int argc, char** argv)
 				cout << "MISS\r";
 			}
 			Graphics::printSign(currentMove.first, currentMove.second, COLOR_DEFAULT_WHITE, WATER, sleepTime, playWithGraphics);
+			A->notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, AttackResult::Miss);
+			B->notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, AttackResult::Miss);
 		}
 		else // Hit xor Sink xor double hit xor hit a sunken ship
 		{
-			auto validAttack = pPlayers[(isupper(hitChar) ? 0 : 1)]->registerHit(currentMove, GameUtilities::charToShipType(hitChar), attackResult);
+			auto validAttack = GameManagerUtilities::registerHit(playerAttributesArr[(isupper(hitChar) ? 0 : 1)], 
+								currentMove,GameUtilities::charToShipType(hitChar), attackResult);
 			//notify players on attack results
-			A.notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, attackResult);
-			B.notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, attackResult);
+			A->notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, attackResult);
+			B->notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, attackResult);
 			if(attackResult == AttackResult::Sink)
 			{
 				//Sink
 				// calculate the score
-				sinkScore = GameUtilities::calculateSinkScore(hitChar);
+				sinkScore = GameManagerUtilities::calculateSinkScore(hitChar);
 				if (sinkScore == -1) // for debug - should not get here
 				{
 					cout << "Error: Unexpected char on board: " << hitChar << endl;
 					return EXIT_FAILURE;
 				}
 				// if hitChar is an UPPERCASE char - than A was hit and B gets the points (and vice versa)
-				scores[(isupper(hitChar) ? 1 : 0)] += sinkScore;
+				playerAttributesArr[(isupper(hitChar) ? 1 : 0)].score += sinkScore;
 				if (playWithGraphics)
 				{
 					cout << (!isupper(hitChar) == attackerNum ? "SELF-SINK" : "SINK") << "\r";
 					Sleep(sleepTime);
 					Graphics::clearLastLine();
-					cout << "CURRENT SCORE: A-" << scores[0] << ", B-" << scores[1] << "\r";
+					cout << "CURRENT SCORE: A-" << playerAttributesArr[0].score << ", B-" << playerAttributesArr[1].score << "\r";
 					Sleep(sleepTime);
 				}
 			}
@@ -148,30 +157,15 @@ int main(int argc, char** argv)
 		}
 		//Change player
 		attackerName = attackerNum ? "A" : "B";
-		GameUtilities::changeCurrentPlayer(attackerNum, defenderNum);
+		GameManagerUtilities::changeCurrentPlayer(attackerNum, defenderNum);
 	}
-	if (playWithGraphics)
-	{
-		Graphics::clearLastLine();
-	}
-	if(!pPlayers[0]->hasShips())
-	{
-		cout << "Player B won" << endl;
-	}
-	else if(!pPlayers[1]->hasShips())
-	{
-		cout << "Player A won" << endl;
-	}
-	cout << "Points:\nPlayer A:" << scores[0] << "\nPlayer B:" << scores[1] << endl;
+	GameManagerUtilities::printGameResults(playerAttributesArr, playWithGraphics);
 
 	// delete all local boards
 	GameUtilities::deleteBoard(boardA, ROW_SIZE);
 	GameUtilities::deleteBoard(boardB, ROW_SIZE);
+	delete A;
+	delete B;
 
 	return EXIT_SUCCESS;
 }
-
-
-
-
-

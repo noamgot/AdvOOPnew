@@ -206,6 +206,8 @@ void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResul
 
 bool SmartPlayer::isNearAShip(int row, int col)
 {
-	return Ship::charToShipType(mBoard[row + 1][col]) != eShipType::SHIP_TYPE_ERROR || Ship::charToShipType(mBoard[row - 1][col]) != eShipType::SHIP_TYPE_ERROR ||
-		Ship::charToShipType(mBoard[row][col + 1]) != eShipType::SHIP_TYPE_ERROR || Ship::charToShipType(mBoard[row][col - 1]) != eShipType::SHIP_TYPE_ERROR;
+	return GameUtilities::charToShipType(mBoard[row + 1][col]) != eShipType::SHIP_TYPE_ERROR || 
+		   GameUtilities::charToShipType(mBoard[row - 1][col]) != eShipType::SHIP_TYPE_ERROR ||
+		   GameUtilities::charToShipType(mBoard[row][col + 1]) != eShipType::SHIP_TYPE_ERROR || 
+		   GameUtilities::charToShipType(mBoard[row][col - 1]) != eShipType::SHIP_TYPE_ERROR;
 }

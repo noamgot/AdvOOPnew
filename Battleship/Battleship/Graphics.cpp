@@ -34,14 +34,14 @@ void Graphics::gotoxy(int x, int y)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-void Graphics::printBoard(string* board)
+void Graphics::printBoard(string* board, int numRows, int numCols)
 {
 	char c;
 	//clear the console and print board
 	system("cls");
-	for (auto i = 0; i < COL_SIZE; ++i)
+	for (auto i = 0; i < numRows; ++i)
 	{
-		for (auto j = 0; j < COL_SIZE; ++j)
+		for (auto j = 0; j < numCols; ++j)
 		{
 			c = board[i][j];
 			if (c == WATER)
