@@ -8,7 +8,6 @@
 //using namespace std;
 #define ROW_SIZE 10
 #define COL_SIZE 10
-#define DEFAULT_SHIPS_COUNT 5
 
 enum class Direction
 {
@@ -34,7 +33,7 @@ protected:
 	//int score = 0;
 public:
 	AbstractPlayer();
-	~AbstractPlayer();
+	virtual ~AbstractPlayer() = 0; // this class is abstract!
 
 	virtual void setBoard(int player, const char **board, int numRows, int numCols) override; // called once to notify player on his board
 	
@@ -44,27 +43,19 @@ public:
 
 	virtual bool init(const std::string& path) override;
 
-
 	//Updates the ship that got hit (or sank).
 	bool registerHit(std::pair<int,int> coords, eShipType shipType, AttackResult& res); 
 
 	bool hasShips() const; // checks if the player has more living ships
-
-	void initShipsList();
 
 	//char ** getBoard();
 
 	
 	virtual bool hasMoves() const; // checks if the player has more moves to play
 
-	/*static char **AbstractPlayer::allocateBoard(char **board, int numRows, int numCols);
-
-	static char **AbstractPlayer::copyBoard(char **srcBoard, char ** dstBoard, int numRows, int numCols);
-
-	static void AbstractPlayer::deleteBoard(char **board, int numRows);*/
-
 private:
-	//@Noam - why is there a private function in an interface class?
+
+	void initShipsList();
 	// a helper function to the initShipList method
 	static Ship handleShipDiscovery(int iOrig, int jOrig, std::vector<std::vector<char>>& board);
 };

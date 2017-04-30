@@ -13,17 +13,19 @@ SmartPlayer::~SmartPlayer()
 
 void SmartPlayer::setBoard(int player, const char** board, int numRows, int numCols)
 {
-	int spaceIOccupy = 0;
-	float initialWeight;
+	mNumOfRows = numRows;
+	mNumOfCols = numCols;
+	mPlayerNum = player;
+	auto spaceIOccupy = 0;
 	AbstractPlayer::setBoard(player, board, numRows, numCols);
-	for each (Ship s in mShipsList)
+	for (auto s : mShipsList)
 	{
 		spaceIOccupy += s.getSize();
 	}
-	initialWeight = float(1.0 / spaceIOccupy);
-	for(int row = 0; row < ROW_SIZE; row++)
+	auto initialWeight = float(1.0 / spaceIOccupy);
+	for(auto row = 0; row < numRows; row++)
 	{
-		for(int col = 0; col < COL_SIZE; col++)
+		for(auto col = 0; col < numCols; col++)
 		{
 			mWeightedBoard[row][col].setPosition(row + 1, col + 1);
 			if (mBoard[row][col] == WATER && !isNearAShip(row,col))
@@ -41,9 +43,9 @@ void SmartPlayer::setBoard(int player, const char** board, int numRows, int numC
 bool SmartPlayer::init(const std::string& path)
 {
 	AbstractPlayer::init(path);
-	for (int row = 0; row < ROW_SIZE; row++)
+	for (auto row = 0; row < mNumOfRows; row++)
 	{
-		for (int col = 0; col < COL_SIZE; col++)
+		for (auto col = 0; col < mNumOfCols; col++)
 		{
 			if (mWeightedBoard[row][col].getWeight() > 0)
 			{
@@ -67,7 +69,7 @@ std::pair<int, int> SmartPlayer::attack()
 	createPriorityQueue();
 	if (mWeightedMovesQueue.size() > 0)
 	{
-		WeightedPosition nextAttack(mWeightedMovesQueue.top());
+		auto nextAttack(mWeightedMovesQueue.top());
 		mWeightedMovesQueue.pop();
 		return nextAttack.getPos();
 	}
@@ -76,7 +78,7 @@ std::pair<int, int> SmartPlayer::attack()
 
 void SmartPlayer::smartSetWeight(int row, int col, float val)
 {
-	if(!isNearAShip(row, col) && row >= 0 && row < ROW_SIZE && col >= 0 && col < COL_SIZE)
+	if(!isNearAShip(row, col) && row >= 0 && row < mNumOfRows && col >= 0 && col < mNumOfCols)
 	{
 		mWeightedBoard[row][col].setWeight(val);
 	}
@@ -85,7 +87,7 @@ void SmartPlayer::smartSetWeight(int row, int col, float val)
 //TODO - any spot that gets assigned 0 prob should be remvoed from the mValidMoves map
 void SmartPlayer::updateWeights(int row, int col, AttackResult res)
 {
-	Direction dir = Direction::NONE;
+	auto dir = Direction::NONE;
 	smartSetWeight(row, col, 0);
 
 	if(res != AttackResult::Miss)
@@ -101,10 +103,10 @@ void SmartPlayer::updateWeights(int row, int col, AttackResult res)
 		else
 		{
 			//Boat
-			if (row + 1 > ROW_SIZE) { smartSetWeight(row + 1, col, 0.25); }
+			if (row + 1 > mNumOfRows) { smartSetWeight(row + 1, col, 0.25); }
 			if (row - 1 > 0)		{ smartSetWeight(row - 1, col, 0.25); }
-			if (col + 1 < COL_SIZE) { smartSetWeight(row , col + 1, 0.25); }
-			if (col + 1 < COL_SIZE) { smartSetWeight(row, col - 1, 0.25); }
+			if (col + 1 < mNumOfCols) { smartSetWeight(row , col + 1, 0.25); }
+			if (col + 1 < mNumOfCols) { smartSetWeight(row, col - 1, 0.25); }
 		}
 	}	
 }
@@ -113,7 +115,7 @@ void SmartPlayer::updateWeightArounHit(int row, int col, Direction dir, AttackRe
 {
 	if(dir == Direction::HORIZONAL || dir == Direction::RIGHT || dir == Direction::LEFT)
 	{
-		if (dir != Direction::LEFT && col + 1 < COL_SIZE && mBoard[row][col + 1] == 'X')
+		if (dir != Direction::LEFT && col + 1 < mNumOfCols && mBoard[row][col + 1] == 'X')
 		{
 			updateWeightArounHit(row, col + 1, Direction::RIGHT, res);
 
@@ -123,7 +125,7 @@ void SmartPlayer::updateWeightArounHit(int row, int col, Direction dir, AttackRe
 			smartSetWeight(row - 1, col, 0);
 			smartSetWeight(row - 1, col + 1, 0);
 		}
-		else if(dir != Direction::LEFT && col + 1 < COL_SIZE && mBoard[row][col + 1] == WATER && res == AttackResult::Hit)
+		else if(dir != Direction::LEFT && col + 1 < mNumOfCols && mBoard[row][col + 1] == WATER && res == AttackResult::Hit)
 		{
 			smartSetWeight(row, col + 1, 0.5);
 		}
@@ -146,7 +148,7 @@ void SmartPlayer::updateWeightArounHit(int row, int col, Direction dir, AttackRe
 
 	else if (dir == Direction::VERTICAL || dir == Direction::UP || dir == Direction::DOWN)
 	{
-		if (dir != Direction::DOWN  && row + 1 < ROW_SIZE && mBoard[row + 1][col] == 'X')
+		if (dir != Direction::DOWN  && row + 1 < mNumOfRows && mBoard[row + 1][col] == 'X')
 		{
 			updateWeightArounHit(row + 1, col, Direction::UP, res);
 
@@ -156,7 +158,7 @@ void SmartPlayer::updateWeightArounHit(int row, int col, Direction dir, AttackRe
 			smartSetWeight(row, col - 1, 0);
 			smartSetWeight(row + 1, col - 1, 0);
 		}
-		else if (dir != Direction::DOWN  && row + 1 < ROW_SIZE && mBoard[row + 1][col] == WATER && res == AttackResult::Hit)
+		else if (dir != Direction::DOWN  && row + 1 < mNumOfRows && mBoard[row + 1][col] == WATER && res == AttackResult::Hit)
 		{
 			smartSetWeight(row + 1, col, 0.5);
 		}

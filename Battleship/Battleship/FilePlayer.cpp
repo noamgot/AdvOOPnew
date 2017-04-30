@@ -1,6 +1,9 @@
 #include "FilePlayer.h"
-
-
+#include <string>
+#include "GameUtilities.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 FilePlayer::FilePlayer()
 {
@@ -11,19 +14,76 @@ FilePlayer::~FilePlayer()
 {
 }
 
-void FilePlayer::setMoves(std::vector<std::pair<int, int>> moves)
+int FilePlayer::loadMovesFromFile(const string attackFilePath)
 {
-	for (size_t i = 0; i < moves.size(); ++i)
+	string line;
+	char nextChr;
+	int x, y;
+	ifstream atkFile(attackFilePath);
+	if (!atkFile.is_open())
 	{
-		// we assume that if we got here all the moves are valid
-		std::pair<int, int> move = std::make_pair(moves[i].first, moves[i].second);
-		this->mMovesQueue.push(move);
+		cout << "Error: opening attack file failed" << endl;
+		return -1;
 	}
+	while (getline(atkFile, line))
+	{
+		if (line == "")
+		{
+			continue;
+		}
+		if (line.back() == '\r')
+		{
+			line.back() = ' ';
+		}
+		x = -1;
+		y = -1;
+		stringstream lineStream(line);
+		lineStream >> x;  //read x coor
+		if (x < 1 || x > mNumOfRows)
+		{
+			continue;
+		}
+
+		while (lineStream >> nextChr && nextChr == ' ') {} //seek comma
+
+		if (lineStream.eof() || nextChr != ',')
+		{
+			continue;
+		}
+
+		lineStream >> y; //read y coor
+		if (y < 1 || y > mNumOfCols)
+		{
+			continue;
+		}
+		mMovesQueue.push(make_pair(x, y));
+	}
+	atkFile.close();
+	return 0;
+	
 }
 
 //void FilePlayer::setBoard(int player, const char ** board, int numRows, int numCols) {}
 
-bool FilePlayer::init(const std::string & path)
+bool FilePlayer::init(const string & path)
 {
-	return false;
+	AbstractPlayer::init(path);
+	string attackFilePath;
+	auto fileNotFound = true;
+	if (GameUtilities::findFileBySuffix(attackFilePath, path, 
+		GameUtilities::ATTACK_FILE_SUFFIX,fileNotFound,mPlayerNum) < 0)
+	{
+		if (fileNotFound)
+		{
+			cout << "Missing attack file (*" << GameUtilities::ATTACK_FILE_SUFFIX << 
+					") looking in path: " << path << endl;
+		}
+		return false;
+	}
+	// we have the file - now we can load the moves from it:
+	if (loadMovesFromFile(attackFilePath) < 0)
+	{
+		return false;
+	}
+	return true;
 }

@@ -1,7 +1,7 @@
 #include "InputUtilities.h"
+#include "GameUtilities.h"
 
-#define MAX_PATH_LEN 1024
-#define BUFF_SIZE 4096
+#define BUFF_SIZE 1024
 
 using namespace std;
 
@@ -10,20 +10,21 @@ int searchFiles(const string dirPath, string& atkPathA, string& atkPathB, string
 	string boardSuffix(".sboard");
 	string aSuffix(".attack-a");
 	string bSuffix(".attack-b");
-	string sysDIR("2>NUL dir /a-d /b \"" + dirPath + "\"");
-	string sysDIRpathChk("dir /a \"" + dirPath + "\"");
+	auto sysDIR("2>NUL dir /a-d /b \"" + dirPath + "\"");
+	auto sysDIRpathChk("dir /a \"" + dirPath + "\"");
 	string line;
 	size_t lineSize;
 	size_t pos;
-	int errChk = 5;
-	int errCount = 0;
-	int ret = 0;
+	auto errChk = 5;
+	auto errCount = 0;
+	auto ret = 0;
 	char buffer[BUFF_SIZE];
 	string fileName;
 	
 	// check for any errors in the directory path
 	// TODO: Find better solution to check whether a folder is empty or has an invalid path
-	FILE* errList = _popen(sysDIRpathChk.c_str(), "r");
+	// TODO: in case of non-existing directory it prints something - handle it?
+	auto errList = _popen(sysDIRpathChk.c_str(), "r");
 	while (fgets(buffer, BUFF_SIZE - 1, errList))
 	{
 		errCount++;
@@ -38,7 +39,7 @@ int searchFiles(const string dirPath, string& atkPathA, string& atkPathB, string
 
 	// parse directory contents
 	//TODO @Ben - this part can be more efficient - need to break when all paths are found
-	FILE* fileList = _popen(sysDIR.c_str(), "r");
+	auto fileList = _popen(sysDIR.c_str(), "r");
 	while (fgets(buffer, BUFF_SIZE - 1, fileList))
 	{
 		line = string(buffer);
@@ -46,7 +47,7 @@ int searchFiles(const string dirPath, string& atkPathA, string& atkPathB, string
 
 		lineSize = line.length();
 		pos = line.rfind(boardSuffix);
-		if ((boardPath == "") && (pos != -1) && (pos == lineSize - boardSuffix.length()))
+		if ((boardPath == "") && (pos != string::npos) && (pos == lineSize - boardSuffix.length()))
 		{
 			boardPath = line;
 			continue;
@@ -63,7 +64,6 @@ int searchFiles(const string dirPath, string& atkPathA, string& atkPathB, string
 		if ((atkPathB == "") && (pos != -1) && (pos == lineSize - bSuffix.length()))
 		{
 			atkPathB = line;
-			continue;
 		}
 	}
 	_pclose(fileList);
@@ -89,16 +89,15 @@ int searchFiles(const string dirPath, string& atkPathA, string& atkPathB, string
 
 int searchFilesN(const string dirPath, string& dllPathA, string& dllPathB, string& boardPath)
 {
-	HANDLE dir;
 	WIN32_FIND_DATAA fileData;
 	
 	string dllSuffix = "*.dll";
 	string boardSuffix = "*.sboard";
 	string dirBack = (dirPath.back() == '\\' || dirPath.back() == '/') ? "" : "\\";
-	string path = dirPath + dirBack;
+	auto path = dirPath + dirBack;
 
 	// find first sboard file
-	dir = FindFirstFileA((path + boardSuffix).c_str(), &fileData);
+	auto dir = FindFirstFileA((path + boardSuffix).c_str(), &fileData);
 	if (dir != INVALID_HANDLE_VALUE) // check if file successfully opened
 	{
 		boardPath = path + fileData.cFileName;
@@ -133,21 +132,6 @@ int searchFilesN(const string dirPath, string& dllPathA, string& dllPathB, strin
 	return 1;
 }
 
-string getDirPath()
-{
-	char *buff = nullptr;
-	// TODO @Ben - I'm not sure that _getcwd is the right choice
-	// and not sure if it's legal... consider changing it
-	buff = _getcwd(buff, MAX_PATH_LEN);
-	if (!buff)
-	{
-		return BAD_STRING; //signs the string is bad
-	}
-	string temp(buff);
-	delete buff;
-	return temp;
-}
-
 void initBoard(const string boardPath, string* board)
 {
 	ifstream boardFile(boardPath);
@@ -160,7 +144,7 @@ void initBoard(const string boardPath, string* board)
 	set<char> charSet;
 	charSet.insert(chars, chars+9);
 
-	for (int i = 0; i < ROW_SIZE; i++)
+	for (auto i = 0; i < ROW_SIZE; i++)
 	{
 		getline(boardFile, board[i]);
 		if (board[i].back() == '\r') board[i].back() = ' '; // handles '\r'
@@ -181,9 +165,9 @@ void initBoard(const string boardPath, string* board)
 			}
 		}
 	}
-	for (int i = 0; i < ROW_SIZE; i++)
+	for (auto i = 0; i < ROW_SIZE; i++)
 	{                        // convert non-valid characters to spaces
-		for (int j = 0; j < COL_SIZE; j++)
+		for (auto j = 0; j < COL_SIZE; j++)
 		{
 			if (charSet.find(board[i][j]) == charSet.end()) board[i][j] = ' ';
 		}
@@ -321,22 +305,22 @@ int checkBoardValidity(string* board)
 			ret = -1;
 		}
 	}
-	if (shipCountA > DEFAULT_SHIPS_COUNT)
+	if (shipCountA > GameUtilities::DEFAULT_SHIPS_COUNT)
 	{
 		cout << "Too many ships for Player A" << endl;
 		ret = -1;
 	}
-	else if (shipCountA < DEFAULT_SHIPS_COUNT)
+	else if (shipCountA < GameUtilities::DEFAULT_SHIPS_COUNT)
 	{
 		cout << "Too few ships for Player A" << endl;
 		ret = -1;
 	}
-	if (shipCountB > DEFAULT_SHIPS_COUNT)
+	if (shipCountB > GameUtilities::DEFAULT_SHIPS_COUNT)
 	{
 		cout << "Too many ships for Player B" << endl;
 		ret = -1;
 	}
-	else if (shipCountB < DEFAULT_SHIPS_COUNT)
+	else if (shipCountB < GameUtilities::DEFAULT_SHIPS_COUNT)
 	{
 		cout << "Too few ships for Player B" << endl;
 		ret = -1;
@@ -347,55 +331,6 @@ int checkBoardValidity(string* board)
 		ret = -1;
 	}
 	return ret;
-}
-
-int initAttack(const string atkPath, vector<pair<int,int>>& attacks)
-{
-	string line;
-	char nextChr;
-	int x,y;
-	ifstream atkFile(atkPath);
-	if (!atkFile.is_open())
-	{
-		std::cout << "Error trying to open attack file" << std::endl;
-		return -1;
-	}
-
-	while(getline(atkFile, line))
-	{
-		if (line == "")
-		{
-			continue;
-		}
-		if (line . back() == '\r')
-		{
-			line . back() = ' ';
-		}
-		x = -1;
-		y = -1;
-		stringstream lineStream(line);
-		lineStream >> y;  //read y coor
-		if (y < 1 || y > ROW_SIZE)
-		{
-			continue;
-		}
-
-		while (lineStream >> nextChr && nextChr == ' '){} //seek comma
-
-		if (lineStream . eof() || nextChr != ',')
-		{
-			continue;
-		}
-
-		lineStream >> x;                                    //read x coor
-		if (x < 1 || x > COL_SIZE)
-		{
-			continue;
-		}
-
-		attacks.push_back(make_pair(y,x));
-	}
-	atkFile.close();
 }
 
 int initAttackNew(const string dirPath, queue<pair<int, int>>& attacks)

@@ -30,19 +30,23 @@ bool NaivePlayer::allowedToAttack(int i, int j) const
 	return up && down && right && left;
 }
 
-void NaivePlayer::initAttackQueue()
+bool NaivePlayer::init(const std::string& path)
 {
-	for (int i = 0; i < ROW_SIZE; i++)
+	AbstractPlayer::init(path);
+	
+	// init moves queue
+	for (auto i = 0; i < this->mNumOfRows; i++)
 	{
-		for (int j = 0; j < COL_SIZE; j++)
+		for (auto j = 0; j < this->mNumOfCols; j++)
 		{
 			if (allowedToAttack(i, j))
 			{
-				this->mMovesQueue.push(std::make_pair(i+1, j+1));
+				// we give a (+1) offset so we "speak" in cordinates starting from 1
+				this->mMovesQueue.push(std::make_pair(i + 1, j + 1));
 			}
 		}
 	}
-
+	return true;
 }
 
 

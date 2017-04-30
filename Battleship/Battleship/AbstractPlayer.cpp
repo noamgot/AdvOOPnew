@@ -1,6 +1,8 @@
 #include "AbstractPlayer.h"
+#include "GameUtilities.h"
+#include <iostream>
 
-AbstractPlayer::AbstractPlayer() : mShipsCount(DEFAULT_SHIPS_COUNT) {}
+AbstractPlayer::AbstractPlayer() : mShipsCount(GameUtilities::DEFAULT_SHIPS_COUNT) {}
 
 AbstractPlayer::~AbstractPlayer() {}
 
@@ -22,11 +24,6 @@ void AbstractPlayer::setBoard(int player, const char **board, int numRows, int n
 	}
 }
 
-bool AbstractPlayer::init(const std::string & path)
-{
-	return true;
-}
-
 // get next attack from the player's moves queue
 std::pair<int, int> AbstractPlayer::attack()
 {
@@ -42,6 +39,18 @@ std::pair<int, int> AbstractPlayer::attack()
 void AbstractPlayer::notifyOnAttackResult(int player, int row, int col, AttackResult result)
 {
 
+}
+
+bool AbstractPlayer::init(const std::string& path)
+{
+	// validate path
+	if (!GameUtilities::isValidPath(path))
+	{
+		cout << "Error: failed to init player - got invalid path: " << path << endl;
+		return false;
+	}
+	initShipsList();
+	return true;
 }
 
 bool AbstractPlayer::hasMoves() const
@@ -67,7 +76,7 @@ bool AbstractPlayer::registerHit(std::pair<int, int> coords, eShipType shipType,
 {
 	auto i = 0;
 	auto validAttack = false;
-	for(; i < DEFAULT_SHIPS_COUNT; i++)
+	for(; i < GameUtilities::DEFAULT_SHIPS_COUNT; i++)
 	{
 		if(this->mShipsList[i].getType() == shipType)
 		{
@@ -116,26 +125,26 @@ Ship AbstractPlayer::handleShipDiscovery(int iOrig, int jOrig, std::vector<std::
 		coordinates[std::make_pair(i+1, j+1)] = true;
 		size++;
 	}
-	eShipType type = Ship::charToShipType(c);
+	auto type = Ship::charToShipType(c);
 	return Ship(size, type, coordinates);
 }
 
 void AbstractPlayer::initShipsList()
 {
-	auto rows = this->mNumOfRows;
-	auto cols = this->mNumOfCols;
+	auto rows = mNumOfRows;
+	auto cols = mNumOfCols;
 	for (auto i = 0; i < rows; ++i)
 	{
 		for (auto j = 0; j < cols; ++j)
 		{
-			auto c = this->mBoard[i][j];
+			auto c = mBoard[i][j];
 			if (c != WATER)
 			{
 				if ((i > 0 && mBoard[i-1][j] == c) || (j > 0 && mBoard[i][j-1] == c)) // already encountered this ship
 				{
 					continue;
 				}
-				auto ship = handleShipDiscovery(i,j, this->mBoard);
+				auto ship = handleShipDiscovery(i,j, mBoard);
 				this->mShipsList.push_back(ship);
 			}
 		}

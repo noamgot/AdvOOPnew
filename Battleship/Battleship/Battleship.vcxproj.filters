@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Bonus.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -45,11 +42,17 @@
     <ClCompile Include="WeightedPosition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Board.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MarkedShip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bonus.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IBattleshipGameAlgo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -77,6 +80,15 @@
     <ClInclude Include="WeightePosition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Board.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MarkedShip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CmakeLists.txt" />
@@ -84,9 +96,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="AdvancedProgramming_Ex2.pdf" />
-    <None Include="clean_movesA.attack-a" />
-    <None Include="clean_movesB.attack-b" />
     <None Include="good_board_1.sboard" />
     <None Include="good_board_2.sboard" />
+    <None Include="clean_movesA.attack" />
+    <None Include="clean_movesB.attack" />
   </ItemGroup>
 </Project>
