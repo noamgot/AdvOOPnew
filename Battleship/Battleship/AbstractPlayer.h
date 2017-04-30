@@ -8,7 +8,6 @@
 //using namespace std;
 #define ROW_SIZE 10
 #define COL_SIZE 10
-#define DEFAULT_SHIPS_COUNT 5
 
 enum class Direction
 {

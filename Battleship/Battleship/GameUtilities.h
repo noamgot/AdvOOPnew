@@ -10,22 +10,26 @@ using namespace std;
 class GameUtilities
 {
 	
-public:
+
 	static const string PARAM_QUIET;
 	static const string PARAM_DELAY;
 	static const string BOARD_FILE_SUFFIX;
+	static const string BAD_STRING; // for getDirPath
+	static const int MAX_PATH_LEN;
+public:
+	static const string ATTACK_FILE_SUFFIX;
+	static const int DEFAULT_SHIPS_COUNT;
 
-	static int processInputArguments(int argc, char** argv, bool& playWithGraphics, int& sleepTime,
-	                                 string& dirPath, string& boardPath, string& atkPathA, string& atkPathB);
+	static void processInputArguments(int argc, char** argv, bool& playWithGraphics, int& sleepTime, string& dirPath);
 
 	static eShipType charToShipType(char c);
 
-	/*return true iff the move is ILlegal*/
-	static bool isIllegalMove(std::pair<int, int> move, int rows, int cols);
+	/*return true iff the move is legal*/
+	static bool isLegalMove(std::pair<int, int> move, int rows, int cols);
 
 	static int calculateSinkScore(char c);
 
-	static void changeCurrentPlayer(int *attackerNum, int *defenderNum);
+	static void changeCurrentPlayer(int& attackerNum, int& defenderNum);
 
 	static void printGameResults(AbstractPlayer *pPlayers[], int scores[], bool playWithGraphics);
 
@@ -33,7 +37,7 @@ public:
 
 	static void deleteBoard(char ** board, int rows);
 
-	static int initGameBoards(const string boardPath, string* board, char** boardA, char** boardB);
+	static int initGameBoards(const string boardPath, string board[], char** boardA, char** boardB);
 
 	static void initIndividualBoards(string *board, char **boardA, char **boardB);
 
@@ -42,8 +46,20 @@ public:
 	static int printBoardErrors(bitset<4>& errShipsA, bitset<4>& errShipsB, int shipCountA, int shipCountB, int adjCheck);
 
 	static int checkBoardValidity(string* board);
+	
+	static int getBoardPath(string& dirPath, string& boardPath);
 
-	static int findFileBySuffix(string& filePath, const string dirPath, const string suffix);
+	static int findFileBySuffix(string& filePath, const string dirPath, const string suffix, 
+								bool& fileNotFound, int playerNum);
+
+	static string getDirPath();
+
+	static bool isValidPath(const string dirPath);
+
+	static int getDirectorySortedFileList(const string dirPath, vector<string>& fileListVector);
+
+	static bool endsWith(const string line, const string suffix);
+	
 
 };
 

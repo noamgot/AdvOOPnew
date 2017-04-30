@@ -18,8 +18,6 @@
 
 using namespace std;
 
-#define BAD_STRING "!@#" // for getDirPath
-
 /* Searches the current working directory for the game configuration files:
  * .sboard -> boardPath
  * .attack-a -> atkPathA

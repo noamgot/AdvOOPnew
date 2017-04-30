@@ -96,9 +96,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="AdvancedProgramming_Ex2.pdf" />
-    <None Include="clean_movesA.attack-a" />
-    <None Include="clean_movesB.attack-b" />
     <None Include="good_board_1.sboard" />
     <None Include="good_board_2.sboard" />
+    <None Include="clean_movesA.attack" />
+    <None Include="clean_movesB.attack" />
   </ItemGroup>
 </Project>

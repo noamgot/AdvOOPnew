@@ -1,6 +1,6 @@
 #include "InputUtilities.h"
+#include "GameUtilities.h"
 
-#define MAX_PATH_LEN 1024
 #define BUFF_SIZE 1024
 
 using namespace std;
@@ -23,6 +23,7 @@ int searchFiles(const string dirPath, string& atkPathA, string& atkPathB, string
 	
 	// check for any errors in the directory path
 	// TODO: Find better solution to check whether a folder is empty or has an invalid path
+	// TODO: in case of non-existing directory it prints something - handle it?
 	auto errList = _popen(sysDIRpathChk.c_str(), "r");
 	while (fgets(buffer, BUFF_SIZE - 1, errList))
 	{
@@ -129,21 +130,6 @@ int searchFilesN(const string dirPath, string& dllPathA, string& dllPathB, strin
 	dllPathB = path + fileData.cFileName;
 
 	return 1;
-}
-
-string getDirPath()
-{
-	char *buff = nullptr;
-	// TODO @Ben - I'm not sure that _getcwd is the right choice
-	// and not sure if it's legal... consider changing it
-	buff = _getcwd(buff, MAX_PATH_LEN);
-	if (!buff)
-	{
-		return BAD_STRING; //signs the string is bad
-	}
-	string temp(buff);
-	delete buff;
-	return temp;
 }
 
 void initBoard(const string boardPath, string* board)
@@ -319,22 +305,22 @@ int checkBoardValidity(string* board)
 			ret = -1;
 		}
 	}
-	if (shipCountA > DEFAULT_SHIPS_COUNT)
+	if (shipCountA > GameUtilities::DEFAULT_SHIPS_COUNT)
 	{
 		cout << "Too many ships for Player A" << endl;
 		ret = -1;
 	}
-	else if (shipCountA < DEFAULT_SHIPS_COUNT)
+	else if (shipCountA < GameUtilities::DEFAULT_SHIPS_COUNT)
 	{
 		cout << "Too few ships for Player A" << endl;
 		ret = -1;
 	}
-	if (shipCountB > DEFAULT_SHIPS_COUNT)
+	if (shipCountB > GameUtilities::DEFAULT_SHIPS_COUNT)
 	{
 		cout << "Too many ships for Player B" << endl;
 		ret = -1;
 	}
-	else if (shipCountB < DEFAULT_SHIPS_COUNT)
+	else if (shipCountB < GameUtilities::DEFAULT_SHIPS_COUNT)
 	{
 		cout << "Too few ships for Player B" << endl;
 		ret = -1;
@@ -345,56 +331,6 @@ int checkBoardValidity(string* board)
 		ret = -1;
 	}
 	return ret;
-}
-
-int initAttack(const string atkPath, vector<pair<int,int>>& attacks)
-{
-	string line;
-	char nextChr;
-	int x,y;
-	ifstream atkFile(atkPath);
-	if (!atkFile.is_open())
-	{
-		std::cout << "Error trying to open attack file" << std::endl;
-		return -1;
-	}
-
-	while(getline(atkFile, line))
-	{
-		if (line == "")
-		{
-			continue;
-		}
-		if (line.back() == '\r')
-		{
-			line.back() = ' ';
-		}
-		x = -1;
-		y = -1;
-		stringstream lineStream(line);
-		lineStream >> y;  //read y coor
-		if (y < 1 || y > ROW_SIZE)
-		{
-			continue;
-		}
-
-		while (lineStream >> nextChr && nextChr == ' '){} //seek comma
-
-		if (lineStream . eof() || nextChr != ',')
-		{
-			continue;
-		}
-
-		lineStream >> x;                                    //read x coor
-		if (x < 1 || x > COL_SIZE)
-		{
-			continue;
-		}
-
-		attacks.push_back(make_pair(y,x));
-	}
-	atkFile.close();
-	return 0;
 }
 
 int initAttackNew(const string dirPath, queue<pair<int, int>>& attacks)

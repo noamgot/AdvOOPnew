@@ -10,20 +10,17 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	string dirPath, atkPathA, atkPathB, boardPath, dllPathA, dllPathB;
-	auto board = new string[ROW_SIZE];
+	string dirPath, boardPath, board[ROW_SIZE], dllPathA, dllPathB;
 	vector<pair<int, int>> MovesA, MovesB;
 	auto sleepTime = Graphics::DEFAULT_GRAPHICS_DELAY;
 	auto playWithGraphics = true;
 	FilePlayer A, B;
-
 	//processing program arguments
-	if (GameUtilities::processInputArguments(argc, argv, playWithGraphics, sleepTime, 
-												dirPath, boardPath, atkPathA, atkPathB) < 0)
+	GameUtilities::processInputArguments(argc, argv, playWithGraphics, sleepTime, dirPath);
+	if (GameUtilities::getBoardPath(dirPath, boardPath) < 0)
 	{
 		return EXIT_FAILURE;
 	}
-
 	auto boardA = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
 	auto boardB = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
 
@@ -32,30 +29,13 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
-	
-	/*
-	// setting up the main board
-	initBoard(boardPath, board);
-	// checking board validity
-	if (checkBoardValidity(board) < 0)
-	{
-		return EXIT_FAILURE;
-	}
-	//setting up individual boards
-	
-	initIndividualBoards(board,boardA,boardB);
-	*/
-	// setting up attack vectors
-	//TODO @Ben - change to queues instead vectors
-	initAttack(atkPathA, MovesA);
-	initAttack(atkPathB, MovesB);
+
 
 	//now we pass the individual boards, attack vectors and ship lists to the players
 	A.setBoard(0,const_cast<const char **>(boardA), ROW_SIZE, COL_SIZE);
 	A.init(dirPath);
 	B.setBoard(1,const_cast<const char **>(boardB), ROW_SIZE, COL_SIZE);
 	B.init(dirPath);
-	B.setMoves(MovesB);
 
 	// Let the game begin!!!
 	auto attackerNum = 0, defenderNum = 1;
@@ -82,7 +62,7 @@ int main(int argc, char** argv)
 		{
 			//cout << "Player " << attackerName << " has ran out of moves - SWITCHING PLAYER" << endl;
 			attackerName = attackerNum ? "A" : "B";
-			GameUtilities::changeCurrentPlayer(&attackerNum, &defenderNum);
+			GameUtilities::changeCurrentPlayer(attackerNum, defenderNum);
 			continue;
 		}
 
@@ -168,7 +148,7 @@ int main(int argc, char** argv)
 		}
 		//Change player
 		attackerName = attackerNum ? "A" : "B";
-		GameUtilities::changeCurrentPlayer(&attackerNum, &defenderNum);
+		GameUtilities::changeCurrentPlayer(attackerNum, defenderNum);
 	}
 	if (playWithGraphics)
 	{
@@ -187,7 +167,6 @@ int main(int argc, char** argv)
 	// delete all local boards
 	GameUtilities::deleteBoard(boardA, ROW_SIZE);
 	GameUtilities::deleteBoard(boardB, ROW_SIZE);
-	delete[] board;
 
 	return EXIT_SUCCESS;
 }

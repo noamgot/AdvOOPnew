@@ -1,6 +1,8 @@
 #include "AbstractPlayer.h"
+#include "GameUtilities.h"
+#include <iostream>
 
-AbstractPlayer::AbstractPlayer() : mShipsCount(DEFAULT_SHIPS_COUNT) {}
+AbstractPlayer::AbstractPlayer() : mShipsCount(GameUtilities::DEFAULT_SHIPS_COUNT) {}
 
 AbstractPlayer::~AbstractPlayer() {}
 
@@ -41,6 +43,12 @@ void AbstractPlayer::notifyOnAttackResult(int player, int row, int col, AttackRe
 
 bool AbstractPlayer::init(const std::string& path)
 {
+	// validate path
+	if (!GameUtilities::isValidPath(path))
+	{
+		cout << "Error: failed to init player - got invalid path: " << path << endl;
+		return false;
+	}
 	initShipsList();
 	return true;
 }
@@ -68,7 +76,7 @@ bool AbstractPlayer::registerHit(std::pair<int, int> coords, eShipType shipType,
 {
 	auto i = 0;
 	auto validAttack = false;
-	for(; i < DEFAULT_SHIPS_COUNT; i++)
+	for(; i < GameUtilities::DEFAULT_SHIPS_COUNT; i++)
 	{
 		if(this->mShipsList[i].getType() == shipType)
 		{
