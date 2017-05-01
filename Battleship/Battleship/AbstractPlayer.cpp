@@ -66,5 +66,3 @@ bool AbstractPlayer::hasShips() const
 {
 	return (this->mShipsCount > 0);
 }
-
-

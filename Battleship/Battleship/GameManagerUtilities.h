@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-
 #include <vector>
 #include <bitset>
 #include <map>
@@ -43,8 +42,6 @@ public:
 	static bool registerHit(PlayerAttributes& playerAttributes, pair<int, int> coords, eShipType shipType, AttackResult& res);
 
 	static int calculateSinkScore(char c);
-
-	
 
 private:
 	/* input argument for playing without graphics */

@@ -15,4 +15,3 @@ private:
 	static const string ATTACK_FILE_SUFFIX;
 	int loadMovesFromFile(const string attackFilePath);
 };
-

@@ -45,5 +45,3 @@ public:
 
 	static void clearLastLine();
 };
-
-

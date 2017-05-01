@@ -47,5 +47,3 @@ public:
 	/* return true iff the player has more moves to play */
 	virtual bool hasMoves() const; 
 };
-
-

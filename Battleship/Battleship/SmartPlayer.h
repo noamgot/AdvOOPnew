@@ -25,4 +25,3 @@ public:
 	std::pair<int, int> attack() override; // ask player for his move
 	bool hasMoves() const override; // checks if the player has more moves to play
 };
-

@@ -45,10 +45,3 @@ private:
 	static bool endsWith(const string line, const string suffix);
 
 };
-
-
-
-
-
-
-
