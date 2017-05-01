@@ -16,9 +16,12 @@ FilePlayer::~FilePlayer()
 {
 }
 
-// file player doesn't care about the board, hence we do not implement it
+// file player doesn't care about the board, hence we do not copy it
 void FilePlayer::setBoard(int player, const char** board, int numRows, int numCols)
 {
+	mNumOfRows = numRows;
+	mNumOfCols = numCols;
+	mPlayerNum = player;
 }
 
 int FilePlayer::loadMovesFromFile(const string attackFilePath)
