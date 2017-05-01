@@ -147,12 +147,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="GameManagerUtilities.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="FilePlayer.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="InputUtilities.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MarkedShip.cpp" />
     <ClCompile Include="NaivePlayer.cpp" />
     <ClCompile Include="AbstractPlayer.cpp" />
     <ClCompile Include="Ship.cpp" />
@@ -161,10 +161,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
+    <ClInclude Include="GameManagerUtilities.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="FilePlayer.h" />
     <ClInclude Include="GameUtilities.h" />
-    <ClInclude Include="MarkedShip.h" />
     <ClInclude Include="NaivePlayer.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
     <ClInclude Include="InputUtilities.h" />
@@ -182,7 +182,8 @@
     <None Include="clean_movesA.attack" />
     <None Include="clean_movesB.attack" />
     <None Include="good_board_1.sboard" />
-    <None Include="good_board_2.sboard" />
+    <None Include="good_board_0.sboard" />
+    <None Include="Naive.sboard" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

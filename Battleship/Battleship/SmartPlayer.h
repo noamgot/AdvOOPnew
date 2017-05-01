@@ -13,6 +13,7 @@ protected:
 	void updateWeightArounHit(int row, int col, Direction dir, AttackResult res);
 	void createPriorityQueue();
 	void smartSetWeight(int row, int col, float val);
+	vector<Ship> mShipsList;
 	
 
 public:

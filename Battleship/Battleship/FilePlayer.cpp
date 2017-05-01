@@ -5,12 +5,19 @@
 #include <fstream>
 #include <sstream>
 
+const string FilePlayer::ATTACK_FILE_SUFFIX(".attack");
+
 FilePlayer::FilePlayer()
 {
 }
 
 
 FilePlayer::~FilePlayer()
+{
+}
+
+// file player doesn't care about the board, hence we do not implement it
+void FilePlayer::setBoard(int player, const char** board, int numRows, int numCols)
 {
 }
 
@@ -70,16 +77,15 @@ bool FilePlayer::init(const string & path)
 	AbstractPlayer::init(path);
 	string attackFilePath;
 	auto fileNotFound = true;
-	if (GameUtilities::findFileBySuffix(attackFilePath, path, 
-		GameUtilities::ATTACK_FILE_SUFFIX,fileNotFound,mPlayerNum) < 0)
+	if (GameUtilities::findFileBySuffix(attackFilePath, path, ATTACK_FILE_SUFFIX, fileNotFound, mPlayerNum) < 0)
 	{
 		if (fileNotFound)
 		{
-			cout << "Missing attack file (*" << GameUtilities::ATTACK_FILE_SUFFIX << 
-					") looking in path: " << path << endl;
+			cout << "Missing attack file (*" << ATTACK_FILE_SUFFIX << ") looking in path: " << path << endl;
 		}
 		return false;
 	}
+	attackFilePath = path + "\\" + attackFilePath;
 	// we have the file - now we can load the moves from it:
 	if (loadMovesFromFile(attackFilePath) < 0)
 	{

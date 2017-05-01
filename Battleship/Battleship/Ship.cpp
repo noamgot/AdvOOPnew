@@ -67,29 +67,8 @@ bool Ship::handleHit(std::pair<int,int> coords, AttackResult& res)
 	return initialTileStatus;
 }
 
-eShipType Ship::charToShipType(char c)
-{
-	switch (toupper(c))
-	{
-	case BOAT:
-		return eShipType::SHIP_TYPE_B;
-	case MISSLE_SHIP:
-		return eShipType::SHIP_TYPE_P;
-	case SUBMARINE:
-		return eShipType::SHIP_TYPE_M;
-	case DESTROYER:
-		return eShipType::SHIP_TYPE_D;
-	default: // should not get here
-		return eShipType::SHIP_TYPE_ERROR;
-	}
-}
 
 
-//bool Ship::isAlive()
-//{
-//    return (this->size > 0);
-//
-//}
 
 
 
