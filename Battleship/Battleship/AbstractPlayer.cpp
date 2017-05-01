@@ -38,7 +38,10 @@ std::pair<int, int> AbstractPlayer::attack()
 
 void AbstractPlayer::notifyOnAttackResult(int player, int row, int col, AttackResult result)
 {
-
+	if (!GameUtilities::isLegalMove(make_pair(row,col), mNumOfRows, mNumOfCols))
+	{
+		cout << "Error: Invalid move from player " << player << " - (" << row << "," << col << ")" << endl;
+	}
 }
 
 bool AbstractPlayer::init(const std::string& path)

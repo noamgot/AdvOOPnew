@@ -25,7 +25,7 @@ class GameManagerUtilities
 public:
 	static void processInputArguments(int argc, char** argv, bool& playWithGraphics, int& sleepTime, std::string& dirPath);
 
-	static void changeCurrentPlayer(int& attackerNum, int& defenderNum);
+	static void changeCurrentPlayer(int& attackerNum, int& defenderNum, string& attackerName);
 
 	static void printGameResults(PlayerAttributes playerAttributesArr[], bool playWithGraphics);
 

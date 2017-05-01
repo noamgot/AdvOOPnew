@@ -77,8 +77,9 @@ int GameManagerUtilities::calculateSinkScore(char c)
 	}
 }
 
-void GameManagerUtilities::changeCurrentPlayer(int& attackerNum, int& defenderNum)
+void GameManagerUtilities::changeCurrentPlayer(int& attackerNum, int& defenderNum, string& attackerName)
 {
+	attackerName = attackerNum ? "A" : "B";
 	attackerNum = attackerNum ? 0 : 1;
 	defenderNum = defenderNum ? 0 : 1;
 }
@@ -351,10 +352,14 @@ int GameManagerUtilities::getBoardPath(string& dirPath, string& boardPath)
 		return -1;
 	}
 	// get the full path of the directory
-	auto fullPath = _fullpath(nullptr, dirPath.c_str(), MAX_PATH_LEN);
-	// copy the full path to dirPath and delete fullPath
+	char fullPath[MAX_PATH_LEN];
+	if(!_fullpath(fullPath, dirPath.c_str(), MAX_PATH_LEN - 1))
+	{
+		cout << "Error: conversion to full path failed" << endl;
+		return -1;
+	}
+	// copy the full path to dirPath
 	dirPath = fullPath;
-	delete fullPath;
 	// clear "\\" if added by _fullpath()
 	if (dirPath.back() == '\\')
 	{

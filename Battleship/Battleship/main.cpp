@@ -28,8 +28,8 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
-	IBattleshipGameAlgo *A = new NaivePlayer;
-	IBattleshipGameAlgo *B = new NaivePlayer;
+	IBattleshipGameAlgo *A = new FilePlayer;
+	IBattleshipGameAlgo *B = new FilePlayer;
 	IBattleshipGameAlgo *pPlayers[2] = { A, B };
 	PlayerAttributes playerAttributesArr[2];
 
@@ -62,18 +62,18 @@ int main(int argc, char** argv)
 		//Skip if current player is out of moves.
 		if (!playerAttributesArr[attackerNum].hasMoves)
 		{
-			attackerName = attackerNum ? "A" : "B";
-			GameManagerUtilities::changeCurrentPlayer(attackerNum, defenderNum);
+			GameManagerUtilities::changeCurrentPlayer(attackerNum, defenderNum, attackerName);
 			continue;
 		}
 
 		auto currentMove = pPlayers[attackerNum]->attack();
 		if (!GameUtilities::isLegalMove(currentMove, ROW_SIZE, COL_SIZE))
 		{
-			if (currentMove.first == -1 && currentMove.second == -1)
+			if (currentMove.first == -1 && currentMove.second == -1) // an exception - means no more moves
 			{
 				// attacker has ran out of moves
 				playerAttributesArr[attackerNum].hasMoves = false;
+				GameManagerUtilities::changeCurrentPlayer(attackerNum, defenderNum, attackerName);
 				continue;
 			}
 			
@@ -156,8 +156,7 @@ int main(int argc, char** argv)
 			}
 		}
 		//Change player
-		attackerName = attackerNum ? "A" : "B";
-		GameManagerUtilities::changeCurrentPlayer(attackerNum, defenderNum);
+		GameManagerUtilities::changeCurrentPlayer(attackerNum, defenderNum,attackerName);
 	}
 	GameManagerUtilities::printGameResults(playerAttributesArr, playWithGraphics);
 
