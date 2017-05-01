@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="DLLManager.cpp" />
     <ClCompile Include="GameManagerUtilities.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="FilePlayer.cpp" />
@@ -161,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
+    <ClInclude Include="DLLManager.h" />
     <ClInclude Include="GameManagerUtilities.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="FilePlayer.h" />

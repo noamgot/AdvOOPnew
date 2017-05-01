@@ -117,26 +117,3 @@ int initAttackNew(const string dirPath, queue<pair<int, int>>& attacks)
 	atkFile.close();
 	return 1;
 }
-
-int loadPlayer(const string dllPath, HINSTANCE& hLib, IBattleshipGameAlgo& player)
-{
-	typedef IBattleshipGameAlgo *(*GetAlgoFuncType)();
-	GetAlgoFuncType getAlgoFunc;
-	
-	hLib = LoadLibraryA(dllPath.c_str());
-	if (!hLib)
-	{
-		cout << "Cannot load dll: " << dllPath << endl;
-		return -1;
-	}
-
-	getAlgoFunc = (GetAlgoFuncType)GetProcAddress(hLib, "GetAlgorithm");
-	if (!getAlgoFunc)
-	{
-		std::cout << "Cannot load function GetAlgorithm()" << std::endl;
-		return -1;
-	}
-
-	player = *getAlgoFunc();
-	return 1;
-}

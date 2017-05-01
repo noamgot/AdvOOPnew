@@ -3,7 +3,10 @@
 #include "NaivePlayer.h"
 #include "FilePlayer.h"
 #include "SmartPlayer.h"
+#include "InputUtilities.h"
+#include "DLLManager.h"
 #include <iostream>
+
 
 using namespace std;
 
@@ -14,6 +17,7 @@ int main(int argc, char** argv)
 	string dirPath, boardPath, board[ROW_SIZE], dllPathA, dllPathB;
 	auto sleepTime = Graphics::DEFAULT_GRAPHICS_DELAY;
 	auto playWithGraphics = true, retVal = true;
+	DLLManager* dllMngr = new DLLManager;
 	//processing program arguments
 	GameManagerUtilities::processInputArguments(argc, argv, playWithGraphics, sleepTime, dirPath);
 	if (GameManagerUtilities::getBoardPath(dirPath, boardPath) < 0)
