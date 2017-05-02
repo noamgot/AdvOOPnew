@@ -274,13 +274,13 @@ int GameManagerUtilities::printBoardErrors(bitset<4>& errShipsA, bitset<4>& errS
 	if (shipCountA != GameUtilities::DEFAULT_SHIPS_COUNT)
 	{
 		filler = (shipCountA > GameUtilities::DEFAULT_SHIPS_COUNT) ? "many" : "few";
-		cout << "Too " << filler << " ships for Player A" << endl;
+		cout << "Too " << filler << " ships for player A" << endl;
 		ret = -1;
 	}
 	if (shipCountB != GameUtilities::DEFAULT_SHIPS_COUNT)
 	{
 		filler = (shipCountB > GameUtilities::DEFAULT_SHIPS_COUNT) ? "many" : "few";
-		cout << "Too " << filler << " ships for Player B" << endl;
+		cout << "Too " << filler << " ships for player B" << endl;
 		ret = -1;
 	}
 	if (adjCheck)
