@@ -23,8 +23,3 @@ int searchFilesN(const string dirPath, string& dllPathA, string& dllPathB, strin
  * TODO: Delete after integration with new search completed.*/
 
 int initAttackNew(const string dirPath, queue<pair<int, int>>& attacks);
-
-/* Loads the dll in dllPath into hLib and assigns an instance of IBattleshipGameAlgo
- * to player.
- */
-int loadPlayer(const string dllPath, HINSTANCE& hLib, IBattleshipGameAlgo& player);
