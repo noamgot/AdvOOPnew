@@ -31,7 +31,10 @@ public:
 								bool& fileNotFound, int playerNum);
 
 	/*return true iff the move is legal*/
-	static bool isLegalMove(pair<int, int> move, int rows, int cols);
+	static bool isLegalMove(int x, int y, int numOfRows, int numOfCols)
+	{
+		return !(x < 1 || x > numOfRows || y < 1 || y > numOfCols);
+	}
 
 
 	static char** allocateBoard(int rows, int cols);

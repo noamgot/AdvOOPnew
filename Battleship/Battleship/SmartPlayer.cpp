@@ -40,7 +40,7 @@ void SmartPlayer::setBoard(int player, const char** board, int numRows, int numC
 	}
 }
 
-bool SmartPlayer::init(const std::string& path)
+bool SmartPlayer::init(const string& path)
 {
 	AbstractPlayer::init(path);
 	for (auto row = 0; row < mNumOfRows; row++)
@@ -53,7 +53,7 @@ bool SmartPlayer::init(const std::string& path)
 			}
 		}
 	}
-	std::random_shuffle(mValidMoves.begin(), mValidMoves.end());
+	random_shuffle(mValidMoves.begin(), mValidMoves.end());
 
 	return true;
 }
@@ -64,7 +64,7 @@ bool SmartPlayer::hasMoves() const
 }
 
 
-std::pair<int, int> SmartPlayer::attack()
+pair<int, int> SmartPlayer::attack()
 {
 	createPriorityQueue();
 	if (mWeightedMovesQueue.size() > 0)
@@ -73,7 +73,7 @@ std::pair<int, int> SmartPlayer::attack()
 		mWeightedMovesQueue.pop();
 		return nextAttack.getPos();
 	}
-	return std::make_pair(-1, -1);
+	return make_pair(-1, -1);
 }
 
 void SmartPlayer::smartSetWeight(int row, int col, float val)
@@ -187,6 +187,10 @@ void SmartPlayer::createPriorityQueue()
 
 void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResult result)
 {
+	if (!GameUtilities::isLegalMove(row, col, mNumOfRows, mNumOfCols)) // ignore invalid moves
+	{
+		return;
+	}
 	int myRow = row - 1, myCol = col - 1;
 	
 	if (result != AttackResult::Miss && mBoard[myRow][myCol] == WATER)

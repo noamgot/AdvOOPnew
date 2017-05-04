@@ -28,17 +28,25 @@ class Ship
 	eShipType mType;
 
 public:
-	Ship(int size, eShipType type, std::map<std::pair<int,int>, bool> coordinates);
-	Ship();
-	eShipType getType() const;
-	std::map<std::pair<int,int>, bool> getCoordinates() const;
+	Ship::Ship(int size, eShipType type, std::map<std::pair<int, int>, bool> coordinates) :
+		mSize(size),
+		mCoordinates(coordinates),
+		mType(type)
+	{}
+
+	Ship() : mSize(0), mType()	{}
+
+	/* getter for the ship type */
+	eShipType getType() const { return mType; }
+
+	/* getter for the ship's coordinates */
+	std::map<std::pair<int, int>, bool> getCoordinates() const { return  mCoordinates; }
+
+	int getSize() const { return mSize; }
 
 	/*Update the ship's after it gets a hit. return true if a real hit occurs
 	 * (i.e a "living" ship tile is hit) */
-	bool handleHit(std::pair<int,int> coords, AttackResult& res);
+	bool handleHit(std::pair<int,int> coords, AttackResult& res);	
 
 	
-	
-
-	int getSize();
 };

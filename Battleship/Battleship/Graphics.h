@@ -21,9 +21,11 @@ public:
 	static const char HIT_SIGN;
 	static const int DEFAULT_GRAPHICS_DELAY; //millliseconds
 	
-	//date members
-
+	//data members
 	static DWORD sleepTime;
+	static bool playWithGraphics;
+
+	// class static methods
 
 	/*changes the console output color according to the given color*/
 	static void setTextColor(eColor color);
@@ -35,13 +37,13 @@ public:
 	static void gotoxy(int x, int y);
 
 	/*prints the initial game board*/
-	static void printBoard(string *board, int numRows, int numCols);
+	static void printBoard(const string* board, int numRows, int numCols);
 
 	static void printOpeningMessage();
 
 	/*if playWithGraphics == true: prints the given sign with the given color
 	 * in the given coordinates(x,y) and waits for sleepTime milliseconds*/
-	static void printSign(int x, int y, eColor color, char sign, DWORD sleepTime, bool playWithGraphics);
+	static void printSign(int x, int y, eColor color, char sign);
 
 	static void clearLastLine();
 };

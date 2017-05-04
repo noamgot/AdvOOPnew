@@ -9,6 +9,10 @@ const char Graphics::BOMB_SIGN = '@';
 const char Graphics::HIT_SIGN = '*';
 const int Graphics::DEFAULT_GRAPHICS_DELAY = 1000;
 
+// initialize sleepTime to default value
+DWORD Graphics::sleepTime = DEFAULT_GRAPHICS_DELAY;
+bool Graphics::playWithGraphics = true;
+
 void Graphics::setTextColor(eColor color)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
@@ -34,7 +38,7 @@ void Graphics::gotoxy(int x, int y)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-void Graphics::printBoard(string* board, int numRows, int numCols)
+void Graphics::printBoard(const string* board, int numRows, int numCols)
 {
 	char c;
 	//clear the console and print board
@@ -78,7 +82,7 @@ void Graphics::printOpeningMessage()
 		"*******************************";
 }
 
-void Graphics::printSign(int x, int y, eColor color, char sign, DWORD sleepTime, bool playWithGraphics)
+void Graphics::printSign(int x, int y, eColor color, char sign)
 {
 	if (playWithGraphics)
 	{
@@ -87,7 +91,7 @@ void Graphics::printSign(int x, int y, eColor color, char sign, DWORD sleepTime,
 		// need to give a (-1) offset to x,y
 		gotoxy(x - 1, y - 1);
 		setTextColor(color);
-		std::cout << sign;
+		cout << sign;
 		Sleep(sleepTime);
 		gotoxy(origX, origY);
 		setTextColor(COLOR_DEFAULT_WHITE);

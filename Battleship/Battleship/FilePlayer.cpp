@@ -77,7 +77,10 @@ int FilePlayer::loadMovesFromFile(const string attackFilePath)
 
 bool FilePlayer::init(const string & path)
 {
-	AbstractPlayer::init(path);
+	if (!AbstractPlayer::init(path))
+	{
+		return false;
+	}
 	string attackFilePath;
 	auto fileNotFound = true;
 	if (GameUtilities::findFileBySuffix(attackFilePath, path, ATTACK_FILE_SUFFIX, fileNotFound, mPlayerNum) < 0)

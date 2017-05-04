@@ -22,11 +22,11 @@ typedef struct _PlayerAttributes
 class GameManagerUtilities
 {
 public:
-	static void processInputArguments(int argc, char** argv, bool& playWithGraphics, int& sleepTime, std::string& dirPath);
+	static void processInputArguments(int argc, char** argv, string& dirPath);
 
 	static void changeCurrentPlayer(int& attackerNum, int& defenderNum, string& attackerName);
 
-	static void printGameResults(PlayerAttributes playerAttributesArr[], bool playWithGraphics);
+	static void printGameResults(PlayerAttributes playerAttributesArr[]);
 
 	/* Initializes the battle boards according to the .sboard file in boardPath.
 	* results in a rows*cols board inside passed boards arguments - including
@@ -42,6 +42,8 @@ public:
 	static bool registerHit(PlayerAttributes& playerAttributes, pair<int, int> coords, eShipType shipType, AttackResult& res);
 
 	static int calculateSinkScore(char c);
+
+	static int playTheGame(IBattleshipGameAlgo* A, IBattleshipGameAlgo* B, PlayerAttributes playerAttributesArr[], const string* board);
 
 private:
 	/* input argument for playing without graphics */
@@ -60,6 +62,10 @@ private:
 
 	/* prints the various error encountered on the board (if any)*/
 	static int printBoardErrors(bitset<4>& errShipsA, bitset<4>& errShipsB, int shipCountA, int shipCountB, int adjCheck);
+
+	/* helper functions for printBoardErrors */
+	static void printWrongSizeOrShapeError(bitset<4>& errShips, int& ret, const string player);
+	static void printBadShipsCountErrror(int shipCount, int& ret, const string player);
 
 	/* validates the given board*/
 	static int checkBoardValidity(string* board);

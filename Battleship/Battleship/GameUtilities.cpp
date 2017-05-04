@@ -30,13 +30,6 @@ eShipType GameUtilities::charToShipType(char c)
 	}
 }
 
-bool GameUtilities::isLegalMove(pair<int, int> move, int numOfRows, int numOfCols)
-{
-	auto x = move.first;
-	auto y = move.second;
-	return !(x < 1 || x > numOfRows || y < 1 || y > numOfCols);
-}
-
 
 char** GameUtilities::allocateBoard(int rows, int cols)
 {
