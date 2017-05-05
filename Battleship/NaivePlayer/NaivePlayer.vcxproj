@@ -20,12 +20,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AbstractPlayer.cpp" />
+    <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="NaivePlayer.cpp" />
+    <ClCompile Include="Ship.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractPlayer.h" />
+    <ClInclude Include="GameUtilities.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
     <ClInclude Include="NaivePlayer.h" />
+    <ClInclude Include="Ship.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{34767E66-3900-40BA-B94F-D14B18C3446A}</ProjectGuid>
@@ -92,11 +96,10 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;NAIVEPLAYER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;NAIVEPLAYER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

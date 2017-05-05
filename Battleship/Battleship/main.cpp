@@ -14,30 +14,41 @@ using namespace std;
 int main(int argc, char** argv)
 {
 	string dirPath, boardPath, board[ROW_SIZE], dllPathA, dllPathB;
-	int errChk = 0;
+	int errorCheck = 0;
 	DLLManager* dllMngr = new DLLManager;
-	//processing program arguments
-	GameManagerUtilities::processInputArguments(argc, argv, dirPath);
-	if (GameManagerUtilities::getBoardPath(dirPath, boardPath) == 0)
-	{
-		return EXIT_FAILURE;
-	}
+
 	// allocate individual boards
 	auto boardA = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
 	auto boardB = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
 
-	if (GameManagerUtilities::initGameBoards(boardPath, board, boardA, boardB) < 0)
+	// processing program arguments
+	GameManagerUtilities::processInputArguments(argc, argv, dirPath);
+
+	// validate game configuration files
+	if (!GameUtilities::isValidPath(dirPath))
 	{
+		cout << "Wrong Path: " << dirPath << endl;
 		return EXIT_FAILURE;
+	}
+	if ((GameManagerUtilities::getBoardPath(dirPath, boardPath) < 0) ||
+		(GameManagerUtilities::initGameBoards(boardPath, board, boardA, boardB) < 0))
+	{
+		errorCheck = 1;
 	}
 	if ((GameManagerUtilities::getDllPath(dirPath, dllPathA, 0) < 0) ||
 		(GameManagerUtilities::getDllPath(dirPath, dllPathB, 1) < 0))
+	{
+		errorCheck = 1;
+	}
+	if (errorCheck == 1)
 	{
 		return EXIT_FAILURE;
 	}
 
 	PlayerAttributes playerAttributesArr[2];
 
+	/*---------------------- New initialization for the players --------------------- */
+	/* TODO: Enable it when the player algos are complete and tests on them are finished
 	// Initialize player one
 	IBattleshipGameAlgo *A = dllMngr->loadAlgo(dllPathA);
 	if (A == nullptr)
@@ -58,6 +69,16 @@ int main(int argc, char** argv)
 	if (!GameManagerUtilities::initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, playerAttributesArr))
 	{
 		cout << "Algorithm initialization failed for dll: " << dllPathB << endl;
+		return EXIT_FAILURE;
+	} */
+	/*----------------------------------------------------------------------------- */
+
+	IBattleshipGameAlgo *A = new FilePlayer;
+	IBattleshipGameAlgo *B = new FilePlayer;
+
+	auto retVal = GameManagerUtilities::initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, playerAttributesArr);
+	if (!GameManagerUtilities::initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, playerAttributesArr) || !retVal)
+	{
 		return EXIT_FAILURE;
 	}
 

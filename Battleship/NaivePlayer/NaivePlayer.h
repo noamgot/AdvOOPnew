@@ -5,8 +5,10 @@
 
 class NaivePlayer : public AbstractPlayer
 {
-	bool allowedToAttack(int i, int j) const;
 public:
-	bool init(const std::string& path) override;
+	bool init(const string& path) override;
+
+private:
+	bool allowedToAttack(int i, int j) const;
 
 };

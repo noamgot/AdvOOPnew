@@ -1,10 +1,7 @@
 #include "AbstractPlayer.h"
 #include <iostream>
 
-AbstractPlayer::AbstractPlayer() : mShipsCount(DEFAULT_SHIPS_COUNT) {}
-
 AbstractPlayer::~AbstractPlayer() {}
-
 
 void AbstractPlayer::setBoard(int player, const char **board, int numRows, int numCols)
 {
@@ -23,8 +20,9 @@ void AbstractPlayer::setBoard(int player, const char **board, int numRows, int n
 	}
 }
 
+
 // get next attack from the player's moves queue
-std::pair<int, int> AbstractPlayer::attack()
+pair<int, int> AbstractPlayer::attack()
 {
 	if (mMovesQueue.size() > 0)
 	{
@@ -32,35 +30,16 @@ std::pair<int, int> AbstractPlayer::attack()
 		mMovesQueue.pop();
 		return nextAttack;
 	}
-	return std::make_pair(-1, -1);
+	return make_pair(-1, -1);
 }
 
-void AbstractPlayer::notifyOnAttackResult(int player, int row, int col, AttackResult result)
-{
-
-}
-
-bool AbstractPlayer::init(const std::string& path)
+bool AbstractPlayer::init(const string& path)
 {
 	// validate path
-	/*if (!GameUtilities::isValidPath(path))
+	if (!GameUtilities::isValidPath(path))
 	{
-		cout << "Error: failed to init player - got invalid path: " << path << endl;
+		//cout << "Error: failed to init player - got invalid path: " << path << endl;
 		return false;
-	}*/
+	}
 	return true;
 }
-
-bool AbstractPlayer::hasMoves() const
-{
-	return !mMovesQueue.empty();
-}
-
-
-
-bool AbstractPlayer::hasShips() const
-{
-	return (this->mShipsCount > 0);
-}
-
-
