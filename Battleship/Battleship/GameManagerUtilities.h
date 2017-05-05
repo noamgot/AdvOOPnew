@@ -1,8 +1,6 @@
 ﻿#pragma once
 
-#include <vector>
 #include <bitset>
-#include <map>
 #include "GameUtilities.h"
 
 using namespace std;

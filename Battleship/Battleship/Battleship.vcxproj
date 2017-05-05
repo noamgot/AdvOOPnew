@@ -174,11 +174,6 @@
     <ClInclude Include="WeightePosition.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="CmakeLists.txt" />
-    <Text Include="students.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="AdvancedProgramming_Ex2.pdf" />
     <None Include="clean_movesA.attack" />
     <None Include="clean_movesB.attack" />
     <None Include="good_board_1.sboard" />
