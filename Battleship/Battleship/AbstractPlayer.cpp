@@ -38,7 +38,7 @@ bool AbstractPlayer::init(const string& path)
 	// validate path
 	if (!GameUtilities::isValidPath(path))
 	{
-		cout << "Error: failed to init player - got invalid path: " << path << endl;
+		//cout << "Error: failed to init player - got invalid path: " << path << endl;
 		return false;
 	}
 	return true;

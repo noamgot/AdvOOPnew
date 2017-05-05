@@ -87,7 +87,8 @@ bool FilePlayer::init(const string & path)
 	{
 		if (fileNotFound)
 		{
-			cout << "Missing attack file (*" << ATTACK_FILE_SUFFIX << ") looking in path: " << path << endl;
+			//TODO : can delete, the only relevant error to inits now are "algo init failed"
+			//cout << "Missing attack file (*" << ATTACK_FILE_SUFFIX << ") looking in path: " << path << endl;
 		}
 		return false;
 	}

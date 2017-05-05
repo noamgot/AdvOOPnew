@@ -19,6 +19,7 @@ using namespace std;
 const string GameManagerUtilities::PARAM_QUIET("-quiet");
 const string GameManagerUtilities::PARAM_DELAY("-delay");
 const string GameManagerUtilities::BOARD_FILE_SUFFIX(".sboard");
+const string GameManagerUtilities::LIB_FILE_SUFFIX(".dll");
 const string GameManagerUtilities::BAD_STRING("!@#"); // for getDirPath
 const int GameManagerUtilities::MAX_PATH_LEN = 1024;
 
@@ -390,6 +391,24 @@ int GameManagerUtilities::getBoardPath(string& dirPath, string& boardPath)
 	boardPath = dirPath + "\\" + boardPath;
 	return 0;
 }
+
+int GameManagerUtilities::getDllPath(string& dirPath, string& dllPath, const int playerNum)
+{
+	auto fileNotFound = true;
+	if (GameUtilities::findFileBySuffix(dllPath, dirPath, LIB_FILE_SUFFIX, fileNotFound, playerNum) < 0)
+	{
+		if (fileNotFound)
+		{
+			cout << "Missing dll file (*" << LIB_FILE_SUFFIX << ") looking in path: " << dirPath << endl;
+		}
+		return -1;
+	}
+	// convert boardPath to its full path
+	dllPath = dirPath + "\\" + dllPath;
+	return 0;
+}
+
+
 
 string GameManagerUtilities::getDirPath()
 {

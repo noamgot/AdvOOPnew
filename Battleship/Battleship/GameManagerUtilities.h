@@ -37,6 +37,8 @@ public:
 	 * returns a negative number in case of failure, and 0 otherwise*/
 	static int getBoardPath(string& dirPath, string& boardPath);
 
+	static int getDllPath(string& dirPath, string& dllPath, const int playerNum);
+
 	static bool initPlayer(IBattleshipGameAlgo* pPlayer, int playerNum, const char** board, const string dirPath, PlayerAttributes playerAttributes[]);
 
 	static bool registerHit(PlayerAttributes& playerAttributes, pair<int, int> coords, eShipType shipType, AttackResult& res);
@@ -51,6 +53,7 @@ private:
 	/* input argument for setting the delay between operations when playing with graphics */
 	static const string PARAM_DELAY; 
 	static const string BOARD_FILE_SUFFIX;
+	static const string LIB_FILE_SUFFIX;
 	static const string BAD_STRING; // for getDirPath validation
 	static const int MAX_PATH_LEN;	
 
