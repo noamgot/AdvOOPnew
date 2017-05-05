@@ -35,8 +35,9 @@ int main(int argc, char** argv)
 	IBattleshipGameAlgo *B = new FilePlayer;
 	PlayerAttributes playerAttributesArr[2];
 
-	auto retVal = GameManagerUtilities::initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, playerAttributesArr);
-	if (!GameManagerUtilities::initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, playerAttributesArr) || !retVal)
+	//auto retVal = GameManagerUtilities::initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, playerAttributesArr);
+	if (!GameManagerUtilities::initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, playerAttributesArr) || 
+		GameManagerUtilities::initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, playerAttributesArr))
 	{
 		return EXIT_FAILURE;
 	}

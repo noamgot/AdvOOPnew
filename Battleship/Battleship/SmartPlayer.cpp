@@ -2,11 +2,6 @@
 #include "GameUtilities.h"
 
 
-SmartPlayer::SmartPlayer()
-{
-}
-
-
 SmartPlayer::~SmartPlayer()
 {
 }
@@ -18,173 +13,173 @@ void SmartPlayer::setBoard(int player, const char** board, int numRows, int numC
 	mPlayerNum = player;
 	auto spaceIOccupy = 0;
 	AbstractPlayer::setBoard(player, board, numRows, numCols);
-	for (auto s : mShipsList)
+
+	for(auto row = 0; row < mNumOfRows; row++)
 	{
-		spaceIOccupy += s.getSize();
-	}
-	auto initialWeight = float(1.0 / spaceIOccupy);
-	for(auto row = 0; row < numRows; row++)
-	{
-		for(auto col = 0; col < numCols; col++)
+		for(auto col = 0; col < mNumOfCols; col++)
 		{
-			mWeightedBoard[row][col].setPosition(row + 1, col + 1);
-			if (mBoard[row][col] == WATER && !isNearAShip(row,col))
+			if (mBoard[row][col] != eShipChar::WATER)
 			{
-				mWeightedBoard[row][col].setWeight(initialWeight); //@ALL: Should change the signature to rvalue ref? (?)_(?)
-			}
-			else
-			{
-				mWeightedBoard[row][col].setWeight(0);
+				mMyCoords.insert(make_pair(row, col));
+				doIfValid(row + 1, col, false, false, true, eSign::EMPTY, eShipChar::WATER);
+				doIfValid(row - 1, col, false, false, true, eSign::EMPTY, eShipChar::WATER);
+				doIfValid(row, col + 1, false, false, true, eSign::EMPTY, eShipChar::WATER);
+				doIfValid(row, col + 1, false, false, true, eSign::EMPTY, eShipChar::WATER);
 			}
 		}
 	}
+}
+
+pair<bool, bool> SmartPlayer::doIfValid(int row, int col, bool hit_op, bool target_op, bool swap_op, char new_char, char old_char)
+{
+	if (GameUtilities::isLegalMove(row + 1, col + 1, mNumOfRows, mNumOfCols))
+	{
+		if (swap_op && mBoard[row][col] == old_char)
+		{
+			mBoard[row][col] = new_char;
+		}
+		else if (hit_op)
+		{
+			mBoard[row][col] = eSign::DESTROYED;
+		}
+		else if (target_op)
+		{
+			if (mBoard[row][col] == eShipChar::WATER)
+			{
+				mSmartMoveQueue.push_front(make_pair(row, col));
+			}
+		}
+		return make_pair(true,(!target_op && !hit_op && !swap_op) || (swap_op ^ swap_op ^ hit_op));
+	}
+	return make_pair(false,false);
 }
 
 bool SmartPlayer::init(const string& path)
 {
 	AbstractPlayer::init(path);
+	vector<pair<int, int>> valid_moves;
+	mIsFilePlayer = false;
 	for (auto row = 0; row < mNumOfRows; row++)
 	{
 		for (auto col = 0; col < mNumOfCols; col++)
 		{
-			if (mWeightedBoard[row][col].getWeight() > 0)
+			if (mBoard[row][col] != eShipChar::WATER || mBoard[row][col] != eSign::EMPTY)
 			{
-				mValidMoves.push_back(mWeightedBoard[row][col]);
+				valid_moves.push_back(make_pair(row,col));
 			}
 		}
 	}
-	random_shuffle(mValidMoves.begin(), mValidMoves.end());
-
+	random_shuffle(valid_moves.begin(), valid_moves.end());
+	for (auto move : valid_moves)
+	{
+		mSmartMoveQueue.push_back(move);
+	}
 	return true;
 }
 
-bool SmartPlayer::hasMoves() const
-{
-	return (mValidMoves.size() > 0);
-}
-
-
 pair<int, int> SmartPlayer::attack()
 {
-	createPriorityQueue();
-	if (mWeightedMovesQueue.size() > 0)
+	auto& move = make_pair(-1,-1);
+	if (mSmartMoveQueue.size()== 0)
 	{
-		auto nextAttack(mWeightedMovesQueue.top());
-		mWeightedMovesQueue.pop();
-		return nextAttack.getPos();
+		return move;
 	}
-	return make_pair(-1, -1);
+	do
+	{
+		move = mSmartMoveQueue.front();
+		mSmartMoveQueue.pop_front();
+	} while (mBoard[move.first][move.second] != eShipChar::WATER && mSmartMoveQueue.size() > 1);
+	
+	return move;
 }
 
-void SmartPlayer::smartSetWeight(int row, int col, float val)
+void SmartPlayer::analyzeEnemy(pair<int,int> hitPoint, AttackResult result)
 {
-	if(!isNearAShip(row, col) && row >= 0 && row < mNumOfRows && col >= 0 && col < mNumOfCols)
+	//Only the file player can hit himselft or the same spot twice!
+	//Once we know it is the file player we're up against we won't take into account his misses!
+	if (mEnemyAttackCoords.find(hitPoint) != mEnemyAttackCoords.end() || (result != AttackResult::Miss && mMyCoords.find(hitPoint) == mMyCoords.end()))
 	{
-		mWeightedBoard[row][col].setWeight(val);
+		//TODO - should disregard misses (except of marking on board)
+		mIsFilePlayer = true;
 	}
+	mEnemyAttackCoords.insert(make_pair(hitPoint.first, hitPoint.second));
 }
 
-//TODO - any spot that gets assigned 0 prob should be remvoed from the mValidMoves map
-void SmartPlayer::updateWeights(int row, int col, AttackResult res)
+Direction SmartPlayer::scanTheVicinity(int row, int col)
 {
-	auto dir = Direction::NONE;
-	smartSetWeight(row, col, 0);
 
-	if(res != AttackResult::Miss)
+	if ((doIfValid(row, col + 1).first && mBoard[row][col + 1] == eSign::DESTROYED) || (doIfValid(row, col - 1).first && mBoard[row][col - 1] == eSign::DESTROYED))
 	{
-		if (mBoard[row][col + 1] == 'X' || mBoard[row][col - 1] == 'X')
-		{
-			updateWeightArounHit(row, col, Direction::HORIZONAL,res);
-		}
-		else if (mBoard[row + 1][col] == 'X' || mBoard[row - 1][col] == 'X')
-		{
-			updateWeightArounHit(row, col, Direction::VERTICAL, res);
-		}
-		else
-		{
-			//Boat
-			if (row + 1 > mNumOfRows) { smartSetWeight(row + 1, col, 0.25); }
-			if (row - 1 > 0)		{ smartSetWeight(row - 1, col, 0.25); }
-			if (col + 1 < mNumOfCols) { smartSetWeight(row , col + 1, 0.25); }
-			if (col + 1 < mNumOfCols) { smartSetWeight(row, col - 1, 0.25); }
-		}
-	}	
+		return Direction::HORIZONAL;
+	}
+	if ((doIfValid(row + 1, col).first && mBoard[row + 1][col] == eSign::DESTROYED) || (doIfValid(row - 1, col).first && mBoard[row - 1][col] == eSign::DESTROYED))
+	{
+		return Direction::VERTICAL;
+	}
+	//TODO - add deeper scanning for eSign::EMPTY and edge coordinates
 }
 
-void SmartPlayer::updateWeightArounHit(int row, int col, Direction dir, AttackResult res)
+void SmartPlayer::outlineSunkenEnemyShip(int row, int col)
 {
-	if(dir == Direction::HORIZONAL || dir == Direction::RIGHT || dir == Direction::LEFT)
+	pair<pair<bool, bool>, Direction> dir[NUMBER_OF_DIRECTIONS];
+	int row_mod, col_mod;
+	dir[0].first = doIfValid(row + 1, col, false, false, true, eShipChar::WATER, eSign::EMPTY); //up
+	dir[0].second = Direction::UP;
+	dir[1].first = doIfValid(row - 1, col, false, false, true, eShipChar::WATER, eSign::EMPTY); //down
+	dir[1].second = Direction::DOWN;
+	dir[2].first = doIfValid(row, col + 1, false, false, true, eShipChar::WATER, eSign::EMPTY); //right 
+	dir[2].second = Direction::RIGHT;
+	dir[3].first = doIfValid(row, col - 1, false, false, true, eShipChar::WATER, eSign::EMPTY); //left
+	dir[3].second = Direction::LEFT;
+	
+	for (auto i = 0; i < NUMBER_OF_DIRECTIONS; ++i)
 	{
-		if (dir != Direction::LEFT && col + 1 < mNumOfCols && mBoard[row][col + 1] == 'X')
+		if (dir[i].first.first && !dir[i].first.second)
 		{
-			updateWeightArounHit(row, col + 1, Direction::RIGHT, res);
+			switch (dir[i].second)
+			{
+			case Direction::UP:
+				row_mod = 1;
+				col_mod = 0;
+				break;
+			case Direction::DOWN:
+				row_mod = -1;
+				col_mod = 0;
+				break;
+			case Direction::RIGHT:
+				row_mod = 0;
+				col_mod = 1;
+				break;
+			case Direction::LEFT:
+				row_mod = 0;
+				col_mod = -1;
+				break;
+			default:
+				break;
+			}
+			auto j = 1;
+			do 
+			{
+				if (dir[i].second == Direction::LEFT || dir[i].second == Direction::RIGHT)
+				{
+					doIfValid(row + j * row_mod - 1, col + j * col_mod, false, false, true, eShipChar::WATER, eSign::EMPTY);
+					doIfValid(row + j * row_mod + 1, col + j * col_mod, false, false, true, eShipChar::WATER, eSign::EMPTY);
+				}
+				else if (dir[i].second == Direction::UP || dir[i].second == Direction::DOWN)
+				{
+					doIfValid(row + j * row_mod, col + j * col_mod + 1, false, false, true, eShipChar::WATER, eSign::EMPTY);
+					doIfValid(row + j * row_mod, col + j * col_mod - 1, false, false, true, eShipChar::WATER, eSign::EMPTY);
+				}
 
-			smartSetWeight(row + 1, col, 0);
-			smartSetWeight(row + 1, col + 1, 0);
-
-			smartSetWeight(row - 1, col, 0);
-			smartSetWeight(row - 1, col + 1, 0);
-		}
-		else if(dir != Direction::LEFT && col + 1 < mNumOfCols && mBoard[row][col + 1] == WATER && res == AttackResult::Hit)
-		{
-			smartSetWeight(row, col + 1, 0.5);
-		}
-		
-		if (dir != Direction::RIGHT && col - 1 >= 0 && mBoard[row][col - 1] == 'X')
-		{
-			updateWeightArounHit(row, col - 1, Direction::LEFT, res);
-
-			smartSetWeight(row + 1, col, 0);
-			smartSetWeight(row + 1, col - 1, 0);
-			
-			smartSetWeight(row - 1, col, 0);
-			smartSetWeight(row - 1, col - 1, 0);
-		}
-		else if (dir != Direction::RIGHT && col - 1 >= 0 && mBoard[row][col + 1] == WATER && res == AttackResult::Hit)
-		{
-			smartSetWeight(row, col - 1, 0.5);
+				j++; 
+			} while (mBoard[row + j * row_mod][col + j * col_mod] == eSign::DESTROYED);
+			mBoard[row + j * row_mod][col + j * col_mod] = eSign::EMPTY;
 		}
 	}
-
-	else if (dir == Direction::VERTICAL || dir == Direction::UP || dir == Direction::DOWN)
-	{
-		if (dir != Direction::DOWN  && row + 1 < mNumOfRows && mBoard[row + 1][col] == 'X')
-		{
-			updateWeightArounHit(row + 1, col, Direction::UP, res);
-
-			smartSetWeight(row, col + 1, 0);
-			smartSetWeight(row + 1, col + 1, 0);
-
-			smartSetWeight(row, col - 1, 0);
-			smartSetWeight(row + 1, col - 1, 0);
-		}
-		else if (dir != Direction::DOWN  && row + 1 < mNumOfRows && mBoard[row + 1][col] == WATER && res == AttackResult::Hit)
-		{
-			smartSetWeight(row + 1, col, 0.5);
-		}
-		if (dir != Direction::UP  && row - 1 >= 0 && mBoard[row - 1][col] == 'X')
-		{
-			updateWeightArounHit(row + 1, col, Direction::UP, res);
-
-			smartSetWeight(row, col + 1, 0);
-			smartSetWeight(row - 1, col + 1, 0);
-
-			smartSetWeight(row, col - 1, 0);
-			smartSetWeight(row - 1, col - 1, 0);
-		}
-		if (dir != Direction::UP  && row - 1 >= 0 && mBoard[row - 1][col] == WATER && res == AttackResult::Hit)
-		{
-			smartSetWeight(row - 1, col, 0.5);
-		}
-	}
-}
-
-void SmartPlayer::createPriorityQueue()
-{
 	
 }
 
-
+//TODO - add non-file player enemy ships outlining
 void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResult result)
 {
 	if (!GameUtilities::isLegalMove(row, col, mNumOfRows, mNumOfCols)) // ignore invalid moves
@@ -192,26 +187,50 @@ void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResul
 		return;
 	}
 	int myRow = row - 1, myCol = col - 1;
-	
-	if (result != AttackResult::Miss && mBoard[myRow][myCol] == WATER)
+
+	if (player != mPlayerNum)
 	{
-		//TODO - replace the 'X' with something nicer 
-		mBoard[myRow][myCol] = 'X'; //X means destroyed something
+		analyzeEnemy(make_pair(myRow, myCol), result);
+	}
+
+	if (result != AttackResult::Miss && mBoard[myRow][myCol] == eShipChar::WATER)
+	{
+		doIfValid(myRow, myCol, true); //destroyed something
+		switch (result)
+		{
+		case AttackResult::Hit :
+			mDir = scanTheVicinity(myRow, myCol);
+			doIfValid(row, col, true);
+			if (mDir == Direction::NONE || mDir == Direction::HORIZONAL)
+			{
+
+					doIfValid(row, col + 1, false, true);
+					doIfValid(row, col - 1, false, true);
+				
+			}
+			if (mDir == Direction::NONE || mDir == Direction::VERTICAL)
+			{
+					doIfValid(row + 1, col, false, true);
+					doIfValid(row - 1, col, false, true);
+			}
+			break;
+
+
+		case AttackResult::Sink:
+			outlineSunkenEnemyShip(myRow, myCol);
+			break;
+
+		default:
+			break;
+		}
+		
 	}
 	else
 	{
-		//TODO - replace the 'O' with something nicer 
-		mBoard[myRow][myCol] = 'O'; //O means empty
+		mBoard[myRow][myCol] = eSign::EMPTY; // empty
 	}
 	
-	updateWeights(myRow, myCol,result);
 }
 
 
-bool SmartPlayer::isNearAShip(int row, int col)
-{
-	return GameUtilities::charToShipType(mBoard[row + 1][col]) != eShipType::SHIP_TYPE_ERROR || 
-		   GameUtilities::charToShipType(mBoard[row - 1][col]) != eShipType::SHIP_TYPE_ERROR ||
-		   GameUtilities::charToShipType(mBoard[row][col + 1]) != eShipType::SHIP_TYPE_ERROR || 
-		   GameUtilities::charToShipType(mBoard[row][col - 1]) != eShipType::SHIP_TYPE_ERROR;
-}
+

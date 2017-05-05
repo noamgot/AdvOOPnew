@@ -21,7 +21,7 @@ public:
 
 	virtual ~AbstractPlayer() = 0; // this class is abstract!
 
-	void setBoard(int player, const char **board, int numRows, int numCols) override; // called once to notify player on his board
+	void setBoard(int player, const char **board, int numRows, int numCols) override; // called once to notify player about his board
 	
 	pair<int, int> attack() override; // ask player for his move
 
