@@ -12,37 +12,39 @@ bool NaivePlayer::allowedToAttack(int i, int j) const
 	// update side booleans if possible
 	if (i > 0)
 	{
-		up = (this->mBoard[i - 1][j] == WATER);
+		up = this->mBoard[i - 1][j] == WATER;
 	}
-	if (i < rows - 1)
+	if (i < rows-1)
 	{
-		down = (this->mBoard[i + 1][j] == WATER);
+		down = this->mBoard[i + 1][j] == WATER;
 	}
 	if (j > 0)
 	{
-		left = (this->mBoard[i][j - 1] == WATER);
+		left = this->mBoard[i][j - 1] == WATER;
 	}
-	if (j < cols - 1)
+	if (j < cols-1)
 	{
-		right = (this->mBoard[i][j + 1] == WATER);
+		right = this->mBoard[i][j + 1] == WATER;
 	}
 	// return true iff all sides are water (i.e clear to attack)
 	return up && down && right && left;
 }
 
-bool NaivePlayer::init(const std::string& path)
+bool NaivePlayer::init(const string& path)
 {
-	AbstractPlayer::init(path);
-
-	// init moves queue
-	for (auto i = 0; i < this->mNumOfRows; i++)
+	if (!AbstractPlayer::init(path))
 	{
-		for (auto j = 0; j < this->mNumOfCols; j++)
+		return false;
+	}
+	// init moves queue
+	for (auto i = 0; i < mNumOfRows; i++)
+	{
+		for (auto j = 0; j < mNumOfCols; j++)
 		{
 			if (allowedToAttack(i, j))
 			{
 				// we give a (+1) offset so we "speak" in cordinates starting from 1
-				this->mMovesQueue.push(std::make_pair(i + 1, j + 1));
+				mMovesQueue.push(make_pair(i + 1, j + 1));
 			}
 		}
 	}
