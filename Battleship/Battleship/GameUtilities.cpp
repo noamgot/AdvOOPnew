@@ -5,7 +5,6 @@
 #include <filesystem>
 
 
-
 using namespace std;
 
 // initialize static consts
@@ -55,7 +54,7 @@ int GameUtilities::findFileBySuffix(string& filePath, const string dirPath, cons
 										bool& fileNotFound, int playerNum)
 {
 	// for debug; should not get here
-	if (playerNum > 1)
+	if (playerNum > 1 || playerNum < 0)
 	{
 		cout << "Error: invalid player number" << endl;
 		return -1;

@@ -91,11 +91,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="CmakeLists.txt" />
-    <Text Include="students.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="AdvancedProgramming_Ex2.pdf" />
     <None Include="good_board_1.sboard" />
     <None Include="clean_movesA.attack" />
     <None Include="clean_movesB.attack" />

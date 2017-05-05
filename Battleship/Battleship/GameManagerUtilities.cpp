@@ -371,7 +371,7 @@ int GameManagerUtilities::getBoardPath(string& dirPath, string& boardPath)
 	{
 		dirPath.pop_back();
 	}
-	//TODO - add DLL search
+	//TODO - add DLL search - @Ben don't forget to accumulate errors
 	if (!GameUtilities::isValidPath(dirPath))
 	{
 		cout << "Wrong Path: " << dirPath << endl;
