@@ -11,26 +11,56 @@ set(id3 "201606951")
 
 # All source files needed to compile your exe
 set (EXE_SOURCE_FILES
-	shape.h
+	DLLManager.cpp
+	DLLManager.h
+	GameManagerUtilities.cpp
+	GameManagerUtilities.h
+	GameUtilities.cpp
+	GameUtilities.h
+	Graphics.cpp
+	Graphics.h
+	IBattleshipGameAlgo.h
 	main.cpp
+	Ship.cpp
+	Ship.h
 )
 # All source files needed to compile your naive algorithm's .dll
 set (NAIVE_ALGO_SOURCE_FILES
-	shape.h
-	circle.h
-	circle.cpp
+	AbstractPlayer.cpp
+	AbstractPlayer.h
+	GameUtilities.cpp
+	GameUtilities.h
+	IBattleshipGameAlgo.h
+	Ship.cpp
+	Ship.h
+	NaivePlayer.cpp
+	NaivePlayer.h
 )
 # All source files needed to compile your read-from-file algorithm's .dll
 set (FILE_ALGO_SOURCE_FILES
-	shape.h
-	square.h
-	square.cpp
+	AbstractPlayer.cpp
+	AbstractPlayer.h
+	GameUtilities.cpp
+	GameUtilities.h
+	IBattleshipGameAlgo.h
+	Ship.cpp
+	Ship.h
+	FilePlayer.cpp
+	FilePlayer.h
 )
 # All source files needed to compile your smart algorithm's .dll
 set (SMART_ALGO_SOURCE_FILES
-	shape.h
-	square.h
-	square.cpp
+	AbstractPlayer.cpp
+	AbstractPlayer.h
+	GameUtilities.cpp
+	GameUtilities.h
+	IBattleshipGameAlgo.h
+	Ship.cpp
+	Ship.h
+	SmartPlayer.cpp
+	SmartPlayer.h
+	WeightedPosition.cpp
+	WeightePosition.h
 )
 
 ##################################
