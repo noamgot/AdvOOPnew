@@ -151,7 +151,6 @@
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="FilePlayer.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
-    <ClCompile Include="InputUtilities.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NaivePlayer.cpp" />
     <ClCompile Include="AbstractPlayer.cpp" />
@@ -167,7 +166,6 @@
     <ClInclude Include="GameUtilities.h" />
     <ClInclude Include="NaivePlayer.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
-    <ClInclude Include="InputUtilities.h" />
     <ClInclude Include="AbstractPlayer.h" />
     <ClInclude Include="Ship.h" />
     <ClInclude Include="SmartPlayer.h" />

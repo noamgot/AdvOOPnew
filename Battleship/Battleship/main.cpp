@@ -47,8 +47,7 @@ int main(int argc, char** argv)
 
 	PlayerAttributes playerAttributesArr[2];
 
-	/*---------------------- New initialization for the players --------------------- */
-	/* TODO: Enable it when the player algos are complete and tests on them are finished
+	/*---------------------- New initialization for the players --------------------- 
 	// Initialize player one
 	IBattleshipGameAlgo *A = dllMngr->loadAlgo(dllPathA);
 	if (A == nullptr)
@@ -70,9 +69,10 @@ int main(int argc, char** argv)
 	{
 		cout << "Algorithm initialization failed for dll: " << dllPathB << endl;
 		return EXIT_FAILURE;
-	} */
-	/*----------------------------------------------------------------------------- */
+	} 
+	----------------------------------------------------------------------------- */
 
+	/* ------------------- Old Player init ------------------------------ */
 	IBattleshipGameAlgo *A = new FilePlayer;
 	IBattleshipGameAlgo *B = new FilePlayer;
 
@@ -81,6 +81,7 @@ int main(int argc, char** argv)
 	{
 		return EXIT_FAILURE;
 	}
+	/*-----------------------------------------------------------------------*/
 
 	// delete individual boards - we do not need them anymore
 	GameUtilities::deleteBoard(boardA, ROW_SIZE);
