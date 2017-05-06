@@ -398,7 +398,7 @@ int GameManagerUtilities::getDllPath(string& dirPath, string& dllPath, const int
 	{
 		if (fileNotFound)
 		{
-			cout << "Missing dll file (*" << LIB_FILE_SUFFIX << ") looking in path: " << dirPath << endl;
+			cout << "Missing an algorithm (dll) file looking in path: " << dirPath << endl;
 		}
 		return -1;
 	}

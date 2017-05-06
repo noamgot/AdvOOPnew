@@ -20,11 +20,10 @@ int DLLManager::loadDLL(const std::string path)
 		return -1;
 	}
 
-	
 	GetAlgoFuncType getAlgoFunc = reinterpret_cast<GetAlgoFuncType>(GetProcAddress(hLib, "GetAlgorithm"));
 	if (!getAlgoFunc)
 	{
-		std::cout << "Cannot load function GetAlgorithm()" << std::endl;
+		std::cout << "Cannot load dll: " << path << std::endl;
 		return -1;
 	}
 
