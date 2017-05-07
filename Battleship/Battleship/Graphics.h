@@ -13,37 +13,40 @@ enum eColor
 	COLOR_RED = 12,
 	COLOR_YELLOW = 14,
 };
-class Graphics
+namespace Graphics
 {
-public:
 	// consts
-	static const char BOMB_SIGN;
-	static const char HIT_SIGN;
-	static const int DEFAULT_GRAPHICS_DELAY; //millliseconds
-	
-	//data members
-	static DWORD sleepTime;
-	static bool playWithGraphics;
+	const char BOMB_SIGN = '@';
+	const char HIT_SIGN = '*';
+	const int DEFAULT_GRAPHICS_DELAY = 1000; //millliseconds
 
-	// class static methods
+   // initialize sleepTime to default value
+	extern DWORD sleepTime;
+	extern bool playWithGraphics;
+
+	// namespace  methods
 
 	/*changes the console output color according to the given color*/
-	static void setTextColor(eColor color);
+	void setTextColor(eColor color);
 
 	/*gets the current console cursor coordinates*/
-	static void wherexy(int& x, int& y);
+	void wherexy(int& x, int& y);
 
 	/*sets the console cursor to the given coordinates*/
-	static void gotoxy(int x, int y);
+	void gotoxy(int x, int y);
 
 	/*prints the initial game board*/
-	static void printBoard(const string* board, int numRows, int numCols);
+	void printBoard(const string* board, int numRows, int numCols);
 
-	static void printOpeningMessage();
+	void printOpeningMessage();
 
 	/*if playWithGraphics == true: prints the given sign with the given color
 	 * in the given coordinates(x,y) and waits for sleepTime milliseconds*/
-	static void printSign(int x, int y, eColor color, char sign);
+	void printSign(int x, int y, eColor color, char sign);
 
-	static void clearLastLine();
-};
+	void clearLastLine();
+
+	/*if shofFlag == true - shows the console cursur; if showFlag == false - hides the cursur*/
+	void showConsoleCursor(bool showFlag);
+
+}
