@@ -2,7 +2,7 @@
 #include "AbstractPlayer.h"
 #include <set>
 #include <deque>
-#include "WeightePosition.h"
+#include "WeightedPosition.h"
 
 enum class Direction
 {

@@ -1,4 +1,4 @@
-#include "WeightePosition.h"
+#include "WeightedPosition.h"
 
 WeightedPosition::WeightedPosition(std::pair<int, int> &pos, float weight) : 
 	mWeight(weight),
