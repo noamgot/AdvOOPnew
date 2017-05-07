@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 
 	PlayerAttributes playerAttributesArr[2];
 
-	/*---------------------- New initialization for the players --------------------- 
+	/*---------------------- New initialization for the players --------------------- */
 	// Initialize player one
 	IBattleshipGameAlgo *A = dllMngr->loadAlgo(dllPathA);
 	if (A == nullptr)
@@ -81,16 +81,16 @@ int main(int argc, char** argv)
 	} 
 	/*----------------------------------------------------------------------------- */
 
-	/* ------------------- Old Player init ------------------------------ */
+	/* ------------------- Old Player init ------------------------------ 
 	IBattleshipGameAlgo *A = new FilePlayer;
-	IBattleshipGameAlgo *B = new FilePlayer;
+	IBattleshipGameAlgo *B = new SmartPlayer;
 
 	if (!initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, playerAttributesArr) ||
 		!initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, playerAttributesArr))
 	{
 		return EXIT_FAILURE;
 	}
-	/*-----------------------------------------------------------------------*/
+	-----------------------------------------------------------------------*/
 
 	// delete individual boards - we do not need them anymore
 	deleteBoard(boardA, ROW_SIZE);

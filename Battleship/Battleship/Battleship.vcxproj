@@ -149,27 +149,19 @@
     <ClCompile Include="DLLManager.cpp" />
     <ClCompile Include="GameManagerUtilities.cpp" />
     <ClCompile Include="Graphics.cpp" />
-    <ClCompile Include="FilePlayer.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="NaivePlayer.cpp" />
     <ClCompile Include="AbstractPlayer.cpp" />
     <ClCompile Include="Ship.cpp" />
-    <ClCompile Include="SmartPlayer.cpp" />
-    <ClCompile Include="WeightedPosition.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DLLManager.h" />
     <ClInclude Include="GameManagerUtilities.h" />
     <ClInclude Include="Graphics.h" />
-    <ClInclude Include="FilePlayer.h" />
     <ClInclude Include="GameUtilities.h" />
-    <ClInclude Include="NaivePlayer.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
     <ClInclude Include="AbstractPlayer.h" />
     <ClInclude Include="Ship.h" />
-    <ClInclude Include="SmartPlayer.h" />
-    <ClInclude Include="WeightePosition.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="clean_movesA.attack" />

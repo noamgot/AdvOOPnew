@@ -18,6 +18,21 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Battleship\AbstractPlayer.cpp" />
+    <ClCompile Include="..\Battleship\GameUtilities.cpp" />
+    <ClCompile Include="..\Battleship\Ship.cpp" />
+    <ClCompile Include="..\Battleship\SmartPlayer.cpp" />
+    <ClCompile Include="..\Battleship\WeightedPosition.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Battleship\AbstractPlayer.h" />
+    <ClInclude Include="..\Battleship\GameUtilities.h" />
+    <ClInclude Include="..\Battleship\IBattleshipGameAlgo.h" />
+    <ClInclude Include="..\Battleship\Ship.h" />
+    <ClInclude Include="..\Battleship\SmartPlayer.h" />
+    <ClInclude Include="..\Battleship\WeightedPosition.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F258BAAD-2598-4260-9CFD-6D1426BE44ED}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -96,11 +111,10 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;SMARTPLAYER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;_USRDLL;ALGO_EXPORTS;SMARTPLAYER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,8 +155,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

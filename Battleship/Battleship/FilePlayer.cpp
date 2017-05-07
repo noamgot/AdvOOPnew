@@ -99,3 +99,9 @@ bool FilePlayer::init(const string & path)
 	}
 	return true;
 }
+
+IBattleshipGameAlgo* GetAlgorithm()
+{
+	IBattleshipGameAlgo *newP = new FilePlayer;
+	return newP;
+}

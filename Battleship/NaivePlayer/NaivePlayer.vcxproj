@@ -19,17 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AbstractPlayer.cpp" />
-    <ClCompile Include="GameUtilities.cpp" />
-    <ClCompile Include="NaivePlayer.cpp" />
-    <ClCompile Include="Ship.cpp" />
+    <ClCompile Include="..\Battleship\AbstractPlayer.cpp" />
+    <ClCompile Include="..\Battleship\GameUtilities.cpp" />
+    <ClCompile Include="..\Battleship\NaivePlayer.cpp" />
+    <ClCompile Include="..\Battleship\Ship.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AbstractPlayer.h" />
-    <ClInclude Include="GameUtilities.h" />
-    <ClInclude Include="IBattleshipGameAlgo.h" />
-    <ClInclude Include="NaivePlayer.h" />
-    <ClInclude Include="Ship.h" />
+    <ClInclude Include="..\Battleship\AbstractPlayer.h" />
+    <ClInclude Include="..\Battleship\GameUtilities.h" />
+    <ClInclude Include="..\Battleship\IBattleshipGameAlgo.h" />
+    <ClInclude Include="..\Battleship\NaivePlayer.h" />
+    <ClInclude Include="..\Battleship\Ship.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{34767E66-3900-40BA-B94F-D14B18C3446A}</ProjectGuid>

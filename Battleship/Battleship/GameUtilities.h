@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Ship.h"
+#include <windows.h>
 #include <vector>
 
 using namespace std;

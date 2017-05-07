@@ -232,5 +232,10 @@ void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResul
 	
 }
 
+IBattleshipGameAlgo* GetAlgorithm()
+{
+	IBattleshipGameAlgo *newP = new SmartPlayer;
+	return newP;
+}
 
 
