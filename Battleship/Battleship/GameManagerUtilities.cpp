@@ -11,6 +11,7 @@
 #include <Windows.h>
 #include "AbstractPlayer.h"
 #include "Graphics.h"
+#include "DLLManager.h"
 
 
 using namespace std;
@@ -23,7 +24,7 @@ const string GameManagerUtilities::LIB_FILE_SUFFIX(".dll");
 const string GameManagerUtilities::BAD_STRING("!@#"); // for getDirPath
 const int GameManagerUtilities::MAX_PATH_LEN = 1024;
 
-void GameManagerUtilities::processInputArguments(int argc, char** argv, string& dirPath)
+int GameManagerUtilities::processInputArguments(int argc, char** argv, string& dirPath)
 {
 	auto gotDirPath = false;
 	if (argc >= 2)
@@ -58,6 +59,8 @@ void GameManagerUtilities::processInputArguments(int argc, char** argv, string& 
 	{
 		dirPath = getDirPath();
 	}
+	// convert the given directory path to full path
+	return convertToFullPath(dirPath);
 }
 
 
@@ -351,7 +354,7 @@ int GameManagerUtilities::checkBoardValidity(string* board)
 	return printBoardErrors(errShipsA, errShipsB, shipCountA, shipCountB, adjCheck);
 }
 
-int GameManagerUtilities::getBoardPath(string& dirPath, string& boardPath)
+int GameManagerUtilities::convertToFullPath(string& dirPath)
 {
 	if (dirPath == BAD_STRING) //error occurred in getDirPath()
 	{
@@ -360,9 +363,9 @@ int GameManagerUtilities::getBoardPath(string& dirPath, string& boardPath)
 	}
 	// get the full path of the directory
 	char fullPath[MAX_PATH_LEN];
-	if(!_fullpath(fullPath, dirPath.c_str(), MAX_PATH_LEN - 1))
+	if (!_fullpath(fullPath, dirPath.c_str(), MAX_PATH_LEN - 1))
 	{
-		cout << "Error: conversion to full path failed" << endl;
+		cout << "Error: conversion of directory path to full path failed" << endl;
 		return -1;
 	}
 	// copy the full path to dirPath
@@ -372,11 +375,11 @@ int GameManagerUtilities::getBoardPath(string& dirPath, string& boardPath)
 	{
 		dirPath.pop_back();
 	}
-	if (!GameUtilities::isValidPath(dirPath))
-	{
-		cout << "Wrong Path: " << dirPath << endl;
-		return -1;
-	}
+	return 0;
+}
+
+int GameManagerUtilities::getBoardPath(string& dirPath, string& boardPath)
+{
 	auto fileNotFound = true;
 	if (GameUtilities::findFileBySuffix(boardPath, dirPath, BOARD_FILE_SUFFIX, fileNotFound, 0) < 0)
 	{
@@ -592,6 +595,3 @@ int GameManagerUtilities::playTheGame(IBattleshipGameAlgo* A, IBattleshipGameAlg
 	delete B;
 	return EXIT_SUCCESS;
 }
-
-
-

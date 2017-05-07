@@ -13,15 +13,18 @@ using namespace std;
 int main(int argc, char** argv)
 {
 	string dirPath, boardPath, board[ROW_SIZE], dllPathA, dllPathB;
-	int errorCheck = 0;
-	DLLManager* dllMngr = new DLLManager;
+	auto errorCheck = 0;
+	auto dllMngr = new DLLManager; //TODO @Ben - why pointer and not an instance? better avoid dynamic allocations...
 
 	// allocate individual boards
 	auto boardA = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
 	auto boardB = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
 
 	// processing program arguments
-	GameManagerUtilities::processInputArguments(argc, argv, dirPath);
+	if (GameManagerUtilities::processInputArguments(argc, argv, dirPath) < 0)
+	{
+		return EXIT_FAILURE;
+	}
 
 	// validate game configuration files
 	if (!GameUtilities::isValidPath(dirPath))
@@ -29,16 +32,17 @@ int main(int argc, char** argv)
 		cout << "Wrong Path: " << dirPath << endl;
 		return EXIT_FAILURE;
 	}
-	if ((GameManagerUtilities::getBoardPath(dirPath, boardPath) < 0) ||
-		(GameManagerUtilities::initGameBoards(boardPath, board, boardA, boardB) < 0))
+	if (GameManagerUtilities::getBoardPath(dirPath, boardPath) < 0 ||
+		GameManagerUtilities::initGameBoards(boardPath, board, boardA, boardB) < 0)
 	{
 		errorCheck = 1;
 	}
-	if ((GameManagerUtilities::getDllPath(dirPath, dllPathA, 0) < 0) ||
-		(GameManagerUtilities::getDllPath(dirPath, dllPathB, 1) < 0))
+	/*
+	if (GameManagerUtilities::getDllPath(dirPath, dllPathA, 0) < 0 ||
+		GameManagerUtilities::getDllPath(dirPath, dllPathB, 1) < 0)
 	{
 		errorCheck = 1;
-	}
+	}*/
 	if (errorCheck == 1)
 	{
 		return EXIT_FAILURE;
@@ -69,7 +73,7 @@ int main(int argc, char** argv)
 		cout << "Algorithm initialization failed for dll: " << dllPathB << endl;
 		return EXIT_FAILURE;
 	} 
-	----------------------------------------------------------------------------- */
+	/*----------------------------------------------------------------------------- */
 
 	/* ------------------- Old Player init ------------------------------ */
 	IBattleshipGameAlgo *A = new FilePlayer;
@@ -85,6 +89,7 @@ int main(int argc, char** argv)
 	// delete individual boards - we do not need them anymore
 	GameUtilities::deleteBoard(boardA, ROW_SIZE);
 	GameUtilities::deleteBoard(boardB, ROW_SIZE);
+	delete dllMngr;
 
 	// Let the game begin!!!
 	return GameManagerUtilities::playTheGame(A, B, playerAttributesArr, board);

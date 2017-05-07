@@ -16,14 +16,14 @@ int DLLManager::loadDLL(const std::string path)
 	HINSTANCE hLib = LoadLibraryA(path.c_str());
 	if (!hLib)
 	{
-		std::cout << "Cannot load dll: " << path << std::endl;
+		std::cout << "Error: cannot load dll: " << path << std::endl;
 		return -1;
 	}
 
 	GetAlgoFuncType getAlgoFunc = reinterpret_cast<GetAlgoFuncType>(GetProcAddress(hLib, "GetAlgorithm"));
 	if (!getAlgoFunc)
 	{
-		std::cout << "Cannot load dll: " << path << std::endl;
+		std::cout << "Error: cannot load dll: " << path << std::endl;
 		return -1;
 	}
 

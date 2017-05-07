@@ -20,7 +20,7 @@ typedef struct _PlayerAttributes
 class GameManagerUtilities
 {
 public:
-	static void processInputArguments(int argc, char** argv, string& dirPath);
+	static int processInputArguments(int argc, char** argv, string& dirPath);
 
 	static void changeCurrentPlayer(int& attackerNum, int& defenderNum, string& attackerName);
 
@@ -70,6 +70,9 @@ private:
 
 	/* validates the given board*/
 	static int checkBoardValidity(string* board);
+
+	/* changes the given dirPath (relative or absolute) to its full path representation */
+	static int convertToFullPath(string& dirPath);
 
 	/* returns an absolute path to the current working directory */
 	static string getDirPath();
