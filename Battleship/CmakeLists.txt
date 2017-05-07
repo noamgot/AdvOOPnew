@@ -60,7 +60,7 @@ set (SMART_ALGO_SOURCE_FILES
 	SmartPlayer.cpp
 	SmartPlayer.h
 	WeightedPosition.cpp
-	WeightePosition.h
+	WeightedPosition.h
 )
 
 ##################################
