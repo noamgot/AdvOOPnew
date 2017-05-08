@@ -11,7 +11,7 @@
 #include <Windows.h>
 #include "AbstractPlayer.h"
 #include "Graphics.h"
-#include "DLLManager.h"
+
 
 
 using namespace std;
@@ -242,12 +242,22 @@ namespace GameManagerUtilities
 		return validAttack;
 	}
 
-	bool GameManagerUtilities::initPlayer(IBattleshipGameAlgo* pPlayer, int playerNum, const char** board,
-		const string dirPath, PlayerAttributes playerAttributesArr[])
+	bool GameManagerUtilities::initPlayer(IBattleshipGameAlgo*& pPlayer, int playerNum, const char** board,
+		const string dirPath, const string dllPath, PlayerAttributes playerAttributesArr[], DLLManager& dllMngr)
 	{
+		pPlayer = dllMngr.loadAlgo(dllPath);
+		if (pPlayer == nullptr)
+		{
+			return false;
+		}
 		pPlayer->setBoard(playerNum, board, ROW_SIZE, COL_SIZE);
 		initPlayersAttributes(playerAttributesArr[playerNum], board);
-		return pPlayer->init(dirPath);
+		if (!pPlayer->init(dirPath))
+		{
+			cout << "Algorithm initialization failed for dll: " << dllPath << endl;
+			return false;
+		}
+		return true;
 	}
 
 	int GameManagerUtilities::printBoardErrors(bitset<4>& errShipsA, bitset<4>& errShipsB, int shipCountA, int shipCountB, int adjCheck)
