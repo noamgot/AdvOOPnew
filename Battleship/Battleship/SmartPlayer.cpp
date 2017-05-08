@@ -179,7 +179,7 @@ void SmartPlayer::outlineSunkenEnemyShip(int row, int col)
 				}
 
 				j++; 
-			} while (doIfValid(row + j * row_mod,col + j * col_mod,false, false,true,eSign::DESTROYED,eSign::DESTROYED).first == eSign::DESTROYED);
+			} while (doIfValid(row + j * row_mod,col + j * col_mod,false, false,true,eSign::DESTROYED,eSign::DESTROYED).first);
 			doIfValid(row + j * row_mod, col + j * col_mod, false, false, true, eShipChar::WATER, eSign::EMPTY);
 		}
 	}
@@ -236,8 +236,19 @@ void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResul
 	{
 		mBoard[myRow][myCol] = eSign::EMPTY; // empty
 	}
-	using namespace Graphics;
-	Graphics::printBoard(board, ROW_SIZE, COL_SIZE);
+	//string *board = new string();
+	//for (auto row = 0; row < 10; ++row)
+	//{
+	//	for (auto col = 0; col < 10; ++col)
+	//	{
+	//		(*board).append(&mBoard[row][col]);
+	//	}
+	//}
+	//int x, y;
+	//Graphics::wherexy(x, y);
+	//Graphics::gotoxy(0, 50);
+	//Graphics::printBoard(board, 10, 10);
+	//
 	
 }
 

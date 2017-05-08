@@ -43,12 +43,12 @@ int main(int argc, char** argv)
 	{
 		errorCheck = 1;
 	}
-	/*
+	
 	if (GameManagerUtilities::getDllPath(dirPath, dllPathA, 0) < 0 ||
 		GameManagerUtilities::getDllPath(dirPath, dllPathB, 1) < 0)
 	{
 		errorCheck = 1;
-	}*/
+	}
 	if (errorCheck == 1)
 	{
 		return EXIT_FAILURE;
@@ -95,8 +95,10 @@ int main(int argc, char** argv)
 	// delete individual boards - we do not need them anymore
 	deleteBoard(boardA, ROW_SIZE);
 	deleteBoard(boardB, ROW_SIZE);
-	delete dllMngr;
+	
 
 	// Let the game begin!!!
-	return playTheGame(A, B, playerAttributesArr, board);
+	auto ret = playTheGame(A, B, playerAttributesArr, board);
+	delete dllMngr;
+	return ret;
 }

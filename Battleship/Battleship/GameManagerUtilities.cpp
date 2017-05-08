@@ -585,7 +585,8 @@ namespace GameManagerUtilities
 			changeCurrentPlayer(attackerNum, defenderNum, attackerName);
 		}
 		printGameResults(playerAttributesArr);
-
+		char c;
+		cin >> c;
 		delete A;
 		delete B;
 		return EXIT_SUCCESS;
