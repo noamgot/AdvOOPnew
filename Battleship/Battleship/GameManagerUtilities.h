@@ -2,6 +2,7 @@
 
 #include <bitset>
 #include "GameUtilities.h"
+#include "DLLManager.h"
 
 using namespace std;
 
@@ -46,7 +47,8 @@ namespace GameManagerUtilities
 
 	int getDllPath(string& dirPath, string& dllPath, const int playerNum);
 
-	bool initPlayer(IBattleshipGameAlgo* pPlayer, int playerNum, const char** board, const string dirPath, PlayerAttributes playerAttributes[]);
+	bool initPlayer(IBattleshipGameAlgo*& pPlayer, int playerNum, const char** board, const string dirPath, const string dllPath, 
+					PlayerAttributes playerAttributesArr[], DLLManager& dllMngr);
 
 	bool registerHit(PlayerAttributes& playerAttributes, pair<int, int> coords, eShipType shipType, AttackResult& res);
 

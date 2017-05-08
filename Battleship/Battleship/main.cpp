@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 {
 	string dirPath, boardPath, board[ROW_SIZE], dllPathA, dllPathB;
 	auto errorCheck = 0;
-	auto dllMngr = new DLLManager; //TODO @Ben - why pointer and not an instance? better avoid dynamic allocations...
+	DLLManager dllMngr;
 
 	//hide the console cursur
 	Graphics::showConsoleCursor(false);
@@ -38,14 +38,11 @@ int main(int argc, char** argv)
 		cout << "Wrong Path: " << dirPath << endl;
 		return EXIT_FAILURE;
 	}
-	if (getBoardPath(dirPath, boardPath) < 0 ||
-		initGameBoards(boardPath, board, boardA, boardB) < 0)
+	if (getBoardPath(dirPath, boardPath) < 0 || initGameBoards(boardPath, board, boardA, boardB) < 0)
 	{
 		errorCheck = 1;
 	}
-	
-	if (GameManagerUtilities::getDllPath(dirPath, dllPathA, 0) < 0 ||
-		GameManagerUtilities::getDllPath(dirPath, dllPathB, 1) < 0)
+	if (getDllPath(dirPath, dllPathA, 0) < 0 || getDllPath(dirPath, dllPathB, 1) < 0)
 	{
 		errorCheck = 1;
 	}
@@ -55,31 +52,14 @@ int main(int argc, char** argv)
 	}
 
 	PlayerAttributes playerAttributesArr[2];
+	IBattleshipGameAlgo *A;
+	IBattleshipGameAlgo *B;
 
-	/*---------------------- New initialization for the players --------------------- */
-	// Initialize player one
-	IBattleshipGameAlgo *A = dllMngr->loadAlgo(dllPathA);
-	if (A == nullptr)
+	if ((!initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, dllPathA, playerAttributesArr, dllMngr)) ||
+		(!initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, dllPathB, playerAttributesArr, dllMngr)))
 	{
-		return EXIT_FAILURE;
-	}
-	if (!GameManagerUtilities::initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, playerAttributesArr))
-	{
-		cout << "Algorithm initialization failed for dll: " << dllPathA << endl;
-		return EXIT_FAILURE;
-	}
-	// Initialize player two
-	IBattleshipGameAlgo *B = dllMngr->loadAlgo(dllPathB);
-	if (B == nullptr)
-	{
-		return EXIT_FAILURE;
-	}
-	if (!GameManagerUtilities::initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, playerAttributesArr))
-	{
-		cout << "Algorithm initialization failed for dll: " << dllPathB << endl;
 		return EXIT_FAILURE;
 	} 
-	/*----------------------------------------------------------------------------- */
 
 	/* ------------------- Old Player init ------------------------------ 
 	IBattleshipGameAlgo *A = new FilePlayer;
@@ -99,6 +79,6 @@ int main(int argc, char** argv)
 
 	// Let the game begin!!!
 	auto ret = playTheGame(A, B, playerAttributesArr, board);
-	delete dllMngr;
+
 	return ret;
 }
