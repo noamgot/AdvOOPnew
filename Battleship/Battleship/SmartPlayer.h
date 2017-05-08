@@ -4,6 +4,7 @@
 #include <deque>
 #include "WeightedPosition.h"
 
+
 enum class Direction
 {
 	UP,

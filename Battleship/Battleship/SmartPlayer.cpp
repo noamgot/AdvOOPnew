@@ -2,6 +2,7 @@
 #include "GameUtilities.h"
 
 
+
 SmartPlayer::~SmartPlayer()
 {
 }
@@ -29,7 +30,12 @@ void SmartPlayer::setBoard(int player, const char** board, int numRows, int numC
 		}
 	}
 }
-
+/// Performs an operation on the game board that the player holds according to the booleans if the coordinates are within range
+/// hit_op changes the the character to eSign::Destroyed
+/// target_op adds the coordinates to the front of the attacking queue
+/// swap_op makes it simply change the symbol from old_char (if it was old_char) to new_char.
+/// Returns a pair of booleans: (is a valid point inside the board?, operation successful?)
+/// Operation is successful if all boolean options are false, only one of them is true and the point is valid and in the case of swap_op if the char was old_char.
 pair<bool, bool> SmartPlayer::doIfValid(int row, int col, bool hit_op, bool target_op, bool swap_op, char new_char, char old_char)
 {
 	if (GameUtilities::isLegalMove(row + 1, col + 1, mNumOfRows, mNumOfCols))
@@ -46,7 +52,7 @@ pair<bool, bool> SmartPlayer::doIfValid(int row, int col, bool hit_op, bool targ
 		{
 			if (mBoard[row][col] == eShipChar::WATER)
 			{
-				mSmartMoveQueue.push_front(make_pair(row, col));
+				mSmartMoveQueue.push_front(make_pair(row + 1, col + 1));
 			}
 		}
 		return make_pair(true,(!target_op && !hit_op && !swap_op) || (swap_op ^ swap_op ^ hit_op));
@@ -65,7 +71,7 @@ bool SmartPlayer::init(const string& path)
 		{
 			if (mBoard[row][col] != eShipChar::WATER || mBoard[row][col] != eSign::EMPTY)
 			{
-				valid_moves.push_back(make_pair(row,col));
+				valid_moves.push_back(make_pair(row + 1,col + 1));
 			}
 		}
 	}
@@ -88,7 +94,7 @@ pair<int, int> SmartPlayer::attack()
 	{
 		move = mSmartMoveQueue.front();
 		mSmartMoveQueue.pop_front();
-	} while (mBoard[move.first][move.second] != eShipChar::WATER && mSmartMoveQueue.size() > 1);
+	} while (mBoard[move.first - 1][move.second - 1] != eShipChar::WATER && mSmartMoveQueue.size() > 1);
 	
 	return move;
 }
@@ -116,6 +122,7 @@ Direction SmartPlayer::scanTheVicinity(int row, int col)
 	{
 		return Direction::VERTICAL;
 	}
+	return Direction::NONE;
 	//TODO - add deeper scanning for eSign::EMPTY and edge coordinates
 }
 
@@ -172,8 +179,8 @@ void SmartPlayer::outlineSunkenEnemyShip(int row, int col)
 				}
 
 				j++; 
-			} while (mBoard[row + j * row_mod][col + j * col_mod] == eSign::DESTROYED);
-			mBoard[row + j * row_mod][col + j * col_mod] = eSign::EMPTY;
+			} while (doIfValid(row + j * row_mod,col + j * col_mod,false, false,true,eSign::DESTROYED,eSign::DESTROYED).first == eSign::DESTROYED);
+			doIfValid(row + j * row_mod, col + j * col_mod, false, false, true, eShipChar::WATER, eSign::EMPTY);
 		}
 	}
 	
@@ -229,6 +236,8 @@ void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResul
 	{
 		mBoard[myRow][myCol] = eSign::EMPTY; // empty
 	}
+	using namespace Graphics;
+	Graphics::printBoard(board, ROW_SIZE, COL_SIZE);
 	
 }
 

@@ -587,6 +587,8 @@ int GameManagerUtilities::playTheGame(IBattleshipGameAlgo* A, IBattleshipGameAlg
 		changeCurrentPlayer(attackerNum, defenderNum, attackerName);
 	}
 	printGameResults(playerAttributesArr);
+	char c;
+	cin >> c;
 
 	delete A;
 	delete B;
