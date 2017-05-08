@@ -1,0 +1,13 @@
+T0_BadBoard1
+T1_BadBoard2
+T2_BadBoard3
+T3_CleanMoves
+T4_EmptyFolder
+T5_DirtyLegalMoves
+T6_DirtyIlegalMoves
+T7_MissingFiles
+T8_EndMoves
+T9_TieGame
+T10_Game1
+T11_Game2
+T12_Game3

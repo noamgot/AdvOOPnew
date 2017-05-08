@@ -1,0 +1,3 @@
+Missing board file (*.sboard) looking in path: C:/Git/BattleShip/BattleshipScripts/ex1_tests/T4_EmptyFolder
+Missing attack file for player A (*.attack-a) looking in path: C:/Git/BattleShip/BattleshipScripts/ex1_tests/T4_EmptyFolder
+Missing attack file for player B (*.attack-b) looking in path: C:/Git/BattleShip/BattleshipScripts/ex1_tests/T4_EmptyFolder
