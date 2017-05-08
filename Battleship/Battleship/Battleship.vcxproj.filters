@@ -67,7 +67,4 @@
     <None Include="good_board_0.sboard" />
     <None Include="Naive.sboard" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="..\..\..\..\..\..\..\test\bsTEST\CMakeLists.txt" />
-  </ItemGroup>
 </Project>

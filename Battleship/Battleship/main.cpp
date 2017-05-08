@@ -4,41 +4,51 @@
 #include "SmartPlayer.h"
 #include "DLLManager.h"
 #include <iostream>
+#include "Graphics.h"
 
 
 using namespace std;
+using namespace GameManagerUtilities;
+using namespace GameUtilities;
 
 
 
 int main(int argc, char** argv)
 {
 	string dirPath, boardPath, board[ROW_SIZE], dllPathA, dllPathB;
-	int errorCheck = 0;
-	DLLManager* dllMngr = new DLLManager;
+	auto errorCheck = 0;
+	auto dllMngr = new DLLManager; //TODO @Ben - why pointer and not an instance? better avoid dynamic allocations...
+
+	//hide the console cursur
+	Graphics::showConsoleCursor(false);
 
 	// allocate individual boards
-	auto boardA = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
-	auto boardB = GameUtilities::allocateBoard(ROW_SIZE, COL_SIZE);
+	auto boardA = allocateBoard(ROW_SIZE, COL_SIZE);
+	auto boardB = allocateBoard(ROW_SIZE, COL_SIZE);
 
 	// processing program arguments
-	GameManagerUtilities::processInputArguments(argc, argv, dirPath);
+	if (processInputArguments(argc, argv, dirPath) < 0)
+	{
+		return EXIT_FAILURE;
+	}
 
 	// validate game configuration files
-	if (!GameUtilities::isValidPath(dirPath))
+	if (!isValidPath(dirPath))
 	{
 		cout << "Wrong Path: " << dirPath << endl;
 		return EXIT_FAILURE;
 	}
-	if ((GameManagerUtilities::getBoardPath(dirPath, boardPath) < 0) ||
-		(GameManagerUtilities::initGameBoards(boardPath, board, boardA, boardB) < 0))
+	if (getBoardPath(dirPath, boardPath) < 0 ||
+		initGameBoards(boardPath, board, boardA, boardB) < 0)
 	{
 		errorCheck = 1;
 	}
-	if ((GameManagerUtilities::getDllPath(dirPath, dllPathA, 0) < 0) ||
-		(GameManagerUtilities::getDllPath(dirPath, dllPathB, 1) < 0))
+	/*
+	if (GameManagerUtilities::getDllPath(dirPath, dllPathA, 0) < 0 ||
+		GameManagerUtilities::getDllPath(dirPath, dllPathB, 1) < 0)
 	{
 		errorCheck = 1;
-	}
+	}*/
 	if (errorCheck == 1)
 	{
 		return EXIT_FAILURE;
@@ -75,17 +85,18 @@ int main(int argc, char** argv)
 	IBattleshipGameAlgo *A = new FilePlayer;
 	IBattleshipGameAlgo *B = new SmartPlayer;
 
-	if (!GameManagerUtilities::initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, playerAttributesArr) ||
-		!GameManagerUtilities::initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, playerAttributesArr))
+	if (!initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, playerAttributesArr) ||
+		!initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, playerAttributesArr))
 	{
 		return EXIT_FAILURE;
 	}
 	-----------------------------------------------------------------------*/
 
 	// delete individual boards - we do not need them anymore
-	GameUtilities::deleteBoard(boardA, ROW_SIZE);
-	GameUtilities::deleteBoard(boardB, ROW_SIZE);
+	deleteBoard(boardA, ROW_SIZE);
+	deleteBoard(boardB, ROW_SIZE);
+	delete dllMngr;
 
 	// Let the game begin!!!
-	return GameManagerUtilities::playTheGame(A, B, playerAttributesArr, board);
+	return playTheGame(A, B, playerAttributesArr, board);
 }

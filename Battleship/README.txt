@@ -1,5 +1,5 @@
 *******************************
-*	IMPORTANT CLATIFICATION	  *
+*   IMPORTANT CLATIFICATION   *
 *******************************
 
 our code convention for the board coordinates is:
