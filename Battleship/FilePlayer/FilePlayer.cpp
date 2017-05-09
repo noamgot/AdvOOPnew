@@ -6,15 +6,6 @@
 
 const string FilePlayer::ATTACK_FILE_SUFFIX(".attack");
 
-FilePlayer::FilePlayer()
-{
-}
-
-
-FilePlayer::~FilePlayer()
-{
-}
-
 // file player doesn't care about the board, hence we do not copy it
 void FilePlayer::setBoard(int player, const char** board, int numRows, int numCols)
 {

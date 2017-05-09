@@ -2,10 +2,6 @@
 #include "GameUtilities.h"
 
 
-
-SmartPlayer::~SmartPlayer()
-{
-}
 ///Returns whether this square is a a ship or was a ship.  Does not assumes coordinates are valid.
 bool SmartPlayer::isShip(int row, int col)
 {

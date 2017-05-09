@@ -44,8 +44,8 @@ protected:
 	void outlineSunkenEnemyShip(int row, int col, int row_mod = 0, int col_mod = 0);			// Mark the area around a sunken ship as eSight::Empty so it won't be targeted.
 
 public:
-	SmartPlayer() : mAttackMode(false), mIsFilePlayer(false), mDir(Direction::NONE) {};
-	~SmartPlayer();
+	SmartPlayer() : mAttackMode(false), mIsFilePlayer(false), mDir(Direction::NONE) {}
+	~SmartPlayer(){}
 	void setBoard(int player, const char **board, int numRows, int numCols) override; // called once to notify player on his board
 	bool init(const string& path) override;
 	void notifyOnAttackResult(int player, int row, int col, AttackResult result) override; // notify on last move result
