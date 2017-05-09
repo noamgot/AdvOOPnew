@@ -15,45 +15,39 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Battleship\AbstractPlayer.cpp">
+    <ClCompile Include="AbstractPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Battleship\GameUtilities.cpp">
+    <ClCompile Include="GameUtilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Battleship\Ship.cpp">
+    <ClCompile Include="Ship.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Battleship\SmartPlayer.cpp">
+    <ClCompile Include="WeightedPosition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Battleship\WeightedPosition.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Battleship\Graphics.cpp">
+    <ClCompile Include="SmartPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Battleship\AbstractPlayer.h">
+    <ClInclude Include="AbstractPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Battleship\GameUtilities.h">
+    <ClInclude Include="GameUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Battleship\IBattleshipGameAlgo.h">
+    <ClInclude Include="IBattleshipGameAlgo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Battleship\Ship.h">
+    <ClInclude Include="Ship.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Battleship\SmartPlayer.h">
+    <ClInclude Include="SmartPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Battleship\WeightedPosition.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Battleship\Graphics.h">
+    <ClInclude Include="WeightedPosition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,7 +1,7 @@
 
 #include "Graphics.h"
-#include "AbstractPlayer.h"
 #include <iostream>
+#include "GameUtilities.h"
 
 #define DEFAULT_LINE_CLEAR_LENGTH 100
 namespace Graphics

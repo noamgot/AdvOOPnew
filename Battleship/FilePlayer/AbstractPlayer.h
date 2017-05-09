@@ -16,10 +16,11 @@ protected:
 	int mPlayerNum;
 	vector<vector<char>> mBoard; 
 	queue<pair<int, int>> mMovesQueue;
-public:
-	AbstractPlayer() : mShipsCount(GameUtilities::DEFAULT_SHIPS_COUNT){}
 
-	virtual ~AbstractPlayer() = 0; // this class is abstract!
+	// this class should not be instantiated in the game manager - hence the ctor & dtor are protected
+	AbstractPlayer() : mShipsCount(GameUtilities::DEFAULT_SHIPS_COUNT) {}
+	~AbstractPlayer() {}
+public:
 
 	void setBoard(int player, const char **board, int numRows, int numCols) override; // called once to notify player about his board
 	

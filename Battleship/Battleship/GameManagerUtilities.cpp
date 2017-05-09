@@ -9,7 +9,6 @@
 #include <map>
 #include <stdlib.h>
 #include <Windows.h>
-#include "AbstractPlayer.h"
 #include "Graphics.h"
 
 
@@ -355,7 +354,6 @@ namespace GameManagerUtilities
 				}
 			}
 		}
-
 		return printBoardErrors(errShipsA, errShipsB, shipCountA, shipCountB, adjCheck);
 	}
 
@@ -399,7 +397,7 @@ namespace GameManagerUtilities
 		return 0;
 	}
 
-	int GameManagerUtilities::getDllPath(string& dirPath, string& dllPath, const int playerNum)
+	int GameManagerUtilities::getDllPath(string& dirPath, string& dllPath, int playerNum)
 	{
 		auto fileNotFound = true;
 		if (GameUtilities::findFileBySuffix(dllPath, dirPath, LIB_FILE_SUFFIX, fileNotFound, playerNum) < 0)

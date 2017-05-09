@@ -2,10 +2,8 @@
 #include "AbstractPlayer.h"
 #include <set>
 #include <deque>
-#include <stdio.h>
-#include "Graphics.h"
 
-using namespace Graphics;
+
 enum class Direction
 {
 	UP,

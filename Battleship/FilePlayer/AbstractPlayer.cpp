@@ -1,7 +1,4 @@
 #include "AbstractPlayer.h"
-#include <iostream>
-
-AbstractPlayer::~AbstractPlayer() {}
 
 void AbstractPlayer::setBoard(int player, const char **board, int numRows, int numCols)
 {
@@ -36,10 +33,5 @@ pair<int, int> AbstractPlayer::attack()
 bool AbstractPlayer::init(const string& path)
 {
 	// validate path
-	if (!GameUtilities::isValidPath(path))
-	{
-		//cout << "Error: failed to init player - got invalid path: " << path << endl;
-		return false;
-	}
-	return true;
+	return GameUtilities::isValidPath(path);
 }

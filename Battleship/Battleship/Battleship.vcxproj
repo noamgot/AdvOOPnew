@@ -151,7 +151,6 @@
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="AbstractPlayer.cpp" />
     <ClCompile Include="Ship.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -160,7 +159,6 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GameUtilities.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
-    <ClInclude Include="AbstractPlayer.h" />
     <ClInclude Include="Ship.h" />
   </ItemGroup>
   <ItemGroup>

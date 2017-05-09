@@ -45,7 +45,7 @@ namespace GameManagerUtilities
 	 * returns a negative number in case of failure, and 0 otherwise*/
 	int getBoardPath(string& dirPath, string& boardPath);
 
-	int getDllPath(string& dirPath, string& dllPath, const int playerNum);
+	int getDllPath(string& dirPath, string& dllPath, int playerNum);
 
 	bool initPlayer(IBattleshipGameAlgo*& pPlayer, int playerNum, const char** board, const string dirPath, const string dllPath, 
 					PlayerAttributes playerAttributesArr[], DLLManager& dllMngr);

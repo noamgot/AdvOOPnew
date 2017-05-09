@@ -1,7 +1,4 @@
 #include "GameManagerUtilities.h"
-#include "NaivePlayer.h"
-#include "FilePlayer.h"
-#include "SmartPlayer.h"
 #include "DLLManager.h"
 #include <iostream>
 #include "Graphics.h"
@@ -55,8 +52,8 @@ int main(int argc, char** argv)
 	IBattleshipGameAlgo *A;
 	IBattleshipGameAlgo *B;
 
-	if ((!initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, dllPathA, playerAttributesArr, dllMngr)) ||
-		(!initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, dllPathB, playerAttributesArr, dllMngr)))
+	if (!initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, dllPathA, playerAttributesArr, dllMngr) ||
+		!initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, dllPathB, playerAttributesArr, dllMngr))
 	{
 		return EXIT_FAILURE;
 	} 

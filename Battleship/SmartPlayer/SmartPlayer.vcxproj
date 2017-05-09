@@ -19,21 +19,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Battleship\AbstractPlayer.cpp" />
-    <ClCompile Include="..\Battleship\GameUtilities.cpp" />
-    <ClCompile Include="..\Battleship\Graphics.cpp" />
-    <ClCompile Include="..\Battleship\Ship.cpp" />
-    <ClCompile Include="..\Battleship\SmartPlayer.cpp" />
-    <ClCompile Include="..\Battleship\WeightedPosition.cpp" />
+    <ClCompile Include="AbstractPlayer.cpp" />
+    <ClCompile Include="GameUtilities.cpp" />
+    <ClCompile Include="Ship.cpp" />
+    <ClCompile Include="SmartPlayer.cpp" />
+    <ClCompile Include="WeightedPosition.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Battleship\AbstractPlayer.h" />
-    <ClInclude Include="..\Battleship\GameUtilities.h" />
-    <ClInclude Include="..\Battleship\Graphics.h" />
-    <ClInclude Include="..\Battleship\IBattleshipGameAlgo.h" />
-    <ClInclude Include="..\Battleship\Ship.h" />
-    <ClInclude Include="..\Battleship\SmartPlayer.h" />
-    <ClInclude Include="..\Battleship\WeightedPosition.h" />
+    <ClInclude Include="AbstractPlayer.h" />
+    <ClInclude Include="GameUtilities.h" />
+    <ClInclude Include="IBattleshipGameAlgo.h" />
+    <ClInclude Include="Ship.h" />
+    <ClInclude Include="SmartPlayer.h" />
+    <ClInclude Include="WeightedPosition.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F258BAAD-2598-4260-9CFD-6D1426BE44ED}</ProjectGuid>

@@ -15,11 +15,11 @@ bool SmartPlayer::isShip(int row, int col)
 		{
 			printf("%c", mBoard[row][col]);
 		}
-		return verifyChar(row, col, (mPlayerNum == 1) ? tolower(eShipChar::DESTROYER) : eShipChar::DESTROYER)
-			|| verifyChar(row, col, (mPlayerNum == 1) ? tolower(eShipChar::BOAT) : eShipChar::BOAT)
-			|| verifyChar(row, col, (mPlayerNum == 1) ? tolower(eShipChar::MISSLE_SHIP) : eShipChar::MISSLE_SHIP)
-			|| verifyChar(row, col, (mPlayerNum == 1) ? tolower(eShipChar::SUBMARINE) : eShipChar::SUBMARINE)
-			|| verifyChar(row, col, eSign::DESTROYED);
+		return verifyChar(row, col, (mPlayerNum == 1) ? tolower(DESTROYER) : DESTROYER)
+			|| verifyChar(row, col, (mPlayerNum == 1) ? tolower(BOAT) : BOAT)
+			|| verifyChar(row, col, (mPlayerNum == 1) ? tolower(MISSLE_SHIP) : MISSLE_SHIP)
+			|| verifyChar(row, col, (mPlayerNum == 1) ? tolower(SUBMARINE) : SUBMARINE)
+			|| verifyChar(row, col, DESTROYED);
 	}
 	return false;
 }
@@ -52,7 +52,7 @@ bool SmartPlayer::replaceChar(int row, int col, char old_char, char new_char)
 ///Adds the coordinates to the attack queue if they are unknown (eShipChar::WATER). Assumes coordinates are valid.
 bool SmartPlayer::addTarget(int row, int col)
 {
-	if (mBoard[row][col] == eShipChar::WATER)
+	if (mBoard[row][col] == WATER)
 	{
 		mSmartMoveQueue.push_front(make_pair(row + 1, col + 1));
 		return true;
@@ -79,7 +79,7 @@ void SmartPlayer::setBoard(int player, const char** board, int numRows, int numC
 		{
 			if (isShipOutline(row, col))
 			{
-				replaceChar(row, col, eShipChar::WATER, eSign::EMPTY);
+				replaceChar(row, col, WATER, EMPTY);
 				
 			}
 			else if (isShip(row, col))
@@ -99,7 +99,7 @@ bool SmartPlayer::init(const string& path)
 	{
 		for (auto col = 0; col < mNumOfCols; col++)
 		{
-			if (mBoard[row][col] != eShipChar::WATER || mBoard[row][col] != eSign::EMPTY)
+			if (mBoard[row][col] != WATER || mBoard[row][col] != EMPTY)
 			{
 				valid_moves.push_back(make_pair(row + 1,col + 1));
 			}
@@ -124,7 +124,7 @@ pair<int, int> SmartPlayer::attack()
 	{
 		move = mSmartMoveQueue.front();
 		mSmartMoveQueue.pop_front();
-	} while (mBoard[move.first - 1][move.second - 1] != eShipChar::WATER && mSmartMoveQueue.size() > 1);
+	} while (mBoard[move.first - 1][move.second - 1] != WATER && mSmartMoveQueue.size() > 1);
 	
 	return move;
 }
@@ -144,11 +144,11 @@ void SmartPlayer::analyzeEnemy(pair<int,int> hitPoint, AttackResult result)
 Direction SmartPlayer::scanTheVicinity(int row, int col)
 {
 
-	if ((isPointValid(row, col + 1) && verifyChar(row, col + 1, eSign::DESTROYED)) || (isPointValid(row, col + 1) && verifyChar(row, col - 1, eSign::DESTROYED)))
+	if ((isPointValid(row, col + 1) && verifyChar(row, col + 1, DESTROYED)) || (isPointValid(row, col + 1) && verifyChar(row, col - 1, DESTROYED)))
 	{
 		return Direction::HORIZONAL;
 	}
-	if ((isPointValid(row + 1, col) && verifyChar(row + 1, col, eSign::DESTROYED)) || (isPointValid(row - 1, col) && verifyChar(row - 1, col, eSign::DESTROYED)))
+	if ((isPointValid(row + 1, col) && verifyChar(row + 1, col, DESTROYED)) || (isPointValid(row - 1, col) && verifyChar(row - 1, col, DESTROYED)))
 	{
 		return Direction::VERTICAL;
 	}
@@ -175,22 +175,22 @@ void SmartPlayer::outlineSunkenEnemyShip(int row, int col, int row_mod, int col_
 		counter = 0;
 		if (isShipOutline(row + 1, col))
 		{
-			replaceChar(row, col, eShipChar::WATER, eSign::EMPTY);
+			replaceChar(row, col, WATER, EMPTY);
 			counter++;
 		}
 		if (isShipOutline(row - 1, col))
 		{
-			replaceChar(row, col, eShipChar::WATER, eSign::EMPTY);
+			replaceChar(row, col, WATER, EMPTY);
 			counter++;
 		}
 		if (isShipOutline(row, col + 1))
 		{
-			replaceChar(row, col, eShipChar::WATER, eSign::EMPTY);
+			replaceChar(row, col, WATER, EMPTY);
 			counter++;
 		}
 		if (isShipOutline(row, col - 1))
 		{
-			replaceChar(row, col, eShipChar::WATER, eSign::EMPTY);
+			replaceChar(row, col, WATER, EMPTY);
 			counter++;
 		}
 		if (counter < 3)
@@ -215,9 +215,9 @@ void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResul
 		analyzeEnemy(make_pair(myRow, myCol), result);
 	}
 
-	if (result != AttackResult::Miss && mBoard[myRow][myCol] == eShipChar::WATER)
+	if (result != AttackResult::Miss && mBoard[myRow][myCol] == WATER)
 	{
-		putChar(myRow, myCol, eSign::DESTROYED); //destroyed something
+		putChar(myRow, myCol, DESTROYED); //destroyed something
 		switch (result)
 		{
 		case AttackResult::Hit :
@@ -250,9 +250,9 @@ void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResul
 	}
 	else
 	{
-		mBoard[myRow][myCol] = eSign::EMPTY; // empty
+		mBoard[myRow][myCol] = EMPTY; // empty
 	}
-	FILE *f = fopen("SmartBoard.txt", "w");
+	/*FILE *f = fopen("SmartBoard.txt", "w");
 	if (f == NULL)
 	{
 		printf("Error opening file!\n");
@@ -265,7 +265,7 @@ void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResul
 		}
 		fprintf(f, "\n");
 	}
-	fclose(f);
+	fclose(f);*/
 	//string *board = new string();
 	//for (auto row = 0; row < 10; ++row)
 	//{
