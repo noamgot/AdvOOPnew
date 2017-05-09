@@ -72,8 +72,6 @@ int FilePlayer::loadMovesFromFile(const string attackFilePath)
 	
 }
 
-//void FilePlayer::setBoard(int player, const char ** board, int numRows, int numCols) {}
-
 bool FilePlayer::init(const string & path)
 {
 	if (!AbstractPlayer::init(path))
