@@ -66,12 +66,12 @@ namespace GameUtilities
 		{
 			if (endsWith(file, suffix))
 			{
-				filePath = file;
-				fileNotFound = false;
 				// the following section allows player no. 1 to find another instance
 				// of the wanted file. player no. 0 gets the first file he finds
 				if (--playerNum < 0)
 				{
+					filePath = file;
+					fileNotFound = false;
 					break;
 				}
 			}

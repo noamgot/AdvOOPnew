@@ -71,7 +71,7 @@ bool FilePlayer::init(const string & path)
 	}
 	string attackFilePath;
 	auto fileNotFound = true;
-	if (GameUtilities::findFileBySuffix(attackFilePath, path, ATTACK_FILE_SUFFIX, fileNotFound, mPlayerNum) < 0)
+	if (GameUtilities::findFileBySuffix(attackFilePath, path, ATTACK_FILE_SUFFIX, fileNotFound, 0) < 0)
 	{
 		return false;
 	}
