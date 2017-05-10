@@ -3,16 +3,19 @@
 #include "Graphics.h"
 
 
+
 using namespace std;
 using namespace GameManagerUtilities;
 using namespace GameUtilities;
 
 int main(int argc, char** argv)
 {
+	// Seed the PRG for all of our random needs.
+	std::srand(std::time(nullptr));
 	string dirPath, boardPath, board[ROW_SIZE], dllPathA, dllPathB;
 	DLLManager dllMngr;
 
-	//hide the console cursur
+	//hide the console cursor
 	Graphics::showConsoleCursor(false);
 
 	// allocate individual boards
