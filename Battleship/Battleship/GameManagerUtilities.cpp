@@ -553,7 +553,7 @@ namespace GameManagerUtilities
 					{
 						cout << (!isupper(hitChar) == attackerNum ? "SELF-SINK" : "SINK") << "\r";
 						Sleep(Graphics::sleepTime);
-						//Graphics::clearLastLine();
+						Graphics::clearLastLine();
 						cout << "CURRENT SCORE: A-" << playerAttributesArr[0].score << ", B-" << playerAttributesArr[1].score << "\r";
 						Sleep(Graphics::sleepTime);
 					}

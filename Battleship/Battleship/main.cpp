@@ -11,7 +11,7 @@ using namespace GameUtilities;
 int main(int argc, char** argv)
 {
 	// Seed the PRG for all of our random needs.
-	std::srand(std::time(nullptr));
+	srand(static_cast<unsigned int>(time(nullptr))); //todo @Uri - why is this in main?!
 	string dirPath, boardPath, board[ROW_SIZE], dllPathA, dllPathB;
 	DLLManager dllMngr;
 
