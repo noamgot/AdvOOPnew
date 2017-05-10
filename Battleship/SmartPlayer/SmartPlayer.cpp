@@ -2,7 +2,7 @@
 #include "GameUtilities.h"
 
 
-///Returns whether this square is a a ship or was a ship.  Does not assumes coordinates are valid.
+
 bool SmartPlayer::isShip(int row, int col)
 {
 	if (isPointValid(row, col))
@@ -19,23 +19,22 @@ bool SmartPlayer::isShip(int row, int col)
 	}
 	return false;
 }
-///Returns whether this square is adjacent to a ship. Does not assumes coordinates are valid.
+
 bool SmartPlayer::isShipOutline(int row, int col)
 {
 	return isShip(row + 1, col) || isShip(row - 1, col) || isShip(row, col + 1) || isShip(row, col - 1);
 }
-///Returns whether the coordinates are valid.
+
 bool SmartPlayer::isPointValid(int row, int col)
 {
 	return GameUtilities::isLegalMove(row + 1, col + 1, mNumOfRows, mNumOfCols);
 }
-///Puts the char on the inner board. Assumes coordinates are valid.
-bool SmartPlayer::putChar(int row, int col, char new_char)
+
+void SmartPlayer::putChar(int row, int col, char new_char)
 {
 		mBoard[row][col] = new_char;
-		return true;
 }
-///Replaces the old_char with new_char and we return true. if the square did not hold old_char nothing happens and we return false. Assumes coordinates are valid.
+
 bool SmartPlayer::replaceChar(int row, int col, char old_char, char new_char)
 {
 	if (verifyChar(row, col, old_char))
@@ -45,7 +44,7 @@ bool SmartPlayer::replaceChar(int row, int col, char old_char, char new_char)
 	}
 	return false;
 }
-///Adds the coordinates to the attack queue if they are unknown (eShipChar::WATER). Assumes coordinates are valid.
+
 bool SmartPlayer::addTarget(int row, int col)
 {
 	if (mBoard[row][col] == WATER)
@@ -262,19 +261,6 @@ void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResul
 		fprintf(f, "\n");
 	}
 	fclose(f);*/
-	//string *board = new string();
-	//for (auto row = 0; row < 10; ++row)
-	//{
-	//	for (auto col = 0; col < 10; ++col)
-	//	{
-	//		(*board).append(&mBoard[row][col]);
-	//	}
-	//}
-	//int x, y;
-	//Graphics::wherexy(x, y);
-	//Graphics::gotoxy(0, 50);
-	//Graphics::printBoard(board, 10, 10);
-	//
 	
 }
 
