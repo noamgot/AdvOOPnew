@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include <ctime>
 #include <bitset>
 #include "GameUtilities.h"
 #include "DLLManager.h"

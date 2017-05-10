@@ -23,7 +23,6 @@
     <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="SmartPlayer.cpp" />
-    <ClCompile Include="WeightedPosition.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractPlayer.h" />
@@ -31,7 +30,6 @@
     <ClInclude Include="IBattleshipGameAlgo.h" />
     <ClInclude Include="Ship.h" />
     <ClInclude Include="SmartPlayer.h" />
-    <ClInclude Include="WeightedPosition.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F258BAAD-2598-4260-9CFD-6D1426BE44ED}</ProjectGuid>

@@ -24,9 +24,6 @@
     <ClCompile Include="Ship.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WeightedPosition.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SmartPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -45,9 +42,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SmartPlayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WeightedPosition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
