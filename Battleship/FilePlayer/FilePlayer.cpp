@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 
+
 const string FilePlayer::ATTACK_FILE_SUFFIX(".attack");
 
 // file player doesn't care about the board, hence we do not copy it
@@ -65,18 +66,15 @@ int FilePlayer::loadMovesFromFile(const string attackFilePath)
 
 bool FilePlayer::init(const string & path)
 {
+	string attackFilePath;
 	if (!AbstractPlayer::init(path))
 	{
 		return false;
 	}
-	string attackFilePath;
-	auto fileNotFound = true;
-	if (GameUtilities::findFileBySuffix(attackFilePath, path, ATTACK_FILE_SUFFIX, fileNotFound, 0) < 0)
+	if (getPathByType(attackFilePath, path, ATTACK_FILE_SUFFIX, GameUtilities::eFileType::ATTACK_FILE, mPlayerNum) < 0)
 	{
 		return false;
 	}
-	attackFilePath = path + "\\" + attackFilePath;
-	// we have the file - now we can load the moves from it:
 	if (loadMovesFromFile(attackFilePath) < 0)
 	{
 		return false;

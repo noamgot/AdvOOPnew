@@ -1,4 +1,6 @@
 ﻿#include "DLLManager.h"
+#include <string>
+#include <iostream>
 
 
 DLLManager::DLLManager() {}

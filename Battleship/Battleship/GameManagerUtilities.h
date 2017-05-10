@@ -5,6 +5,7 @@
 #include "DLLManager.h"
 
 using namespace std;
+using namespace GameUtilities;
 
 #define ROW_SIZE 10
 #define COL_SIZE 10
@@ -29,6 +30,8 @@ namespace GameManagerUtilities
 		vector<Ship> shipList;
 	}PlayerAttributes;
 
+	int initGameBoardsAndPaths(int argc, char **argv, string(&board)[ROW_SIZE], char **boardA, char* *boardB,
+		string& dirPath, string& dllPathA, string& dllPathB);
 
 	int processInputArguments(int argc, char** argv, string& dirPath);
 
@@ -40,12 +43,6 @@ namespace GameManagerUtilities
 	* results in a rows*cols board inside passed boards arguments - including
 	* individual boards for both players									  */
 	int initGameBoards(const string boardPath, string board[], char** boardA, char** boardB);
-
-	/* gets the board file path according to dirPath. it also changes dirrPath to be a full path repr. of the path.
-	 * returns a negative number in case of failure, and 0 otherwise*/
-	int getBoardPath(string& dirPath, string& boardPath);
-
-	int getDllPath(string& dirPath, string& dllPath, int playerNum);
 
 	bool initPlayer(IBattleshipGameAlgo*& pPlayer, int playerNum, const char** board, const string dirPath, const string dllPath, 
 					PlayerAttributes playerAttributesArr[], DLLManager& dllMngr);

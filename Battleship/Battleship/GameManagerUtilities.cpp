@@ -11,12 +11,37 @@
 #include <Windows.h>
 #include "Graphics.h"
 
-
-
-using namespace std;
-
 namespace GameManagerUtilities
 {
+	int initGameBoardsAndPaths(int argc, char **argv, string(&board)[ROW_SIZE], char **boardA, char* *boardB,
+		string& dirPath, string& dllPathA, string& dllPathB)
+	{
+		auto errorOccurred = false;
+		string boardPath;
+		// process program arguments
+		if (processInputArguments(argc, argv, dirPath) < 0)
+		{
+			return -1;
+		}
+		// validate game configuration files
+		if (!isValidPath(dirPath))
+		{
+			cout << "Wrong Path: " << dirPath << endl;
+			return -1;
+		}
+		// init boards
+		if (getPathByType(boardPath, dirPath, BOARD_FILE_SUFFIX, eFileType::BOARD_FILE) < 0 
+			|| initGameBoards(boardPath, board, boardA, boardB) < 0)
+		{
+			errorOccurred = true;
+		}
+		if (getPathByType(dllPathA, dirPath, LIB_FILE_SUFFIX, eFileType::DLL_FILE, 0) < 0 || 
+			getPathByType(dllPathB, dirPath, LIB_FILE_SUFFIX, eFileType::DLL_FILE, 1) < 0)
+		{
+			errorOccurred = true;
+		}
+		return errorOccurred ? -1 : 0;
+	}
 
 	int GameManagerUtilities::processInputArguments(int argc, char** argv, string& dirPath)
 	{
@@ -222,7 +247,7 @@ namespace GameManagerUtilities
 	{
 		auto i = 0;
 		auto validAttack = false;
-		for (; i < GameUtilities::DEFAULT_SHIPS_COUNT; i++)
+		for (; i < DEFAULT_SHIPS_COUNT; i++)
 		{
 			if (playerAttributes.shipList[i].getType() == shipType)
 			{
@@ -297,9 +322,9 @@ namespace GameManagerUtilities
 
 	void GameManagerUtilities::printBadShipsCountErrror(int shipCount, int& ret, const string player)
 	{
-		if (shipCount != GameUtilities::DEFAULT_SHIPS_COUNT)
+		if (shipCount != DEFAULT_SHIPS_COUNT)
 		{
-			string filler = shipCount > GameUtilities::DEFAULT_SHIPS_COUNT ? "many" : "few";
+			string filler = shipCount > DEFAULT_SHIPS_COUNT ? "many" : "few";
 			cout << "Too " << filler << " ships for player " << player << endl;
 			ret = -1;
 		}
@@ -381,40 +406,6 @@ namespace GameManagerUtilities
 		return 0;
 	}
 
-	int GameManagerUtilities::getBoardPath(string& dirPath, string& boardPath)
-	{
-		auto fileNotFound = true;
-		if (GameUtilities::findFileBySuffix(boardPath, dirPath, BOARD_FILE_SUFFIX, fileNotFound, 0) < 0)
-		{
-			if (fileNotFound)
-			{
-				cout << "Missing board file (*" << BOARD_FILE_SUFFIX << ") looking in path: " << dirPath << endl;
-			}
-			return -1;
-		}
-		// convert boardPath to its full path
-		boardPath = dirPath + "\\" + boardPath;
-		return 0;
-	}
-
-	int GameManagerUtilities::getDllPath(string& dirPath, string& dllPath, int playerNum)
-	{
-		auto fileNotFound = true;
-		if (GameUtilities::findFileBySuffix(dllPath, dirPath, LIB_FILE_SUFFIX, fileNotFound, playerNum) < 0)
-		{
-			if (fileNotFound)
-			{
-				cout << "Missing an algorithm (dll) file looking in path: " << dirPath << endl;
-			}
-			return -1;
-		}
-		// convert boardPath to its full path
-		dllPath = dirPath + "\\" + dllPath;
-		return 0;
-	}
-
-
-
 	string GameManagerUtilities::getDirPath()
 	{
 		char *buff = nullptr;
@@ -452,7 +443,7 @@ namespace GameManagerUtilities
 	{
 		playerAttributes.hasMoves = true;
 		playerAttributes.score = 0;
-		playerAttributes.shipsCount = GameUtilities::DEFAULT_SHIPS_COUNT;
+		playerAttributes.shipsCount = DEFAULT_SHIPS_COUNT;
 		initPlayerShipsList(playerBoard, ROW_SIZE, COL_SIZE, playerAttributes);
 	}
 
@@ -478,9 +469,10 @@ namespace GameManagerUtilities
 			coordinates[make_pair(i + 1, j + 1)] = true;
 			size++;
 		}
-		return Ship(size, GameUtilities::charToShipType(c), coordinates);
+		return Ship(size, charToShipType(c), coordinates);
 	}
 
+	// TODO - split!!!!!!!!
 	int GameManagerUtilities::playTheGame(IBattleshipGameAlgo* A, IBattleshipGameAlgo* B, PlayerAttributes playerAttributesArr[], const string* board)
 	{
 		auto attackerNum = 0, defenderNum = 1; // index 0 = A, index 1 = B
@@ -510,7 +502,7 @@ namespace GameManagerUtilities
 			}
 
 			auto currentMove = pPlayers[attackerNum]->attack();
-			if (!GameUtilities::isLegalMove(currentMove.first, currentMove.second, ROW_SIZE, COL_SIZE))
+			if (!isLegalMove(currentMove.first, currentMove.second, ROW_SIZE, COL_SIZE))
 			{
 				if (currentMove.first == -1 && currentMove.second == -1) // an exception - means no more moves
 				{
@@ -547,7 +539,7 @@ namespace GameManagerUtilities
 			else // Hit xor Sink xor double hit xor hit a sunken ship
 			{
 				auto validAttack = registerHit(playerAttributesArr[(isupper(hitChar) ? 0 : 1)],
-					currentMove, GameUtilities::charToShipType(hitChar), attackResult);
+					currentMove, charToShipType(hitChar), attackResult);
 				//notify players on attack results
 				A->notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, attackResult);
 				B->notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, attackResult);

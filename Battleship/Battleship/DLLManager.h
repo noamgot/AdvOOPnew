@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include "IBattleshipGameAlgo.h"
 #include <vector>
-#include <string>
-#include <iostream>
 #include <tuple>
 #include <windows.h>
 

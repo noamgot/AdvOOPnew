@@ -46,8 +46,23 @@ namespace GameUtilities
 	}
 
 
+	void GameUtilities::filterAndSortFileList(const vector<string>& fileList, vector<string>& filteredFileList, const string suffix)
+	{
+		// copy all relevant files to the filteredFileList vector
+		for (auto i = 0; i < fileList.size(); i++)
+		{
+			if (endsWith(fileList[i], suffix))
+			{
+				filteredFileList.push_back(fileList[i]);
+			}
+
+		}
+		// sort the filtered file list
+		sort(filteredFileList.begin(), filteredFileList.end());
+	}
+
 	int GameUtilities::findFileBySuffix(string& filePath, const string dirPath, const string suffix,
-		bool& fileNotFound, int playerNum)
+	                                    bool& fileNotFound, int playerNum, bool allowSingleFile)
 	{
 		// for debug; should not get here
 		if (playerNum > 1 || playerNum < 0)
@@ -57,24 +72,30 @@ namespace GameUtilities
 		}
 		// make sure we get a clear filePath string
 		filePath.clear();
-		vector<string> fileListVector;
-		if (getDirectorySortedFileList(dirPath, fileListVector) < 0)
+		vector<string> fileList, filteredFileList;
+		if (getDirectoryFileList(dirPath, fileList) < 0)
 		{
 			return -1;
 		}
-		for (auto file : fileListVector)
+		filterAndSortFileList(fileList, filteredFileList, suffix);
+		// we're optimistic - we believe there is a file (we might change our opinion soon :) )
+		fileNotFound = false;
+		switch (filteredFileList.size())
 		{
-			if (endsWith(file, suffix))
+		case 0: // no files
+			fileNotFound = true;
+			break;
+		case 1: // single file
+			if (allowSingleFile) // board or attack files
 			{
-				// the following section allows player no. 1 to find another instance
-				// of the wanted file. player no. 0 gets the first file he finds
-				if (--playerNum < 0)
-				{
-					filePath = file;
-					fileNotFound = false;
-					break;
-				}
+				filePath = filteredFileList[0]; // take the only file
+				break;
 			}
+			// if it is a dll file we do not allow a single file - hence we report that a file was not found
+			fileNotFound = true; 
+			break;
+		default: // 2 files or more - take the first or second file according to player number
+			filePath = filteredFileList[playerNum];
 		}
 		return fileNotFound ? -1 : 0;
 	}
@@ -88,7 +109,7 @@ namespace GameUtilities
 	}
 
 
-	int GameUtilities::getDirectorySortedFileList(const string dirPath, vector<string>& fileListVector)
+	int GameUtilities::getDirectoryFileList(const string dirPath, vector<string>& fileListVector)
 	{
 		string line;
 		fileListVector.clear();
@@ -108,9 +129,6 @@ namespace GameUtilities
 			fileListVector.push_back(line);
 		}
 		_pclose(fileList);
-		//sort vector
-		sort(fileListVector.begin(), fileListVector.end());
-
 		return 0;
 	}
 
@@ -118,5 +136,33 @@ namespace GameUtilities
 	{
 		auto pos = line.rfind(suffix);
 		return pos != string::npos && pos == line.length() - suffix.length();
+	}
+
+	int getPathByType(string& filePath, const string dirPath, const string fileSuffix, eFileType fileType, int playerNum)
+	{
+		auto fileNotFound = true;
+		// we allow finfing 2 files only in case of attack files
+		if (findFileBySuffix(filePath, dirPath, fileSuffix, fileNotFound, 
+				playerNum, fileType != eFileType::DLL_FILE) < 0) // we do not allow a single file for dll files
+		{
+			if (fileNotFound)
+			{
+				switch (fileType)
+				{
+					case eFileType::BOARD_FILE:
+						cout << "Missing board file (*.sboard) looking in path: " << dirPath << endl;
+						break;
+					case eFileType::DLL_FILE:
+						cout << "Missing an algorithm (dll) file looking in path: " << dirPath << endl;
+						break;
+					case eFileType::ATTACK_FILE:
+						break;
+				}
+			}
+			return -1;
+		}
+		// convert filePath to its full path
+		filePath = dirPath + "\\" + filePath;
+		return 0;
 	}
 }
