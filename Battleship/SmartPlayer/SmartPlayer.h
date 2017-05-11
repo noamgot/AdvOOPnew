@@ -34,7 +34,11 @@ protected:
 	deque<pair<int, int>> mMediumPriorityQueue; // A queue for medium priority (follow up) attacks
 	void analyzeEnemy(pair<int, int> hitPoint, AttackResult result);	// Try to figue out if we're up agains the file player or not. If not, then we should try to outline the areas he doesn't attack! those would be his own ships!!
 	///Returns whether the coordinates are valid.
-	bool  isPointValid(int row, int col);
+	//Returns whether the coordinates are valid - in the inner representation (0 - COL/ROW SIZE -1)
+	bool SmartPlayer::isPointValid(int row, int col) const
+	{
+		return GameUtilities::isLegalMove(row + 1, col + 1, mNumOfRows, mNumOfCols);
+	}
 	///Replaces the old_char with new_char and we return true. if the square did not hold old_char nothing happens and we return false. Assumes coordinates are valid.
 	///If reverse = true the char will be replaced only if it is NOT equal to old_char.
 	bool replaceChar(int row, int col, char old_char, char new_char, bool reverse = false);
