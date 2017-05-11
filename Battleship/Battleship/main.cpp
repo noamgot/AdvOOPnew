@@ -1,8 +1,7 @@
 #include "GameManagerUtilities.h"
 #include "DLLManager.h"
 #include "Graphics.h"
-
-
+#include <ctime>
 
 using namespace std;
 using namespace GameManagerUtilities;
@@ -10,10 +9,12 @@ using namespace GameUtilities;
 
 int main(int argc, char** argv)
 {
-	// Seed the PRG for all of our random needs.
-	srand(static_cast<unsigned int>(time(nullptr)));
 	string dirPath, boardPath, board[ROW_SIZE], dllPathA, dllPathB;
 	DLLManager dllMngr;
+	PlayerAttributes playerAttributesArr[2];
+	IBattleshipGameAlgo *A, *B;
+
+	srand(static_cast<unsigned int>(time(nullptr))); // Seed the PRG for all of our random needs.
 
 	//hide the console cursor
 	Graphics::showConsoleCursor(false);
@@ -28,8 +29,6 @@ int main(int argc, char** argv)
 	}
 	
 	// initialize players and player attributes
-	PlayerAttributes playerAttributesArr[2];
-	IBattleshipGameAlgo *A, *B;
 	if (!initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, dllPathA, playerAttributesArr, dllMngr) ||
 		!initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, dllPathB, playerAttributesArr, dllMngr))
 	{

@@ -97,7 +97,7 @@ void SmartPlayer::reLabelTheBoard()
 	{
 		for (auto col = 0; col < mNumOfCols; col++)
 		{
-			if (mBoard[row][col] != WATER)
+			if (mBoard[row][col] != GameUtilities::eShipChar::WATER)
 			{
 				mBoard[row][col] = SHIP;
 				mMyCoords.insert(make_pair(row, col));

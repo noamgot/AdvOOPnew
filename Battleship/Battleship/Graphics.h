@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include <string>
+
 using namespace std;
 
 #define HIT_SIGN_TO_DELETE '*'
@@ -35,10 +36,12 @@ namespace Graphics
 	/*sets the console cursor to the given coordinates*/
 	void gotoxy(int x, int y);
 
-	/*prints the initial game board*/
+	/* helper functions for printing */
+	void printStartOfGame(const string *board, int rows, int cols);
 	void printBoard(const string* board, int numRows, int numCols);
-
 	void printOpeningMessage();
+	void printSink(char hitChar, int attackerNum, int scoreA, int scoreB);
+	void printHit(bool validAttack, bool isHit, char hitChar, int attackerNum);
 
 	/*if playWithGraphics == true: prints the given sign with the given color
 	 * in the given coordinates(x,y) and waits for sleepTime milliseconds*/
@@ -46,7 +49,7 @@ namespace Graphics
 
 	void clearLastLine();
 
-	/*if shofFlag == true - shows the console cursur; if showFlag == false - hides the cursur*/
+	/*if showFlag == true - shows the console cursur; if showFlag == false - hides the cursur*/
 	void showConsoleCursor(bool showFlag);
 
 }

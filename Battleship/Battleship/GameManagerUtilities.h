@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <ctime>
 #include <bitset>
 #include "GameUtilities.h"
 #include "DLLManager.h"
@@ -22,6 +21,7 @@ namespace GameManagerUtilities
 	const string BAD_STRING("!@#"); // for getDirPath validation
 	const int MAX_PATH_LEN = 1024;
 
+	// a struct for the game manager - to hold information about the players
 	typedef struct _PlayerAttributes
 	{
 		bool hasMoves;
@@ -30,13 +30,15 @@ namespace GameManagerUtilities
 		vector<Ship> shipList;
 	}PlayerAttributes;
 
+	/* initializing the game attributes, player boards and paths for the different files */
 	int initGameBoardsAndPaths(int argc, char **argv, string(&board)[ROW_SIZE], char **boardA, char* *boardB,
 		string& dirPath, string& dllPathA, string& dllPathB);
 
 	int processInputArguments(int argc, char** argv, string& dirPath);
-
+	
 	void changeCurrentPlayer(int& attackerNum, int& defenderNum, string& attackerName);
 
+	/* prints the final results of the game */
 	void printGameResults(PlayerAttributes playerAttributesArr[]);
 
 	/* Initializes the battle boards according to the .sboard file in boardPath.
@@ -44,14 +46,25 @@ namespace GameManagerUtilities
 	* individual boards for both players									  */
 	int initGameBoards(const string boardPath, string board[], char** boardA, char** boardB);
 
+	/* player initialization */
 	bool initPlayer(IBattleshipGameAlgo*& pPlayer, int playerNum, const char** board, const string dirPath, const string dllPath, 
 					PlayerAttributes playerAttributesArr[], DLLManager& dllMngr);
 
+	/* mark a ship hit to a given player, and keeping the AttackResult in res */
 	bool registerHit(PlayerAttributes& playerAttributes, pair<int, int> coords, eShipType shipType, AttackResult& res);
 
+	/* returns the amount of points according to the given ship type (by char) */
 	int calculateSinkScore(char c);
 
+	/* the main function of the game itself! */
 	int playTheGame(IBattleshipGameAlgo* A, IBattleshipGameAlgo* B, PlayerAttributes playerAttributesArr[], const string* board);
+
+	/* helper functions called inside playThe Game */
+	void handleMove(const string *board, pair<int, int> move, int &attackerNum, int &defenderNum, string &attackerName,
+		IBattleshipGameAlgo *A, IBattleshipGameAlgo *B, PlayerAttributes playerAttributesArr[]);
+	void handleMiss(pair<int, int> move, IBattleshipGameAlgo *A, IBattleshipGameAlgo *B, int attackerNum);	
+	void handleHitOrSink(pair<int, int> move, bool &validAttack, IBattleshipGameAlgo *A, IBattleshipGameAlgo *B,
+	                     char hitChar, int attackerNum, PlayerAttributes playerAttributesArr[]);
 
 	/* sets 2 individual boards - boardA and boardB - from board*/
 	void initIndividualBoards(string *board, char **boardA, char **boardB);
