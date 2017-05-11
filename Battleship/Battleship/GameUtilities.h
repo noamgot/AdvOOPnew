@@ -5,19 +5,19 @@
 
 using namespace std;
 
-enum eShipChar : char
-{
-	BOAT = 'B',
-	MISSLE_SHIP = 'P',
-	SUBMARINE = 'M',
-	DESTROYER = 'D',
-	WATER = ' '
-};
-
 namespace GameUtilities
 {
 	const int DEFAULT_SHIPS_COUNT = 5;
 	const int BUF_SIZE = 1024;
+
+	enum eShipChar : char
+	{
+		BOAT = 'B',
+		MISSLE_SHIP = 'P',
+		SUBMARINE = 'M',
+		DESTROYER = 'D',
+		WATER = ' '
+	};
 
 	enum class eFileType
 	{
@@ -68,9 +68,9 @@ namespace GameUtilities
 						eFileType fileType, int playerNum);
 
 	// an overload for cases we need only one file of that type (i.e board game)
-	inline int getPathByType(string& filePath, const string dirPath, const string fileSuffix, eFileType fileType)
+	inline int getPathByType(string& filePath, const string dirPath, const string fileSuffix)
 	{
-		return getPathByType(filePath, dirPath, fileSuffix, fileType, 0);
+		return getPathByType(filePath, dirPath, fileSuffix, eFileType::BOARD_FILE, 0);
 	}
 
 }

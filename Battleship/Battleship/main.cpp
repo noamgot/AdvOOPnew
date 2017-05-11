@@ -1,6 +1,7 @@
 #include "GameManagerUtilities.h"
 #include "DLLManager.h"
 #include "Graphics.h"
+#include <ctime>
 
 using namespace std;
 using namespace GameManagerUtilities;

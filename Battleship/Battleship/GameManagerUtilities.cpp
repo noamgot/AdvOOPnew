@@ -30,7 +30,7 @@ namespace GameManagerUtilities
 			return -1;
 		}
 		// init boards
-		if (getPathByType(boardPath, dirPath, BOARD_FILE_SUFFIX, eFileType::BOARD_FILE) < 0 
+		if (getPathByType(boardPath, dirPath, BOARD_FILE_SUFFIX) < 0 
 			|| initGameBoards(boardPath, board, boardA, boardB) < 0)
 		{
 			errorOccurred = true;

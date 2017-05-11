@@ -57,7 +57,7 @@ namespace Graphics
 			for (auto j = 0; j < numCols; ++j)
 			{
 				c = board[i][j];
-				if (c == WATER)
+				if (c == GameUtilities::eShipChar::WATER)
 				{
 					setTextColor(COLOR_DEFAULT_WHITE);
 				}

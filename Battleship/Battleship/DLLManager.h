@@ -8,12 +8,14 @@ typedef IBattleshipGameAlgo *(*GetAlgoFuncType)();
 
 class DLLManager
 {
+	//data members
+	std::vector<std::tuple<std::string, HINSTANCE, GetAlgoFuncType>> libs;
+
 public:
-	DLLManager();
+	DLLManager(){}
 	~DLLManager();
 	IBattleshipGameAlgo* loadAlgo(const std::string path);
 
 private:
-	std::vector<std::tuple<std::string, HINSTANCE, GetAlgoFuncType>> libs;
 	int loadDLL(const std::string path);
 };

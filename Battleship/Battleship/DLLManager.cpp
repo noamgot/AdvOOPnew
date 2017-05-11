@@ -2,9 +2,6 @@
 #include <string>
 #include <iostream>
 
-
-DLLManager::DLLManager() {}
-
 DLLManager::~DLLManager()
 {
 	for (auto itr = libs.begin(); itr != libs.end(); ++itr)
