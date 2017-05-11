@@ -163,15 +163,27 @@ pair<int, int> SmartPlayer::attack()
 {
 	if (mHighPriorityQueue.size() > 0)
 	{
-		return attackFromPriorityQuque(mHighPriorityQueue);
+		auto move = attackFromPriorityQuque(mHighPriorityQueue);
+		if(move.first != -1 && move.second != -1)
+		{
+			return move;
+		}
 	}
 	if (mMediumPriorityQueue.size() > 0)
 	{
-		return attackFromPriorityQuque(mMediumPriorityQueue);
+		auto move = attackFromPriorityQuque(mMediumPriorityQueue);
+		if (move.first != -1 && move.second != -1)
+		{
+			return move;
+		}
 	}
 	if (mMovesQueue.size() > 0)
 	{
-		return attackFromPriorityQuque(mMovesQueue);
+		auto move = attackFromPriorityQuque(mMovesQueue);
+		if (move.first != -1 && move.second != -1)
+		{
+			return move;
+		}
 	}
 	return make_pair(-1,-1);
 }
