@@ -258,40 +258,66 @@ void SmartPlayer::analyzeAttackResult()
 	}
 }
 
-void SmartPlayer::sinkShip(int srow, int scol, Direction dir)
+void SmartPlayer::sinkShip(int row, int col, Direction dir)
 {
-	auto end = min(dir == HORIZONAL ? mNumOfCols : mNumOfRows, (dir == HORIZONAL ? scol : srow) + SHIP_MAX_LENGTH);
-	auto start = max(0, (dir == HORIZONAL ? scol : srow) - SHIP_MAX_LENGTH);
-
 	//If the ship is horizonal we keep the row constant and move along the columns.
 	//If the ship is not horizonal (vertical) we keep the col constant and move along the rows.
 	if(dir == HORIZONAL)
 	{
-		for (auto i = 0; replaceChar(srow, scol + i, DESTROYED, SANK) && i < SHIP_MAX_LENGTH; i++) {}
-		for (auto i = 0; replaceChar(srow, scol - i, DESTROYED, SANK) && i < SHIP_MAX_LENGTH; i++) {}
+		for (auto i = 0; i < SHIP_MAX_LENGTH; i++) { replaceChar(row, col + i, DESTROYED, SANK); }
+		for (auto i = 0; i < SHIP_MAX_LENGTH; i++) { replaceChar(row, col - i, DESTROYED, SANK); }
 	}
 	else
 	{
-		for (auto i = 0; replaceChar(srow + i, scol, DESTROYED, SANK) && i < SHIP_MAX_LENGTH; i++) {}
-		for (auto i = 0; replaceChar(srow - i, scol, DESTROYED, SANK) && i < SHIP_MAX_LENGTH; i++) {}
+		for (auto i = 0; i < SHIP_MAX_LENGTH; i++) { replaceChar(row + i, col, DESTROYED, SANK); }
+		for (auto i = 0; i < SHIP_MAX_LENGTH; i++) { replaceChar(row - i, col, DESTROYED, SANK); }
 	}
 }
 
 void SmartPlayer::sinkShip(int row, int col)
 {
 	//pair<int, int> start_point = make_pair(mNumOfRows - 1, mNumOfCols - 1);
-	if (verifyChar(row, col + 1, DESTROYED).second || verifyChar(row, col - 1, DESTROYED).second)
-	{
-		sinkShip(row, col, HORIZONAL);
-	}
-	else if (verifyChar(row + 1, col, DESTROYED).second || verifyChar(row - 1, col, DESTROYED).second)
-	{
-		sinkShip(row, col, VERTICAL);
-	}
-	else
+	//if (verifyChar(row, col + 1, DESTROYED).second || verifyChar(row, col - 1, DESTROYED).second)
+	//{
+	//	sinkShip(row, col, HORIZONAL);
+	//}
+	//else if (verifyChar(row + 1, col, DESTROYED).second || verifyChar(row - 1, col, DESTROYED).second)
+	//{
+	//	sinkShip(row, col, VERTICAL);
+	//}
+	if (!findDirection(row, col, false))
 	{
 		replaceChar(row, col, DESTROYED, SANK);
 	}
+}
+
+void SmartPlayer::outlineLoop(int row, int col, int rowMod, int colMod, bool reverse)
+{
+	int i = 0;
+	for (; verifyChar(row + (reverse ? -1 : 1) * i * rowMod, col + (reverse ? -1 : 1) * i * colMod, SANK).second && i < SHIP_MAX_LENGTH; i++)
+	{
+		replaceChar(row + (reverse ? -1 : 1) * i * rowMod + 1 * colMod, col + (reverse ? -1 : 1) * i * colMod + 1 * rowMod, UNKNOWN, EMPTY);
+		replaceChar(row + (reverse ? -1 : 1) * i * rowMod - 1 * colMod, col + (reverse ? -1 : 1) * i * colMod - 1 * rowMod, UNKNOWN, EMPTY);
+	}
+	replaceChar(row + (reverse ? -1 : 1) * i * rowMod, col + (reverse ? -1 : 1) * i * colMod, UNKNOWN, EMPTY);
+}
+
+bool SmartPlayer::findDirection(int row, int col, bool outline)
+{
+	eSign label = outline ? SANK : DESTROYED;
+	if (verifyChar(row, col + 1, label).second || verifyChar(row, col - 1, label).second)
+	{
+		outline ? outlineSunkenEnemyShips(row, col, HORIZONAL) : sinkShip(row, col, HORIZONAL);
+	}
+	else if (verifyChar(row + 1, col, label).second || verifyChar(row - 1, col, label).second)
+	{
+		outline ? outlineSunkenEnemyShips(row, col, VERTICAL) : sinkShip(row, col, VERTICAL);
+	}
+	else
+	{
+		return false;
+	}
+	return true;
 }
 
 void SmartPlayer::outlineSunkenEnemyShips(int row, int col, Direction dir)
@@ -301,9 +327,7 @@ void SmartPlayer::outlineSunkenEnemyShips(int row, int col, Direction dir)
 	//If the ship is horizonal we keep the row constant and move along the columns.
 	//If the ship is not horizonal (vertical) we keep the col constant and move along the rows.	
 
-	// TODO - code duplication
-
-	// The for loops take care of
+	//
 	//  OOO <---these
 	// OXXXO
 	//  OOO <--- and these, in the horizonal case 
@@ -316,7 +340,6 @@ void SmartPlayer::outlineSunkenEnemyShips(int row, int col, Direction dir)
 	// ^ ^
 	// these in the vertical case
 	//
-	// And at the end of the loop we take care of:
 	//			   OOO 
 	//  this ---> OXXXO <--- and this, in the horizonal case
 	//			   OOO  
@@ -328,48 +351,52 @@ void SmartPlayer::outlineSunkenEnemyShips(int row, int col, Direction dir)
 	//  O <--- and this, in the vertical case 
 	if (dir == HORIZONAL)
 	{
-		for (i = 0; verifyChar(row, col + i, SANK).second && i < SHIP_MAX_LENGTH; i++)
-		{
-			replaceChar(row + 1, col + i, UNKNOWN, EMPTY);
-			replaceChar(row - 1, col + i, UNKNOWN, EMPTY);
-		}
-		replaceChar(row, col + i, UNKNOWN, EMPTY);
-		for (i = 0; verifyChar(row, col - i, SANK).second && i < SHIP_MAX_LENGTH; i++)
-		{
-			replaceChar(row + 1, col - i, UNKNOWN, EMPTY);
-			replaceChar(row - 1, col - i, UNKNOWN, EMPTY);
-		}
-		replaceChar(row, col - i, UNKNOWN, EMPTY);
+		//for (i = 0; verifyChar(row, col + i, SANK).second && i < SHIP_MAX_LENGTH; i++)
+		//{
+		//	replaceChar(row + 1, col + i, UNKNOWN, EMPTY);
+		//	replaceChar(row - 1, col + i, UNKNOWN, EMPTY);
+		//}
+		outlineLoop(row, col, 0, 1, false);
+		//replaceChar(row, col + i, UNKNOWN, EMPTY);
+		//for (i = 0; verifyChar(row, col - i, SANK).second && i < SHIP_MAX_LENGTH; i++)
+		//{
+		//	replaceChar(row + 1, col - i, UNKNOWN, EMPTY);
+		//	replaceChar(row - 1, col - i, UNKNOWN, EMPTY);
+		//}
+		outlineLoop(row, col, 0, 1, true);
+		//replaceChar(row, col - i, UNKNOWN, EMPTY);
 	}
 	else
 	{
-		for (i = 0; verifyChar(row + i, col, SANK).second && i < SHIP_MAX_LENGTH; i++)
-		{
-			replaceChar(row + i, col + 1, UNKNOWN, EMPTY);
-			replaceChar(row + i, col - 1, UNKNOWN, EMPTY);
-		}
-		replaceChar(row + i, col, UNKNOWN, EMPTY);
-		for (i = 0; verifyChar(row - i, col, SANK).second && i < SHIP_MAX_LENGTH; i++)
-		{
-			replaceChar(row - i, col + 1, UNKNOWN, EMPTY);
-			replaceChar(row - i, col - 1, UNKNOWN, EMPTY);
-		}
-		replaceChar(row - i, col, UNKNOWN, EMPTY);
+		//for (i = 0; verifyChar(row + i, col, SANK).second && i < SHIP_MAX_LENGTH; i++)
+		//{
+		//	replaceChar(row + i, col + 1, UNKNOWN, EMPTY);
+		//	replaceChar(row + i, col - 1, UNKNOWN, EMPTY);
+		//}
+		outlineLoop(row, col, 1, 0, false);
+		//replaceChar(row + i, col, UNKNOWN, EMPTY);
+		//for (i = 0; verifyChar(row - i, col, SANK).second && i < SHIP_MAX_LENGTH; i++)
+		//{
+		//	replaceChar(row - i, col + 1, UNKNOWN, EMPTY);
+		//	replaceChar(row - i, col - 1, UNKNOWN, EMPTY);
+		//}
+		outlineLoop(row, col, 1, 0, true);
+		//replaceChar(row - i, col, UNKNOWN, EMPTY);
 	}
 }
 
-// TODO - outlineSunkenEnemyShips and sinkShip have some code duplicateion
 void SmartPlayer::outlineSunkenEnemyShips(int row, int col)
 {
-	if(verifyChar(row, col + 1, SANK).second || verifyChar(row, col - 1, SANK).second)
+	/*if(verifyChar(row, col + 1, SANK).second || verifyChar(row, col - 1, SANK).second)
 	{
 		outlineSunkenEnemyShips(row, col, HORIZONAL);
 	}
 	else if (verifyChar(row + 1, col, SANK).second || verifyChar(row - 1, col, SANK).second)
 	{
 		outlineSunkenEnemyShips(row, col, VERTICAL);
-	}
-	else
+	}*/
+	
+	if (!findDirection(row, col, true))
 	{
 		replaceChar(row + 1, col, UNKNOWN, EMPTY);
 		replaceChar(row - 1, col, UNKNOWN, EMPTY);
@@ -380,7 +407,6 @@ void SmartPlayer::outlineSunkenEnemyShips(int row, int col)
 
 }
 
-// TODO - add non-file player enemy ships outlining
 void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResult result)
 {
 	if (!GameUtilities::isLegalMove(row, col, mNumOfRows, mNumOfCols)) // ignore invalid moves
@@ -391,7 +417,10 @@ void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResul
 	if (result != AttackResult::Miss && verifyChar(myRow, myCol, UNKNOWN).second)
 	{
 		replaceChar(myRow, myCol, UNKNOWN, DESTROYED);
-		if (result == AttackResult::Hit) { analyzeAttackResult(); }
+		if (result == AttackResult::Hit)
+		{
+			analyzeAttackResult();
+		}
 		else 
 		{
 			sinkShip(myRow, myCol);
@@ -402,6 +431,7 @@ void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResul
 	{
 		replaceChar(myRow, myCol, UNKNOWN, EMPTY);
 	}
+	debugBoard();
 	
 }
 
@@ -409,4 +439,22 @@ IBattleshipGameAlgo* GetAlgorithm()
 {
 	IBattleshipGameAlgo *newP = new SmartPlayer;
 	return newP;
+}
+
+void SmartPlayer::debugBoard()
+{
+	auto *f = fopen("SmartBoard.txt", "w");
+	if (f == nullptr)
+	{
+		printf("Error opening file!\n");
+	}
+	for (auto i = 0; i < 10; i++)
+	{
+		for (auto j = 0; j < 10; j++)
+		{
+			fprintf(f, "%c", mBoard[i][j]);
+		}
+		fprintf(f, "\n");
+	}
+	fclose(f);
 }
