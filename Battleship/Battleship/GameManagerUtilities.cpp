@@ -502,7 +502,7 @@ namespace GameManagerUtilities
 			}
 
 			auto currentMove = pPlayers[attackerNum]->attack();
-			if (!isLegalMove(currentMove.first, currentMove.second, ROW_SIZE, COL_SIZE))
+			if (!isLegalMove(currentMove, ROW_SIZE, COL_SIZE))
 			{
 				if (currentMove.first == -1 && currentMove.second == -1) // an exception - means no more moves
 				{

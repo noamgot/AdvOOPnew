@@ -2,6 +2,7 @@
 #include "GameUtilities.h"
 #include <iostream>
 #include <filesystem>
+#include <Windows.h>
 
 
 using namespace std;
