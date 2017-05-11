@@ -51,7 +51,7 @@ protected:
 	void analyzeAttackResult();
 	//Direction scanTheVicinity(int row, int col);		// Scan the nearby blocks for two hits in a row to determine the ship's orientation
 	void outlineEnemyShips(int row, int col);			// Mark the area around a sunken ship as eSight::Empty so it won't be targeted.
-	void debugBoard();
+	//void debugBoard();
 
 public:
 	SmartPlayer(){}
