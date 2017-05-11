@@ -39,12 +39,12 @@ bool SmartPlayer::replaceChar(int row, int col, char old_char, char new_char, bo
 	return false;
 }
 
-void SmartPlayer::addTarget(int row, int col, queue<pair<int, int>> attackQueue, Direction dir)
+void SmartPlayer::addTarget(int row, int col, deque<pair<int, int>>& attackQueue, Direction dir)
 {
 	auto maxDist = 4;
 	auto foundUp = false, foundDown = false, foundLeft = false, foundRight = false;
 	// This means we are just adding a regular target (have no additional info)
-	if (dir == NONE && verifyChar(row, col, UNKNOWN).second) { attackQueue.push(make_pair(row + 1, col + 1)); }
+	if (dir == NONE && verifyChar(row, col, UNKNOWN).second) { attackQueue.push_front(make_pair(row + 1, col + 1)); }
 
 	else // In this case we have some additional information
 	{
@@ -57,11 +57,11 @@ void SmartPlayer::addTarget(int row, int col, queue<pair<int, int>> attackQueue,
 			for (auto i = 1; i < maxDist; i++)
 			{
 				if (dir != LEFT && !foundRight && verifyChar(row, col + i, UNKNOWN).second && verifyChar(row, col + i - 1, DESTROYED).second)
-				{ foundRight = true; attackQueue.push(make_pair(row + 1, col + 1 + i)); }
+				{ foundRight = true; attackQueue.push_front(make_pair(row + 1, col + 1 + i)); }
 				else if (!verifyChar(row, col + i - 1, DESTROYED).second) { foundRight = true; }
 
 				if (dir != RIGHT && !foundLeft && verifyChar(row, col - i, UNKNOWN).second && verifyChar(row, col - i + 1, DESTROYED).second)
-				{ foundLeft = true;attackQueue.push(make_pair(row + 1, col + 1 - i)); }
+				{ foundLeft = true;attackQueue.push_front(make_pair(row + 1, col + 1 - i)); }
 				else if (!verifyChar(row, col - i + 1, DESTROYED).second) { foundLeft = true; }
 			}
 		}
@@ -71,11 +71,11 @@ void SmartPlayer::addTarget(int row, int col, queue<pair<int, int>> attackQueue,
 			for (auto i = 1; i < maxDist; i++)
 			{
 				if (dir != DOWN && !foundUp && verifyChar(row + i, col, UNKNOWN).second && verifyChar(row + i - 1, col, DESTROYED).second)
-				{ foundUp = true; attackQueue.push(make_pair(row + 1 + i, col + 1)); }
+				{ foundUp = true; attackQueue.push_front(make_pair(row + 1 + i, col + 1)); }
 				else if (!verifyChar(row + i - 1, col, DESTROYED).second) { foundUp = true; }
 
 				if (dir != UP && !foundDown && verifyChar(row - 1, col, UNKNOWN).second && verifyChar(row - i + 1, col, DESTROYED).second)
-				{ foundDown = true; attackQueue.push(make_pair(row + 1 - i, col + 1)); }
+				{ foundDown = true; attackQueue.push_front(make_pair(row + 1 - i, col + 1)); }
 				else if (!verifyChar(row - i + 1, col, DESTROYED).second) { foundDown = true; }
 			}
 		}
@@ -153,15 +153,39 @@ bool SmartPlayer::init(const string& path)
 	return true;
 }
 
-pair<int, int> SmartPlayer::attackFromPriorityQuque(queue<pair<int,int>> priorityQueue)
+pair<int, int> SmartPlayer::attackFromPriorityQuque(deque<pair<int, int>>& priorityQueue)
 {
 	auto& move = priorityQueue.front();
-	while (mBoard[move.first - 1][move.second - 1] != UNKNOWN && priorityQueue.size() > 1)
+	while (mBoard[move.first - 1][move.second - 1] != UNKNOWN)
 	{
-		move = priorityQueue.front();
-		priorityQueue.pop();
+		if (priorityQueue.size() > 0)
+		{
+			move = priorityQueue.front();
+			priorityQueue.pop_front();
+		}
+		else
+		{
+			return make_pair(-1, -1);
+		}
 	}
 	return move;	
+}
+pair<int, int> SmartPlayer::attackFromPriorityQuque(queue<pair<int, int>>& priorityQueue)
+{
+	auto& move = priorityQueue.front();
+	while (mBoard[move.first - 1][move.second - 1] != UNKNOWN)
+	{
+		if(priorityQueue.size() > 0 )
+		{
+			move = priorityQueue.front();
+			priorityQueue.pop();
+		}
+		else
+		{
+			return make_pair(-1, -1);
+		}
+	}
+	return move;
 }
 
 pair<int, int> SmartPlayer::attack()
@@ -209,10 +233,10 @@ void SmartPlayer::analyzeAttackResult()
 				if(isNearChar(row, col, DESTROYED, &dir)) { addTarget(row, col, mHighPriorityQueue, dir); }
 				else
 				{
-					if (isPointValid(row - 1, col)) { addTarget(row - 1, col, mHighPriorityQueue); }
-					if (isPointValid(row + 1, col)) { addTarget(row + 1, col, mHighPriorityQueue); }
 					if (isPointValid(row, col - 1)) { addTarget(row, col - 1, mHighPriorityQueue); }
+					if (isPointValid(row - 1, col)) { addTarget(row - 1, col, mHighPriorityQueue); }
 					if (isPointValid(row, col + 1)) { addTarget(row, col + 1, mHighPriorityQueue); }
+					if (isPointValid(row + 1, col)) { addTarget(row + 1, col, mHighPriorityQueue); }
 
 				}
 				break;
@@ -248,25 +272,6 @@ void SmartPlayer::analyzeEnemy(pair<int,int> hitPoint, AttackResult result)
 	mEnemyAttackCoords.insert(hitPoint);
 }
 
-//Direction SmartPlayer::scanTheVicinity(int row, int col)
-//{
-//	// TODO - has some code duplication, maybe we can make a function out of it?
-//	auto pr1 = verifyChar(row, col + 1, DESTROYED);
-//	auto pr2 = verifyChar(row, col - 1, DESTROYED);
-//	if((pr1.first && pr2.second) || (pr2.first && pr2.second))
-//	{
-//		return HORIZONAL;
-//	}
-//	pr1 = verifyChar(row + 1, col, DESTROYED);
-//	pr2 = verifyChar(row - 1, col, DESTROYED);
-//	if ((pr1.first && pr2.second) || (pr2.first && pr2.second))
-//	{
-//		return VERTICAL;
-//	}
-//	return NONE;
-//	// TODO - add deeper scanning for EMPTY and edge coordinates
-//}
-
 void SmartPlayer::outlineEnemyShips(int row, int col)
 {
 	auto maxDist = 4;
@@ -301,7 +306,6 @@ void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResul
 
 	if (result != AttackResult::Miss && verifyChar(myRow, myCol, UNKNOWN).second)
 	{
-		mBoard[myRow][myCol] = DESTROYED; // destroyed something
 		switch (result)
 		{
 		case AttackResult::Hit:

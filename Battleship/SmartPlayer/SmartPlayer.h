@@ -30,8 +30,8 @@ protected:
 	static const int NUMBER_OF_DIRECTIONS = 4;
 	set<pair<int, int>>  mMyCoords;			// A set for the coordinates of the player's ships
 	set<pair<int, int>>  mEnemyAttackCoords;	// A set for keeping track of where enemy attacks land.
-	queue<pair<int, int>> mHighPriorityQueue;				// A queue for high priority (follow up) attacks
-	queue<pair<int, int>> mMediumPriorityQueue; // A queue for medium priority (follow up) attacks
+	deque<pair<int, int>> mHighPriorityQueue;				// A queue for high priority (follow up) attacks
+	deque<pair<int, int>> mMediumPriorityQueue; // A queue for medium priority (follow up) attacks
 	void analyzeEnemy(pair<int, int> hitPoint, AttackResult result);	// Try to figue out if we're up agains the file player or not. If not, then we should try to outline the areas he doesn't attack! those would be his own ships!!
 	///Returns whether the coordinates are valid.
 	bool  isPointValid(int row, int col);
@@ -39,17 +39,19 @@ protected:
 	///If reverse = true the char will be replaced only if it is NOT equal to old_char.
 	bool replaceChar(int row, int col, char old_char, char new_char, bool reverse = false);
 	/// Adds the coordinates to the attack queue if they are unknown or searches for the first unknown coordinates in the direction dir points.
-	void addTarget(int row, int col, queue<pair<int,int>> attackQueue, Direction dir = NONE);
+	void addTarget(int row, int col, deque<pair<int, int>>& attackQueue, Direction dir = NONE);
+	void addTarget(int row, int col, queue<pair<int, int>>& attackQueue, Direction dir = NONE);
 	///Returns a pair of booleans, the first is true iff the point is a valid point and the second is true iff these coordinates contain the char c.
 	pair<bool, bool> verifyChar(int row, int col, char c);
 	///Returns whether this square is adjacent to a ship. Does not assumes coordinates are valid.
 	bool isNearChar(int row, int col, eSign s, Direction* dir = NULL);
-	pair<int, int> attackFromPriorityQuque(queue<pair<int, int>> priorityQueue);
+	pair<int, int> attackFromPriorityQuque(deque<pair<int, int>>& priorityQueue);
+	pair<int, int> attackFromPriorityQuque(queue<pair<int, int>>& priorityQueue);
 	void reLabelTheBoard();
 	void analyzeAttackResult();
 	//Direction scanTheVicinity(int row, int col);		// Scan the nearby blocks for two hits in a row to determine the ship's orientation
 	void outlineEnemyShips(int row, int col);			// Mark the area around a sunken ship as eSight::Empty so it won't be targeted.
-	//void debugBoard();
+	void debugBoard();
 
 public:
 	SmartPlayer(){}

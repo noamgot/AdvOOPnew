@@ -163,10 +163,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="clean_movesA.attack" />
-    <None Include="clean_movesB.attack" />
-    <None Include="good_board_1.sboard" />
-    <None Include="good_board_0.sboard" />
-    <None Include="Naive.sboard" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

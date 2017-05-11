@@ -55,10 +55,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="good_board_1.sboard" />
-    <None Include="clean_movesB.attack" />
-    <None Include="good_board_0.sboard" />
-    <None Include="Naive.sboard" />
     <None Include="clean_movesA.attack">
       <Filter>Source Files</Filter>
     </None>
