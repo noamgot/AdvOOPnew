@@ -35,6 +35,18 @@ namespace Graphics
 		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 	}
 
+	void Graphics::printStartOfGame(const string* board, int rows, int cols)
+	{
+		if (playWithGraphics)
+		{
+			printOpeningMessage();
+			Sleep(3 * DEFAULT_GRAPHICS_DELAY);
+			// print the initial game board
+			printBoard(board, rows, cols);
+			Sleep(sleepTime);
+		}
+	}
+
 	void Graphics::printBoard(const string* board, int numRows, int numCols)
 	{
 		char c;
@@ -77,6 +89,38 @@ namespace Graphics
 			"*   (c)all rights reserved    *\n" << \
 			"*                             *\n" << \
 			"*******************************";
+	}
+
+	void Graphics::printSink(char hitChar, int attackerNum, int scoreA, int scoreB)
+	{
+
+		if (playWithGraphics)
+		{
+			//LOG(!isupper(hitChar) == attackerNum ? "SELF-SINK\n" : "SINK\n");
+			cout << (!isupper(hitChar) == attackerNum ? "SELF-SINK" : "SINK") << "\r";
+			Sleep(sleepTime);
+			clearLastLine();
+			cout << "CURRENT SCORE: A - " << scoreA << ", B - " << scoreB << "\r";
+			Sleep(sleepTime);
+		}
+	}
+
+	void Graphics::printHit(bool validAttack, bool isHit, char hitChar, int attackerNum)
+	{
+				
+		if (playWithGraphics)
+		{
+			if (validAttack && isHit)
+			{
+				//Hit xor self hit
+				cout << (!isupper(hitChar) == attackerNum ? "SELF-HIT" : "HIT") << "\r";
+			}
+			else
+			{
+				cout << "ALREADY HIT\r";
+			}
+		}
+				
 	}
 
 	void Graphics::printSign(int x, int y, eColor color, char sign)

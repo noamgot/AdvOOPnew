@@ -53,6 +53,14 @@ namespace GameManagerUtilities
 
 	int playTheGame(IBattleshipGameAlgo* A, IBattleshipGameAlgo* B, PlayerAttributes playerAttributesArr[], const string* board);
 
+	void handleMove(const string *board, pair<int, int> move, int &attackerNum, int &defenderNum, string &attackerName,
+		IBattleshipGameAlgo *A, IBattleshipGameAlgo *B, PlayerAttributes playerAttributesArr[]);
+
+	void handleMiss(pair<int, int> move, IBattleshipGameAlgo *A, IBattleshipGameAlgo *B, int attackerNum);	
+
+	void handleHitOrSink(pair<int, int> move, bool &validAttack, IBattleshipGameAlgo *A, IBattleshipGameAlgo *B,
+	                     char hitChar, int attackerNum, PlayerAttributes playerAttributesArr[]);
+
 	/* sets 2 individual boards - boardA and boardB - from board*/
 	void initIndividualBoards(string *board, char **boardA, char **boardB);
 

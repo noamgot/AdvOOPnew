@@ -13,8 +13,6 @@
 
 namespace GameManagerUtilities
 {
-	std::ofstream log_file("LOG.txt", std::ios_base::out | std::ios_base::app);
-
 	int initGameBoardsAndPaths(int argc, char **argv, string(&board)[ROW_SIZE], char **boardA, char* *boardB,
 		string& dirPath, string& dllPathA, string& dllPathB)
 	{
@@ -110,14 +108,6 @@ namespace GameManagerUtilities
 		defenderNum ^= 1;
 	}
 
-	//TODO - REMOVE ALL LOGS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-	void LOG(const string text)
-	{
-		log_file << text;
-	}
-
-
 	void GameManagerUtilities::printGameResults(PlayerAttributes playerAttributesArr[])
 	{
 		if (Graphics::playWithGraphics)
@@ -127,17 +117,12 @@ namespace GameManagerUtilities
 		}
 		if (playerAttributesArr[0].shipsCount <= 0)
 		{
-			LOG("Player B won\n");
 			cout << "Player B won" << endl;
 		}
 		else if (playerAttributesArr[1].shipsCount <= 0)
 		{
-			LOG("Player B won\n");
 			cout << "Player A won" << endl;
 		}
-		LOG("Points:\n");
-		LOG("Player A: " + to_string(playerAttributesArr[0].score) + "\n");
-		LOG("Player B: " + to_string(playerAttributesArr[1].score) + "\n");
 		cout << "Points:" << endl;
 		cout << "Player A: " << playerAttributesArr[0].score << endl;
 		cout << "Player B: " << playerAttributesArr[1].score << endl;
@@ -487,26 +472,14 @@ namespace GameManagerUtilities
 		return Ship(size, charToShipType(c), coordinates);
 	}
 
-	
 
-	// TODO - split!!!!!!!!
 	int GameManagerUtilities::playTheGame(IBattleshipGameAlgo* A, IBattleshipGameAlgo* B, PlayerAttributes playerAttributesArr[], const string* board)
 	{
 		auto attackerNum = 0, defenderNum = 1; // index 0 = A, index 1 = B
-		int sinkScore;
-		char hitChar;
-		AttackResult attackResult;
 		string attackerName = "A";
 		IBattleshipGameAlgo *pPlayers[] = { A , B };
+		Graphics::printStartOfGame(board, ROW_SIZE, COL_SIZE);
 
-		if (Graphics::playWithGraphics)
-		{
-			Graphics::printOpeningMessage();
-			Sleep(3 * Graphics::DEFAULT_GRAPHICS_DELAY);
-			// print the initial game board
-			Graphics::printBoard(board, ROW_SIZE, COL_SIZE);
-			Sleep(Graphics::sleepTime);
-		}
 		//The game goes on until one of the players has no more ships or both ran out of moves.
 		while (playerAttributesArr[0].shipsCount > 0 && playerAttributesArr[1].shipsCount > 0 &&
 			(playerAttributesArr[0].hasMoves || playerAttributesArr[1].hasMoves))
@@ -523,94 +496,85 @@ namespace GameManagerUtilities
 			{
 				if (currentMove.first == -1 && currentMove.second == -1) // an exception - means no more moves
 				{
-					// attacker has ran out of moves
-					playerAttributesArr[attackerNum].hasMoves = false;
+					playerAttributesArr[attackerNum].hasMoves = false; // attacker has ran out of moves
 				}
 				// we switch player and continue - even if the move is invalid (i.e we ignore invalid moves)
 				changeCurrentPlayer(attackerNum, defenderNum, attackerName);
 				continue;
 
 			}
-			//remember moves are from 1 to ROW/COL SIZE while the board is from 0 to ROW/COL SIZE -1
-			// hence we need to give a (-1) offset to the move coordinates
-			hitChar = board[currentMove.first - 1][currentMove.second - 1];
-			if (Graphics::playWithGraphics)
-			{
-				Graphics::clearLastLine();
-				LOG(attackerName + " shoots at (" + to_string(currentMove.first) + "," + to_string(currentMove.second) + ") - ");
-				cout << attackerName << " shoots at (" << currentMove.first << "," << currentMove.second << ") - ";
-				Sleep(Graphics::sleepTime);
-			}
-			Graphics::printSign(currentMove.first, currentMove.second, COLOR_RED, Graphics::BOMB_SIGN);
-
-			if (hitChar == WATER)
-			{
-				// Miss
-				if (Graphics::playWithGraphics)
-				{
-					LOG("MISS\n");
-					cout << "MISS\r";
-				}
-				Graphics::printSign(currentMove.first, currentMove.second, COLOR_DEFAULT_WHITE, WATER);
-				A->notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, AttackResult::Miss);
-				B->notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, AttackResult::Miss);
-			}
-			else // Hit xor Sink xor double hit xor hit a sunken ship
-			{
-				auto validAttack = registerHit(playerAttributesArr[(isupper(hitChar) ? 0 : 1)],
-					currentMove, charToShipType(hitChar), attackResult);
-				//notify players on attack results
-				A->notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, attackResult);
-				B->notifyOnAttackResult(attackerNum, currentMove.first, currentMove.second, attackResult);
-				if (attackResult == AttackResult::Sink)
-				{
-					//Sink - calculate the score
-					sinkScore = calculateSinkScore(hitChar);
-					// if hitChar is an UPPERCASE char - than A was hit and B gets the points (and vice versa)
-					playerAttributesArr[(isupper(hitChar) ? 1 : 0)].score += sinkScore;
-					if (Graphics::playWithGraphics)
-					{
-						LOG(!isupper(hitChar) == attackerNum ? "SELF-SINK\n" : "SINK\n");
-						cout << (!isupper(hitChar) == attackerNum ? "SELF-SINK" : "SINK") << "\r";
-						Sleep(Graphics::sleepTime);
-						Graphics::clearLastLine();
-						LOG("CURRENT SCORE: A-" + to_string(playerAttributesArr[0].score) + ", B-" + to_string(playerAttributesArr[1].score) + "\n");
-						cout << "CURRENT SCORE: A-" << playerAttributesArr[0].score << ", B-" << playerAttributesArr[1].score << "\r";
-						Sleep(Graphics::sleepTime);
-					}
-				}
-				else
-				{
-					if (Graphics::playWithGraphics)
-					{
-						if (validAttack && attackResult == AttackResult::Hit)
-						{
-							//Hit xor self hit
-							LOG(!isupper(hitChar) == attackerNum ? "SELF-HIT\n" : "HIT\n");
-							cout << (!isupper(hitChar) == attackerNum ? "SELF-HIT" : "HIT") << "\r";
-						}
-						else
-						{
-							LOG("ALREADY HIT\n");
-							cout << "ALREADY HIT\r";
-						}
-					}
-				}
-				Graphics::printSign(currentMove.first, currentMove.second, isupper(hitChar) ? COLOR_GREEN : COLOR_YELLOW, Graphics::HIT_SIGN);
-				// in case where there was a "real" hit (i.e a "living" tile got a hit) and it wasn't a self it,
-				// the attacker gets another turn
-				if (validAttack && !(isupper(hitChar) ^ attackerNum))
-				{
-					continue;
-				}
-			}
-			//Change player
-			changeCurrentPlayer(attackerNum, defenderNum, attackerName);
+			handleMove(board, currentMove, attackerNum, defenderNum, attackerName, A, B, playerAttributesArr);
 		}
 		printGameResults(playerAttributesArr);
 		delete A;
 		delete B;
-		log_file.close();
 		return EXIT_SUCCESS;
+	}
+
+
+	void GameManagerUtilities::handleMove(const string *board, pair<int, int> move, int &attackerNum, int &defenderNum, string &attackerName, 
+										IBattleshipGameAlgo *A, IBattleshipGameAlgo *B, PlayerAttributes playerAttributesArr[])
+	{
+		bool validAttack;
+		//remember moves are from 1 to ROW/COL SIZE while the board is from 0 to ROW/COL SIZE -1
+		// hence we need to give a (-1) offset to the move coordinates
+		auto hitChar = board[move.first - 1][move.second - 1];
+		if (Graphics::playWithGraphics)
+		{
+			Graphics::clearLastLine();
+			cout << attackerName << " shoots at (" << move.first << "," << move.second << ") - ";
+			Sleep(Graphics::sleepTime);
+		}
+		Graphics::printSign(move.first, move.second, COLOR_RED, Graphics::BOMB_SIGN);
+		if (hitChar == WATER)
+		{
+			// Miss
+			handleMiss(move, A, B, attackerNum);
+		}
+		else // Hit xor Sink xor double hit xor hit a sunken ship
+		{
+			handleHitOrSink(move, validAttack, A, B, hitChar, attackerNum, playerAttributesArr);
+			// in case where there was a "real" hit (i.e a "living" tile got a hit) and it wasn't a self it, the attacker gets another turn
+			if (validAttack && !(isupper(hitChar) ^ attackerNum))
+			{
+				return;
+			}
+		}
+		//Change player
+		changeCurrentPlayer(attackerNum, defenderNum, attackerName);
+	}
+
+	void GameManagerUtilities::handleMiss(pair<int,int> move, IBattleshipGameAlgo *A, IBattleshipGameAlgo *B ,int attackerNum)
+	{
+		if (Graphics::playWithGraphics)
+		{
+			cout << "MISS\r";
+		}
+		Graphics::printSign(move.first, move.second, COLOR_DEFAULT_WHITE, WATER);
+		A->notifyOnAttackResult(attackerNum, move.first, move.second, AttackResult::Miss);
+		B->notifyOnAttackResult(attackerNum, move.first, move.second, AttackResult::Miss);
+		
+	}
+
+	void GameManagerUtilities::handleHitOrSink(pair<int,int> move, bool &validAttack, IBattleshipGameAlgo *A, IBattleshipGameAlgo *B,
+	                                           char hitChar, int attackerNum, PlayerAttributes playerAttributesArr[])
+	{
+		AttackResult attackResult;
+		validAttack = registerHit(playerAttributesArr[(isupper(hitChar) ? 0 : 1)], move, charToShipType(hitChar), attackResult);
+		//notify players on attack results
+		A->notifyOnAttackResult(attackerNum, move.first, move.second, attackResult);
+		B->notifyOnAttackResult(attackerNum, move.first, move.second, attackResult);
+		if (attackResult == AttackResult::Sink)
+		{
+			// if hitChar is an UPPERCASE char - than A was hit and B gets the points (and vice versa)
+			playerAttributesArr[(isupper(hitChar) ? 1 : 0)].score += calculateSinkScore(hitChar);
+			Graphics::printSink(hitChar, attackerNum, playerAttributesArr[0].score, playerAttributesArr[1].score);
+		}
+		else
+		{
+			Graphics::printHit(validAttack, attackResult == AttackResult::Hit, hitChar, attackerNum);
+		}
+		Graphics::printSign(move.first, move.second, isupper(hitChar) ? COLOR_GREEN : COLOR_YELLOW, Graphics::HIT_SIGN);
+		
 	}
 }
