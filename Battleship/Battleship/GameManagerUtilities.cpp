@@ -13,6 +13,8 @@
 
 namespace GameManagerUtilities
 {
+	std::ofstream log_file("LOG.txt", std::ios_base::out | std::ios_base::app);
+
 	int initGameBoardsAndPaths(int argc, char **argv, string(&board)[ROW_SIZE], char **boardA, char* *boardB,
 		string& dirPath, string& dllPathA, string& dllPathB)
 	{
@@ -112,7 +114,6 @@ namespace GameManagerUtilities
 
 	void LOG(const string text)
 	{
-		std::ofstream log_file("LOG.txt", std::ios_base::out | std::ios_base::app);
 		log_file << text;
 	}
 
@@ -122,6 +123,7 @@ namespace GameManagerUtilities
 		if (Graphics::playWithGraphics)
 		{
 			Graphics::clearLastLine();
+			cout << '\a';
 		}
 		if (playerAttributesArr[0].shipsCount <= 0)
 		{
@@ -608,6 +610,7 @@ namespace GameManagerUtilities
 		printGameResults(playerAttributesArr);
 		delete A;
 		delete B;
+		log_file.close();
 		return EXIT_SUCCESS;
 	}
 }

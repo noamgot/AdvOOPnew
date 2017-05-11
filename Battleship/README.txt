@@ -1,3 +1,7 @@
+
+PLEASE NOTICE: when playing with graphics (i.e not using the -quiet flag), a sound is heard when the results
+are shown. IT'S NOT A BUG - IT'S A FEATURE (really!).
+
 *******************************
 *   IMPORTANT CLATIFICATION   *
 *******************************
