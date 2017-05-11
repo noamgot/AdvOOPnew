@@ -100,7 +100,7 @@ namespace Graphics
 			cout << (!isupper(hitChar) == attackerNum ? "SELF-SINK" : "SINK") << "\r";
 			Sleep(sleepTime);
 			clearLastLine();
-			cout << "CURRENT SCORE: A - " << scoreA << ", B - " << scoreB << "\r";
+			cout << "CURRENT SCORE: A-" << scoreA << ", B-" << scoreB << "\r";
 			Sleep(sleepTime);
 		}
 	}
