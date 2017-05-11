@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Ship.h"
-#include <windows.h>
 #include <vector>
 
 using namespace std;
@@ -40,6 +39,11 @@ namespace GameUtilities
 	inline bool isLegalMove(int x, int y, int numOfRows, int numOfCols)
 	{
 		return !(x < 1 || x > numOfRows || y < 1 || y > numOfCols);
+	}
+
+	inline bool isLegalMove(pair<int, int> move, int numOfRows, int numOfCols)
+	{
+		return isLegalMove(move.first, move.second, numOfRows, numOfCols);
 	}
 
 	/* functions for allocating and deleteing boards of size rows*cols */

@@ -23,11 +23,6 @@ bool SmartPlayer::isNearChar(int row, int col, eSign s, Direction* dir)
 	
 }
 
-bool SmartPlayer::isPointValid(int row, int col)
-{
-	return GameUtilities::isLegalMove(row + 1, col + 1, mNumOfRows, mNumOfCols);
-}
-
 bool SmartPlayer::replaceChar(int row, int col, char old_char, char new_char, bool reverse)
 {
 	auto pr = verifyChar(row, col, old_char);
@@ -310,8 +305,6 @@ void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResul
 		replaceChar(myRow, myCol, UNKNOWN, EMPTY);
 	}
 	//debugBoard();
-
-	
 }
 
 IBattleshipGameAlgo* GetAlgorithm()
