@@ -13,7 +13,6 @@
 
 namespace GameManagerUtilities
 {
-	std::ofstream log_file("LOG.txt", std::ios_base::out | std::ios_base::app);
 
 	int initGameBoardsAndPaths(int argc, char **argv, string(&board)[ROW_SIZE], char **boardA, char* *boardB,
 		string& dirPath, string& dllPathA, string& dllPathB)
@@ -110,12 +109,7 @@ namespace GameManagerUtilities
 		defenderNum ^= 1;
 	}
 
-	//TODO - REMOVE ALL LOGS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	void LOG(const string text)
-	{
-		log_file << text;
-	}
 
 
 	void GameManagerUtilities::printGameResults(PlayerAttributes playerAttributesArr[])
@@ -127,17 +121,12 @@ namespace GameManagerUtilities
 		}
 		if (playerAttributesArr[0].shipsCount <= 0)
 		{
-			LOG("Player B won\n");
 			cout << "Player B won" << endl;
 		}
 		else if (playerAttributesArr[1].shipsCount <= 0)
 		{
-			LOG("Player B won\n");
 			cout << "Player A won" << endl;
 		}
-		LOG("Points:\n");
-		LOG("Player A: " + to_string(playerAttributesArr[0].score) + "\n");
-		LOG("Player B: " + to_string(playerAttributesArr[1].score) + "\n");
 		cout << "Points:" << endl;
 		cout << "Player A: " << playerAttributesArr[0].score << endl;
 		cout << "Player B: " << playerAttributesArr[1].score << endl;
@@ -537,7 +526,6 @@ namespace GameManagerUtilities
 			if (Graphics::playWithGraphics)
 			{
 				Graphics::clearLastLine();
-				LOG(attackerName + " shoots at (" + to_string(currentMove.first) + "," + to_string(currentMove.second) + ") - ");
 				cout << attackerName << " shoots at (" << currentMove.first << "," << currentMove.second << ") - ";
 				Sleep(Graphics::sleepTime);
 			}
@@ -548,7 +536,6 @@ namespace GameManagerUtilities
 				// Miss
 				if (Graphics::playWithGraphics)
 				{
-					LOG("MISS\n");
 					cout << "MISS\r";
 				}
 				Graphics::printSign(currentMove.first, currentMove.second, COLOR_DEFAULT_WHITE, WATER);
@@ -569,12 +556,10 @@ namespace GameManagerUtilities
 					// if hitChar is an UPPERCASE char - than A was hit and B gets the points (and vice versa)
 					playerAttributesArr[(isupper(hitChar) ? 1 : 0)].score += sinkScore;
 					if (Graphics::playWithGraphics)
-					{
-						LOG(!isupper(hitChar) == attackerNum ? "SELF-SINK\n" : "SINK\n");
+					{;
 						cout << (!isupper(hitChar) == attackerNum ? "SELF-SINK" : "SINK") << "\r";
 						Sleep(Graphics::sleepTime);
 						Graphics::clearLastLine();
-						LOG("CURRENT SCORE: A-" + to_string(playerAttributesArr[0].score) + ", B-" + to_string(playerAttributesArr[1].score) + "\n");
 						cout << "CURRENT SCORE: A-" << playerAttributesArr[0].score << ", B-" << playerAttributesArr[1].score << "\r";
 						Sleep(Graphics::sleepTime);
 					}
@@ -586,13 +571,7 @@ namespace GameManagerUtilities
 						if (validAttack && attackResult == AttackResult::Hit)
 						{
 							//Hit xor self hit
-							LOG(!isupper(hitChar) == attackerNum ? "SELF-HIT\n" : "HIT\n");
 							cout << (!isupper(hitChar) == attackerNum ? "SELF-HIT" : "HIT") << "\r";
-						}
-						else
-						{
-							LOG("ALREADY HIT\n");
-							cout << "ALREADY HIT\r";
 						}
 					}
 				}
@@ -610,7 +589,6 @@ namespace GameManagerUtilities
 		printGameResults(playerAttributesArr);
 		delete A;
 		delete B;
-		log_file.close();
 		return EXIT_SUCCESS;
 	}
 }
