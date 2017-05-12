@@ -24,7 +24,7 @@ enum eSign : char
 	UNKNOWN = ' '
 };
 
-//TODO - pass some of the protected values to private?
+//TODO - pass some of the protected functions to private?
 class SmartPlayer :	public AbstractPlayer
 {
 protected:
@@ -75,7 +75,10 @@ protected:
 	/// Wrapper fucntion for void sinkShip(int srow, int scol, Direction dir) for getting the direction first.
 	void sinkShip(int row, int col);
 	/// Transforms a destroyed ship to a sunken one (so that its outline can be labeled empty.
-	void sinkShip(int srow, int scol, Direction dir);
+	void sinkShip(int row, int col, Direction dir);
+	void SmartPlayer::outlineLoop(int row, int col, int rowMod, int colMod, bool reverse);
+	bool SmartPlayer::findDirection(int row, int col, bool outline);
+	void debugBoard();
 
 public:
 	SmartPlayer(){}
