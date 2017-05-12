@@ -59,10 +59,8 @@ set (SMART_ALGO_SOURCE_FILES
 	Ship.h
 	SmartPlayer.cpp
 	SmartPlayer.h
-	WeightedPosition.cpp
-	WeightedPosition.h
 )
-
+add_definitions(-DUNICODE -D_UNICODE)
 ##################################
 ### DO NOT CHANGE FROM HERE ON ###
 ##################################
