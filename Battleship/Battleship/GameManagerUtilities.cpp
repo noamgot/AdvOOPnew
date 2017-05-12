@@ -137,10 +137,8 @@ namespace GameManagerUtilities
 			cout << "Error: opening board file failed" << endl;
 			return -1;
 		}
-		char chars[9] = { ' ','B','P','M','D','b','p','m','d' };
-		set<char> charSet;
-		charSet.insert(chars, chars + 9);
-
+		set<char> charSet{ WATER, BOAT,MISSLE_SHIP, SUBMARINE, DESTROYER, char(tolower(BOAT)),
+							char(tolower(MISSLE_SHIP)), char(tolower(SUBMARINE)), char(tolower(DESTROYER)) };
 		for (auto i = 0; i < ROW_SIZE; i++)
 		{
 			getline(boardFile, board[i]);
@@ -333,8 +331,9 @@ namespace GameManagerUtilities
 	int GameManagerUtilities::checkBoardValidity(string* board)
 	{
 		auto shipCountA = 0, shipCountB = 0, isShipA = 0, isShipB = 0, adjCheck = 0;
-		map<char, int> shipsA = { { 'B',1 },{ 'P',2 },{ 'M',3 },{ 'D',4 } };
-		map<char, int> shipsB = { { 'b',1 },{ 'p',2 },{ 'm',3 },{ 'd',4 } };
+		map<char, int> shipsA = { { BOAT,1 },{ MISSLE_SHIP,2 },{ SUBMARINE,3 },{ DESTROYER,4 } };
+		map<char, int> shipsB = { { char(tolower(BOAT)),1 },{ char(tolower(MISSLE_SHIP)),2 },
+								{ char(tolower(SUBMARINE)),3 },{ char(tolower(DESTROYER)),4 } };
 		bitset<4> errShipsA, errShipsB;// error flags for ship misshapes
 
 		for (auto i = 0; i < ROW_SIZE; i++)
@@ -343,7 +342,7 @@ namespace GameManagerUtilities
 			{
 				if (board[i][j] != ' ')
 				{
-					isShipA = shipsA[board[i][j]] != 0;       // 1 if its A ship, otherwise 0
+					isShipA = shipsA[board[i][j]] != 0;       // 1 if its a ship, otherwise 0
 					isShipB = shipsB[board[i][j]] != 0;
 					if (isShipA || isShipB)
 					{
@@ -415,7 +414,7 @@ namespace GameManagerUtilities
 			return BAD_STRING; //signs the string is bad
 		}
 		string temp(buff);
-		delete buff;
+		delete buff; // memory was allocated by _getcwd
 		return temp;
 	}
 

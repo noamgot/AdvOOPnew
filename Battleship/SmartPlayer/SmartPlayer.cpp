@@ -1,6 +1,7 @@
 #include "SmartPlayer.h"
 #include "GameUtilities.h"
 #include <list>
+#include <ctime>
 
 
 bool SmartPlayer::isNearChar(int row, int col, eSign s, Direction* dir)
@@ -112,9 +113,6 @@ void SmartPlayer::reLabelTheBoard()
 
 void SmartPlayer::setBoard(int player, const char** board, int numRows, int numCols)
 {
-	mNumOfRows = numRows;
-	mNumOfCols = numCols;
-	mPlayerNum = player;
 	AbstractPlayer::setBoard(player, board, numRows, numCols);
 	reLabelTheBoard();
 
@@ -132,7 +130,10 @@ void SmartPlayer::setBoard(int player, const char** board, int numRows, int numC
 
 bool SmartPlayer::init(const string& path)
 {
-	AbstractPlayer::init(path);
+	if (!AbstractPlayer::init(path))
+	{
+		return false;
+	}
 	vector<pair<int, int>> valid_moves;
 	for (auto row = 0; row < mNumOfRows; row++)
 	{
@@ -144,6 +145,7 @@ bool SmartPlayer::init(const string& path)
 			}
 		}
 	}
+	srand(static_cast<unsigned int>(time(nullptr))); // Seed the PRG for all of our random needs.
 
 	random_shuffle(std::begin(valid_moves), std::end(valid_moves));
 	for (auto move : valid_moves)
@@ -220,7 +222,7 @@ pair<int, int> SmartPlayer::attack()
 void SmartPlayer::analyzeAttackResult()
 {
 	auto dir = NONE;
-	auto counter = 0;
+	int counter;
 	for (auto row = 0; row < mNumOfRows; row++)
 	{
 		for (auto col = 0; col < mNumOfCols; col++)
@@ -232,6 +234,7 @@ void SmartPlayer::analyzeAttackResult()
 				if(isNearChar(row, col, DESTROYED, &dir)) { addTarget(row, col, mHighPriorityQueue, dir); }
 				else
 				{
+					//TODO @URI - function?
 					if (isPointValid(row, col - 1)) { addTarget(row, col - 1, mHighPriorityQueue); }
 					if (isPointValid(row - 1, col)) { addTarget(row - 1, col, mHighPriorityQueue); }
 					if (isPointValid(row, col + 1)) { addTarget(row, col + 1, mHighPriorityQueue); }
@@ -239,7 +242,7 @@ void SmartPlayer::analyzeAttackResult()
 
 				}
 				break;
-			case UNKNOWN:
+			case UNKNOWN: //TODO @URI - function? (calculating counter value)
 					counter = (verifyChar(row, col + 1, EMPTY).second ? 1 : 0)
 						+ (verifyChar(row, col - 1, EMPTY).second ? 1 : 0)
 						+ (verifyChar(row + 1, col, EMPTY).second ? 1 : 0)
@@ -321,9 +324,9 @@ bool SmartPlayer::findDirection(int row, int col, bool outline)
 }
 
 void SmartPlayer::outlineSunkenEnemyShips(int row, int col, Direction dir)
-{
-
-	int i;
+{ 
+	//TODO @URI - MEGA CLEAN
+	//int i;
 	//If the ship is horizonal we keep the row constant and move along the columns.
 	//If the ship is not horizonal (vertical) we keep the col constant and move along the rows.	
 
@@ -431,7 +434,7 @@ void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResul
 	{
 		replaceChar(myRow, myCol, UNKNOWN, EMPTY);
 	}
-	debugBoard();
+	//debugBoard();
 	
 }
 
@@ -441,7 +444,7 @@ IBattleshipGameAlgo* GetAlgorithm()
 	return newP;
 }
 
-void SmartPlayer::debugBoard()
+/*void SmartPlayer::debugBoard()
 {
 	auto *f = fopen("SmartBoard.txt", "w");
 	if (f == nullptr)
@@ -457,4 +460,4 @@ void SmartPlayer::debugBoard()
 		fprintf(f, "\n");
 	}
 	fclose(f);
-}
+}*/

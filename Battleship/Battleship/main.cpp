@@ -1,5 +1,4 @@
 #include "GameManagerUtilities.h"
-#include "DLLManager.h"
 #include "Graphics.h"
 #include <ctime>
 
@@ -9,12 +8,10 @@ using namespace GameUtilities;
 
 int main(int argc, char** argv)
 {
-	string dirPath, boardPath, board[ROW_SIZE], dllPathA, dllPathB;
+	string dirPath, board[ROW_SIZE], dllPathA, dllPathB;
 	DLLManager dllMngr;
 	PlayerAttributes playerAttributesArr[2];
 	IBattleshipGameAlgo *A, *B;
-
-	srand(static_cast<unsigned int>(time(nullptr))); // Seed the PRG for all of our random needs.
 
 	//hide the console cursor
 	Graphics::showConsoleCursor(false);

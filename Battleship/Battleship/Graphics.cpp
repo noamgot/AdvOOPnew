@@ -86,7 +86,7 @@ namespace Graphics
 			"*        Uri Bracha           *\n" << \
 			"*       Noam Gottlieb         *\n" << \
 			"*                             *\n" << \
-			"*   (c)all rights reserved    *\n" << \
+			"*   (c) all rights reserved   *\n" << \
 			"*                             *\n" << \
 			"*******************************";
 	}

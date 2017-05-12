@@ -51,7 +51,6 @@ int FilePlayer::loadMovesFromFile(const string attackFilePath)
 		{
 			continue;
 		}
-
 		lineStream >> y; //read y coor
 		if (y < 1 || y > mNumOfCols)
 		{
@@ -60,8 +59,7 @@ int FilePlayer::loadMovesFromFile(const string attackFilePath)
 		mMovesQueue.push(make_pair(x, y));
 	}
 	atkFile.close();
-	return 0;
-	
+	return 0;	
 }
 
 bool FilePlayer::init(const string & path)

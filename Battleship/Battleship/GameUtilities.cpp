@@ -4,7 +4,6 @@
 #include <filesystem>
 #include <Windows.h>
 
-
 using namespace std;
 
 namespace GameUtilities
