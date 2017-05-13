@@ -39,9 +39,6 @@ protected:
 	// A queue for high priority (follow up) attacks
 	deque<pair<int, int>> mHighPriorityQueue;
 
-	// A queue for medium priority (follow up) attacks
-	deque<pair<int, int>> mMediumPriorityQueue;
-	
 	//Returns whether the coordinates are valid - in the inner representation (0 - COL/ROW SIZE -1)
 	bool SmartPlayer::isPointValid(int row, int col) const
 	{
@@ -85,6 +82,28 @@ protected:
 	void outlineSunkenEnemyShips(int row, int col);				    
 
 	// Mark the area around a sunken ship as eSight::Empty so it won't be targeted.
+	// In this function we take care of:
+	//  OOO <---these
+	// OXXXO
+	//  OOO <--- and these, in the horizonal case 
+	//
+	//  O
+	// OXO
+	// OXO
+	// OXO
+	//  O
+	// ^ ^
+	// these in the vertical case
+	//
+	//			   OOO 
+	//  this ---> OXXXO <--- and this, in the horizonal case
+	//			   OOO  
+	//
+	//  O <--- this
+	// OXO
+	// OXO
+	// OXO
+	//  O <--- and this, in the vertical case 
 	void outlineSunkenEnemyShips(int row, int col, Direction dir); 
 
 	// Wrapper fucntion for void sinkShip(int srow, int scol, Direction dir) for getting the direction first.

@@ -209,14 +209,6 @@ pair<int, int> SmartPlayer::attack()
 			return move;
 		}
 	}
-	if (mMediumPriorityQueue.size() > 0)
-	{
-		auto move = attackFromPriorityQuque(mMediumPriorityQueue);
-		if (isPointValid(move))
-		{
-			return move;
-		}
-	}
 	if (mMovesQueue.size() > 0)
 	{
 		auto move = attackFromPriorityQuque(mMovesQueue);
@@ -236,34 +228,16 @@ void SmartPlayer::analyzeAttackResult()
 	{
 		for (auto col = 0; col < mNumOfCols; col++)
 		{
-			auto label = mBoard[row][col];
-			switch (label)
+			if(mBoard[row][col] == DESTROYED)
 			{
-			case DESTROYED:
-				if(isNearChar(row, col, DESTROYED, &dir)) { addTarget(row, col, mHighPriorityQueue, dir); }
+				if (isNearChar(row, col, DESTROYED, &dir)) { addTarget(row, col, mHighPriorityQueue, dir); }
 				else
 				{
 					if (isPointValid(row, col - 1)) { addTarget(row, col - 1, mHighPriorityQueue); }
 					if (isPointValid(row - 1, col)) { addTarget(row - 1, col, mHighPriorityQueue); }
 					if (isPointValid(row, col + 1)) { addTarget(row, col + 1, mHighPriorityQueue); }
 					if (isPointValid(row + 1, col)) { addTarget(row + 1, col, mHighPriorityQueue); }
-
 				}
-				break;
-			case UNKNOWN: 
-					counter = (verifyChar(row, col + 1, EMPTY).second ? 1 : 0)
-						+ (verifyChar(row, col - 1, EMPTY).second ? 1 : 0)
-						+ (verifyChar(row + 1, col, EMPTY).second ? 1 : 0)
-						+ (verifyChar(row - 1, col, EMPTY).second ? 1 : 0);
-					if (counter >= 3)
-					{
-						addTarget(row, col, mMediumPriorityQueue);
-					}
-				break;
-			case SANK:
-			case SHIP:
-			default:
-				break;
 			}
 		}
 	}
@@ -324,28 +298,6 @@ bool SmartPlayer::findDirection(int row, int col, bool outline)
 
 void SmartPlayer::outlineSunkenEnemyShips(int row, int col, Direction dir)
 { 
-	//
-	//  OOO <---these
-	// OXXXO
-	//  OOO <--- and these, in the horizonal case 
-	//
-	//  O
-	// OXO
-	// OXO
-	// OXO
-	//  O
-	// ^ ^
-	// these in the vertical case
-	//
-	//			   OOO 
-	//  this ---> OXXXO <--- and this, in the horizonal case
-	//			   OOO  
-	//
-	//  O <--- this
-	// OXO
-	// OXO
-	// OXO
-	//  O <--- and this, in the vertical case 
 	if (dir == HORIZONAL)
 	{
 		outlineLoop(row, col, 0, 1, false);
