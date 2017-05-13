@@ -10,11 +10,6 @@ namespace Graphics
 	DWORD sleepTime = DEFAULT_GRAPHICS_DELAY;
 	bool playWithGraphics = true;
 
-	void Graphics::setTextColor(eColor color)
-	{
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
-	}
-
 	void Graphics::wherexy(int& x, int& y)
 	{
 		CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo;

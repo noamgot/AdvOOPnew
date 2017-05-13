@@ -28,7 +28,10 @@ namespace Graphics
 	// namespace  methods
 
 	/*changes the console output color according to the given color*/
-	void setTextColor(eColor color);
+	inline void setTextColor(eColor color)
+	{
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+	}
 
 	/*gets the current console cursor coordinates*/
 	void wherexy(int& x, int& y);
