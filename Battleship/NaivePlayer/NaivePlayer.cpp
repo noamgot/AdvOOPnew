@@ -45,7 +45,7 @@ bool NaivePlayer::init(const string& path)
 			if (allowedToAttack(i, j))
 			{
 				// we give a (+1) offset so we "speak" in cordinates starting from 1
-				mMovesQueue.push(make_pair(i + 1, j + 1));
+				mMovesQueue.push_back(make_pair(i + 1, j + 1));
 			}
 		}
 	}

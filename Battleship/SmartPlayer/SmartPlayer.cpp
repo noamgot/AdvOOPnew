@@ -150,7 +150,7 @@ bool SmartPlayer::init(const string& path)
 	random_shuffle(std::begin(valid_moves), std::end(valid_moves));
 	for (auto move : valid_moves)
 	{
-		mMovesQueue.push(move);
+		mMovesQueue.push_back(move);
 	}
 	return true;
 }

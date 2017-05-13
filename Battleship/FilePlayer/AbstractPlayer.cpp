@@ -24,7 +24,7 @@ pair<int, int> AbstractPlayer::attack()
 	if (mMovesQueue.size() > 0)
 	{
 		auto& nextAttack(mMovesQueue.front());
-		mMovesQueue.pop();
+		mMovesQueue.pop_front();
 		return nextAttack;
 	}
 	return make_pair(-1, -1);

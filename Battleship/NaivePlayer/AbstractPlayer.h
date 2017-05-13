@@ -15,7 +15,7 @@ protected:
 	int mShipsCount; // number of living ships - starting from DEFAULT_SHIPS_COUNT
 	int mPlayerNum;
 	vector<vector<char>> mBoard; 
-	queue<pair<int, int>> mMovesQueue;
+	deque<pair<int, int>> mMovesQueue;
 
 	// this class should not be instantiated in the game manager - hence the ctor & dtor are protected
 	AbstractPlayer() : mShipsCount(GameUtilities::DEFAULT_SHIPS_COUNT) {}

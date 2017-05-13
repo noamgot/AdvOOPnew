@@ -56,7 +56,7 @@ int FilePlayer::loadMovesFromFile(const string attackFilePath)
 		{
 			continue;
 		}
-		mMovesQueue.push(make_pair(x, y));
+		mMovesQueue.push_back(make_pair(x, y));
 	}
 	atkFile.close();
 	return 0;	
