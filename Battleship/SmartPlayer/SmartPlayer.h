@@ -24,7 +24,6 @@ enum eSign : char
 	UNKNOWN = ' '
 };
 
-//TODO - pass some of the protected functions to private?
 class SmartPlayer :	public AbstractPlayer
 {
 protected:
@@ -64,14 +63,16 @@ protected:
 	// Adds the coordinates to the attack queue if they are unknown or searches for the first unknown coordinates in the direction dir points.
 	void addTarget(int row, int col, deque<pair<int, int>>& attackQueue, Direction dir = NONE);
 
+	// The main loop of addTarget (born from code duplication).
+	void addTargetLoop(int row, int col, int rowMod, int colMod, deque<pair<int, int>>& attackQueue, Direction dir, Direction orientation, Direction positiveDirection, Direction negativeDirection);
+
 	//Returns a pair of booleans, the first is true iff the point is a valid point and the second is true iff these coordinates contain the char c.
 	pair<bool, bool> verifyChar(int row, int col, char c);
 
 	//Returns whether this square is adjacent to a ship. Does not assumes coordinates are valid.
-	bool isNearChar(int row, int col, eSign s, Direction* dir = NULL); 
+	bool isNearChar(int row, int col, eSign s, Direction* dir = nullptr); 
 
 	pair<int, int> attackFromPriorityQuque(deque<pair<int, int>>& priorityQueue);
-	pair<int, int> attackFromPriorityQuque(queue<pair<int, int>>& priorityQueue);
 
 	// Convert the board the player received so that it is labeled by the enum eSign.
 	// Used for analysis purposes
@@ -92,11 +93,12 @@ protected:
 	// Transforms a destroyed ship to a sunken one (so that its outline can be labeled empty.
 	void sinkShip(int row, int col, Direction dir);
 
+	// The main loop of outlineSunkenEnemyShips (born from code duplication).
 	void SmartPlayer::outlineLoop(int row, int col, int rowMod, int colMod, bool reverse);
 
+	// 
 	bool SmartPlayer::findDirection(int row, int col, bool outline);
 
-	//void debugBoard();
 
 public:
 	SmartPlayer(){}

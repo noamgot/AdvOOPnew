@@ -6,7 +6,7 @@
 
 bool SmartPlayer::isNearChar(int row, int col, eSign s, Direction* dir)
 {
-	if(dir == NULL)
+	if(dir == nullptr)
 	{
 		return verifyChar(row + 1, col, s).second || verifyChar(row - 1, col, s).second || verifyChar(row, col + 1, s).second || verifyChar(row, col - 1, s).second;
 	}
@@ -21,7 +21,6 @@ bool SmartPlayer::isNearChar(int row, int col, eSign s, Direction* dir)
 		}
 	}
 	return false;
-	
 }
 
 bool SmartPlayer::replaceChar(pair<int, int> point, char old_char, char new_char, bool reverse)
@@ -40,6 +39,35 @@ bool SmartPlayer::replaceChar(int row, int col, char old_char, char new_char, bo
 	return false;
 }
 
+void SmartPlayer::addTargetLoop(int row, int col,int rowMod, int colMod, deque<pair<int, int>>& attackQueue, Direction dir, Direction orientation, Direction positiveDirection, Direction negativeDirection)
+{
+	auto maxDist = 4;
+	auto foundPos = false, foundNeg = false;
+	if (dir == orientation || dir == positiveDirection || dir == negativeDirection)
+	{
+		for (auto i = 1; i < maxDist; i++)
+		{
+			// Adds coordinates to the move queue only if the coordinate content is unknown 
+			// and it is adjacent to a destroyed part of an enemy ship.
+
+			//This part handles RIGHT and DOWN directions
+			if (dir != positiveDirection && !foundPos && verifyChar(row + i*rowMod, col + i*colMod, UNKNOWN).second && verifyChar(row, col + i - 1, DESTROYED).second)
+			{
+				foundPos = true; attackQueue.push_front(make_pair(row + 1 + i*rowMod, col + 1 + i*colMod));
+			}
+			else if (!verifyChar(row + (i - 1)*rowMod, col + (i - 1)*colMod, DESTROYED).second) { foundPos = true; }
+
+
+			// This part handles LEFT and UP directions
+			if (dir != RIGHT && !foundNeg && verifyChar(row - i*rowMod, col - i*colMod, UNKNOWN).second && verifyChar(row, col - i + 1, DESTROYED).second)
+			{
+				foundNeg = true; attackQueue.push_front(make_pair(row + 1 - i*rowMod, col + 1 - i*colMod));
+			}
+			else if (!verifyChar(row - (i + 1)*rowMod, col - (i + 1)*colMod, DESTROYED).second) { foundNeg = true; }
+		}
+	}
+}
+
 void SmartPlayer::addTarget(int row, int col, deque<pair<int, int>>& attackQueue, Direction dir)
 {
 	auto maxDist = 4;
@@ -49,37 +77,35 @@ void SmartPlayer::addTarget(int row, int col, deque<pair<int, int>>& attackQueue
 
 	else // In this case we have some additional information
 	{
-		// TODO - code duplication here!
+		addTargetLoop(row, col, 0, 1, attackQueue, dir, HORIZONAL, RIGHT, LEFT);
+		addTargetLoop(row, col, 1, 0, attackQueue, dir, VERTICAL, DOWN, UP);
+		//if (dir == HORIZONAL || dir == RIGHT || dir == LEFT)
+		//{
+		//	for (auto i = 1; i < maxDist; i++)
+		//	{
 
-		// Adds coordinates to the move queue only if the coordinate content is unknown 
-		// and it is adjacent to a destroyed part of an enemy ship.
-		if (dir == HORIZONAL || dir == RIGHT || dir == LEFT)
-		{
-			for (auto i = 1; i < maxDist; i++)
-			{
-				if (dir != LEFT && !foundRight && verifyChar(row, col + i, UNKNOWN).second && verifyChar(row, col + i - 1, DESTROYED).second)
-				{ foundRight = true; attackQueue.push_front(make_pair(row + 1, col + 1 + i)); }
-				else if (!verifyChar(row, col + i - 1, DESTROYED).second) { foundRight = true; }
+		//		if (dir != LEFT && !foundRight && verifyChar(row, col + i, UNKNOWN).second && verifyChar(row, col + i - 1, DESTROYED).second)
+		//		{ foundRight = true; attackQueue.push_front(make_pair(row + 1, col + 1 + i)); }
+		//		else if (!verifyChar(row, col + i - 1, DESTROYED).second) { foundRight = true; }
 
-				if (dir != RIGHT && !foundLeft && verifyChar(row, col - i, UNKNOWN).second && verifyChar(row, col - i + 1, DESTROYED).second)
-				{ foundLeft = true;attackQueue.push_front(make_pair(row + 1, col + 1 - i)); }
-				else if (!verifyChar(row, col - i + 1, DESTROYED).second) { foundLeft = true; }
-			}
-		}
+		//		if (dir != RIGHT && !foundLeft && verifyChar(row, col - i, UNKNOWN).second && verifyChar(row, col - i + 1, DESTROYED).second)
+		//		{ foundLeft = true;attackQueue.push_front(make_pair(row + 1, col + 1 - i)); }
+		//		else if (!verifyChar(row, col - i + 1, DESTROYED).second) { foundLeft = true; }
+		//	}
+		//}
+		//if (dir == VERTICAL || dir == UP || dir == DOWN)
+		//{
+		//	for (auto i = 1; i < maxDist; i++)
+		//	{
+		//		if (dir != DOWN && !foundUp && verifyChar(row - i, col, UNKNOWN).second && verifyChar(row - i + 1, col, DESTROYED).second)
+		//		{ foundUp = true; attackQueue.push_front(make_pair(row - i + 1, col + 1)); }
+		//		else if (!verifyChar(row - i + 1, col, DESTROYED).second) { foundUp = true; }
 
-		if (dir == VERTICAL || dir == UP || dir == DOWN)
-		{
-			for (auto i = 1; i < maxDist; i++)
-			{
-				if (dir != DOWN && !foundUp && verifyChar(row - i, col, UNKNOWN).second && verifyChar(row - i + 1, col, DESTROYED).second)
-				{ foundUp = true; attackQueue.push_front(make_pair(row - i + 1, col + 1)); }
-				else if (!verifyChar(row - i + 1, col, DESTROYED).second) { foundUp = true; }
-
-				if (dir != UP && !foundDown && verifyChar(row + i, col, UNKNOWN).second && verifyChar(row + i - 1, col, DESTROYED).second)
-				{ foundDown = true; attackQueue.push_front(make_pair(row + i + 1, col + 1)); }
-				else if (!verifyChar(row + i - 1, col, DESTROYED).second) { foundDown = true; }
-			}
-		}
+		//		if (dir != UP && !foundDown && verifyChar(row + i, col, UNKNOWN).second && verifyChar(row + i - 1, col, DESTROYED).second)
+		//		{ foundDown = true; attackQueue.push_front(make_pair(row + i + 1, col + 1)); }
+		//		else if (!verifyChar(row + i - 1, col, DESTROYED).second) { foundDown = true; }
+		//	}
+		//}
 	}
 }
 
@@ -172,23 +198,6 @@ pair<int, int> SmartPlayer::attackFromPriorityQuque(deque<pair<int, int>>& prior
 	}
 	return move;	
 }
-pair<int, int> SmartPlayer::attackFromPriorityQuque(queue<pair<int, int>>& priorityQueue)
-{
-	auto& move = priorityQueue.front();
-	while (mBoard[move.first - 1][move.second - 1] != UNKNOWN)
-	{
-		if(priorityQueue.size() > 0 )
-		{
-			move = priorityQueue.front();
-			priorityQueue.pop();
-		}
-		else
-		{
-			return make_pair(-1, -1);
-		}
-	}
-	return move;
-}
 
 pair<int, int> SmartPlayer::attack()
 {
@@ -234,7 +243,6 @@ void SmartPlayer::analyzeAttackResult()
 				if(isNearChar(row, col, DESTROYED, &dir)) { addTarget(row, col, mHighPriorityQueue, dir); }
 				else
 				{
-					//TODO @URI - function?
 					if (isPointValid(row, col - 1)) { addTarget(row, col - 1, mHighPriorityQueue); }
 					if (isPointValid(row - 1, col)) { addTarget(row - 1, col, mHighPriorityQueue); }
 					if (isPointValid(row, col + 1)) { addTarget(row, col + 1, mHighPriorityQueue); }
@@ -242,7 +250,7 @@ void SmartPlayer::analyzeAttackResult()
 
 				}
 				break;
-			case UNKNOWN: //TODO @URI - function? (calculating counter value)
+			case UNKNOWN: 
 					counter = (verifyChar(row, col + 1, EMPTY).second ? 1 : 0)
 						+ (verifyChar(row, col - 1, EMPTY).second ? 1 : 0)
 						+ (verifyChar(row + 1, col, EMPTY).second ? 1 : 0)
@@ -279,15 +287,6 @@ void SmartPlayer::sinkShip(int row, int col, Direction dir)
 
 void SmartPlayer::sinkShip(int row, int col)
 {
-	//pair<int, int> start_point = make_pair(mNumOfRows - 1, mNumOfCols - 1);
-	//if (verifyChar(row, col + 1, DESTROYED).second || verifyChar(row, col - 1, DESTROYED).second)
-	//{
-	//	sinkShip(row, col, HORIZONAL);
-	//}
-	//else if (verifyChar(row + 1, col, DESTROYED).second || verifyChar(row - 1, col, DESTROYED).second)
-	//{
-	//	sinkShip(row, col, VERTICAL);
-	//}
 	if (!findDirection(row, col, false))
 	{
 		replaceChar(row, col, DESTROYED, SANK);
@@ -296,7 +295,7 @@ void SmartPlayer::sinkShip(int row, int col)
 
 void SmartPlayer::outlineLoop(int row, int col, int rowMod, int colMod, bool reverse)
 {
-	int i = 0;
+	auto i = 0;
 	for (; verifyChar(row + (reverse ? -1 : 1) * i * rowMod, col + (reverse ? -1 : 1) * i * colMod, SANK).second && i < SHIP_MAX_LENGTH; i++)
 	{
 		replaceChar(row + (reverse ? -1 : 1) * i * rowMod + 1 * colMod, col + (reverse ? -1 : 1) * i * colMod + 1 * rowMod, UNKNOWN, EMPTY);
@@ -307,7 +306,7 @@ void SmartPlayer::outlineLoop(int row, int col, int rowMod, int colMod, bool rev
 
 bool SmartPlayer::findDirection(int row, int col, bool outline)
 {
-	eSign label = outline ? SANK : DESTROYED;
+	auto label = outline ? SANK : DESTROYED;
 	if (verifyChar(row, col + 1, label).second || verifyChar(row, col - 1, label).second)
 	{
 		outline ? outlineSunkenEnemyShips(row, col, HORIZONAL) : sinkShip(row, col, HORIZONAL);
@@ -325,11 +324,6 @@ bool SmartPlayer::findDirection(int row, int col, bool outline)
 
 void SmartPlayer::outlineSunkenEnemyShips(int row, int col, Direction dir)
 { 
-	//TODO @URI - MEGA CLEAN
-	//int i;
-	//If the ship is horizonal we keep the row constant and move along the columns.
-	//If the ship is not horizonal (vertical) we keep the col constant and move along the rows.	
-
 	//
 	//  OOO <---these
 	// OXXXO
@@ -354,51 +348,18 @@ void SmartPlayer::outlineSunkenEnemyShips(int row, int col, Direction dir)
 	//  O <--- and this, in the vertical case 
 	if (dir == HORIZONAL)
 	{
-		//for (i = 0; verifyChar(row, col + i, SANK).second && i < SHIP_MAX_LENGTH; i++)
-		//{
-		//	replaceChar(row + 1, col + i, UNKNOWN, EMPTY);
-		//	replaceChar(row - 1, col + i, UNKNOWN, EMPTY);
-		//}
 		outlineLoop(row, col, 0, 1, false);
-		//replaceChar(row, col + i, UNKNOWN, EMPTY);
-		//for (i = 0; verifyChar(row, col - i, SANK).second && i < SHIP_MAX_LENGTH; i++)
-		//{
-		//	replaceChar(row + 1, col - i, UNKNOWN, EMPTY);
-		//	replaceChar(row - 1, col - i, UNKNOWN, EMPTY);
-		//}
 		outlineLoop(row, col, 0, 1, true);
-		//replaceChar(row, col - i, UNKNOWN, EMPTY);
 	}
 	else
 	{
-		//for (i = 0; verifyChar(row + i, col, SANK).second && i < SHIP_MAX_LENGTH; i++)
-		//{
-		//	replaceChar(row + i, col + 1, UNKNOWN, EMPTY);
-		//	replaceChar(row + i, col - 1, UNKNOWN, EMPTY);
-		//}
 		outlineLoop(row, col, 1, 0, false);
-		//replaceChar(row + i, col, UNKNOWN, EMPTY);
-		//for (i = 0; verifyChar(row - i, col, SANK).second && i < SHIP_MAX_LENGTH; i++)
-		//{
-		//	replaceChar(row - i, col + 1, UNKNOWN, EMPTY);
-		//	replaceChar(row - i, col - 1, UNKNOWN, EMPTY);
-		//}
 		outlineLoop(row, col, 1, 0, true);
-		//replaceChar(row - i, col, UNKNOWN, EMPTY);
 	}
 }
 
 void SmartPlayer::outlineSunkenEnemyShips(int row, int col)
 {
-	/*if(verifyChar(row, col + 1, SANK).second || verifyChar(row, col - 1, SANK).second)
-	{
-		outlineSunkenEnemyShips(row, col, HORIZONAL);
-	}
-	else if (verifyChar(row + 1, col, SANK).second || verifyChar(row - 1, col, SANK).second)
-	{
-		outlineSunkenEnemyShips(row, col, VERTICAL);
-	}*/
-	
 	if (!findDirection(row, col, true))
 	{
 		replaceChar(row + 1, col, UNKNOWN, EMPTY);
@@ -406,8 +367,6 @@ void SmartPlayer::outlineSunkenEnemyShips(int row, int col)
 		replaceChar(row, col + 1, UNKNOWN, EMPTY);
 		replaceChar(row, col - 1, UNKNOWN, EMPTY);
 	}
-
-
 }
 
 void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResult result)
@@ -433,9 +392,7 @@ void SmartPlayer::notifyOnAttackResult(int player, int row, int col, AttackResul
 	else
 	{
 		replaceChar(myRow, myCol, UNKNOWN, EMPTY);
-	}
-	//debugBoard();
-	
+	}	
 }
 
 IBattleshipGameAlgo* GetAlgorithm()
@@ -443,21 +400,3 @@ IBattleshipGameAlgo* GetAlgorithm()
 	IBattleshipGameAlgo *newP = new SmartPlayer;
 	return newP;
 }
-
-/*void SmartPlayer::debugBoard()
-{
-	auto *f = fopen("SmartBoard.txt", "w");
-	if (f == nullptr)
-	{
-		printf("Error opening file!\n");
-	}
-	for (auto i = 0; i < 10; i++)
-	{
-		for (auto j = 0; j < 10; j++)
-		{
-			fprintf(f, "%c", mBoard[i][j]);
-		}
-		fprintf(f, "\n");
-	}
-	fclose(f);
-}*/
