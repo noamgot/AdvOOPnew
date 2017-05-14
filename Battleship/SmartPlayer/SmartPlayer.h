@@ -112,7 +112,9 @@ protected:
 	// The main loop of outlineSunkenEnemyShips (born from code duplication).
 	void SmartPlayer::outlineLoop(int row, int col, int rowMod, int colMod, bool reverse);
 
-	// 
+	// The function pokes the coordinates adjacent to the (row,col) it is given and depening
+	// On the value of outline decides it to call outlineSunkenEnemyShips(row, col , dir)  or sinkShip(row, col ,dir)
+	// where dir = HORIZONAL or VERTICAL depending on the results of the poking 
 	bool SmartPlayer::findDirection(int row, int col, bool outline);
 
 
