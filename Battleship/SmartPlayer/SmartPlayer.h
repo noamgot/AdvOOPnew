@@ -54,9 +54,6 @@ protected:
 	//If reverse = true the char will be replaced only if it is NOT equal to old_char.
 	bool replaceChar(int row, int col, char old_char, char new_char, bool reverse = false);
 
-	// Wrapper function for replaceChar(int row, int col, char old_char, char new_char, bool reverse = false).
-	bool replaceChar(pair<int, int> point, char old_char, char new_char, bool reverse = false);
-
 	// Adds the coordinates to the attack queue if they are unknown or searches for the first unknown coordinates in the direction dir points.
 	void addTarget(int row, int col, deque<pair<int, int>>& attackQueue, Direction dir = NONE);
 

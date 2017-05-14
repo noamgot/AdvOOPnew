@@ -23,7 +23,6 @@ int FilePlayer::loadMovesFromFile(const string attackFilePath)
 	ifstream atkFile(attackFilePath);
 	if (!atkFile.is_open())
 	{
-		cout << "Error: opening attack file failed" << endl;
 		return -1;
 	}
 	while (getline(atkFile, line))

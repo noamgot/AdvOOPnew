@@ -23,11 +23,6 @@ bool SmartPlayer::isNearChar(int row, int col, eSign s, Direction* dir)
 	return false;
 }
 
-bool SmartPlayer::replaceChar(pair<int, int> point, char old_char, char new_char, bool reverse)
-{
-	return replaceChar(point.first, point.second, old_char, new_char, reverse);
-}
-
 bool SmartPlayer::replaceChar(int row, int col, char old_char, char new_char, bool reverse)
 {
 	auto pr = verifyChar(row, col, old_char);
@@ -70,8 +65,8 @@ void SmartPlayer::addTargetLoop(int row, int col,int rowMod, int colMod, deque<p
 
 void SmartPlayer::addTarget(int row, int col, deque<pair<int, int>>& attackQueue, Direction dir)
 {
-	auto maxDist = 4;
-	auto foundUp = false, foundDown = false, foundLeft = false, foundRight = false;
+	//auto maxDist = 4;
+	//auto foundUp = false, foundDown = false, foundLeft = false, foundRight = false;
 	// This means we are just adding a regular target (have no additional info)
 	if (dir == NONE && verifyChar(row, col, UNKNOWN).second) { attackQueue.push_front(make_pair(row + 1, col + 1)); }
 
@@ -223,7 +218,6 @@ pair<int, int> SmartPlayer::attack()
 void SmartPlayer::analyzeAttackResult()
 {
 	auto dir = NONE;
-	int counter;
 	for (auto row = 0; row < mNumOfRows; row++)
 	{
 		for (auto col = 0; col < mNumOfCols; col++)
