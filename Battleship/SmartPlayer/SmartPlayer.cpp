@@ -79,33 +79,6 @@ void SmartPlayer::addTarget(int row, int col, deque<pair<int, int>>& attackQueue
 	{
 		addTargetLoop(row, col, 0, 1, attackQueue, dir, HORIZONAL, RIGHT, LEFT);
 		addTargetLoop(row, col, 1, 0, attackQueue, dir, VERTICAL, DOWN, UP);
-		//if (dir == HORIZONAL || dir == RIGHT || dir == LEFT)
-		//{
-		//	for (auto i = 1; i < maxDist; i++)
-		//	{
-
-		//		if (dir != LEFT && !foundRight && verifyChar(row, col + i, UNKNOWN).second && verifyChar(row, col + i - 1, DESTROYED).second)
-		//		{ foundRight = true; attackQueue.push_front(make_pair(row + 1, col + 1 + i)); }
-		//		else if (!verifyChar(row, col + i - 1, DESTROYED).second) { foundRight = true; }
-
-		//		if (dir != RIGHT && !foundLeft && verifyChar(row, col - i, UNKNOWN).second && verifyChar(row, col - i + 1, DESTROYED).second)
-		//		{ foundLeft = true;attackQueue.push_front(make_pair(row + 1, col + 1 - i)); }
-		//		else if (!verifyChar(row, col - i + 1, DESTROYED).second) { foundLeft = true; }
-		//	}
-		//}
-		//if (dir == VERTICAL || dir == UP || dir == DOWN)
-		//{
-		//	for (auto i = 1; i < maxDist; i++)
-		//	{
-		//		if (dir != DOWN && !foundUp && verifyChar(row - i, col, UNKNOWN).second && verifyChar(row - i + 1, col, DESTROYED).second)
-		//		{ foundUp = true; attackQueue.push_front(make_pair(row - i + 1, col + 1)); }
-		//		else if (!verifyChar(row - i + 1, col, DESTROYED).second) { foundUp = true; }
-
-		//		if (dir != UP && !foundDown && verifyChar(row + i, col, UNKNOWN).second && verifyChar(row + i - 1, col, DESTROYED).second)
-		//		{ foundDown = true; attackQueue.push_front(make_pair(row + i + 1, col + 1)); }
-		//		else if (!verifyChar(row + i - 1, col, DESTROYED).second) { foundDown = true; }
-		//	}
-		//}
 	}
 }
 
