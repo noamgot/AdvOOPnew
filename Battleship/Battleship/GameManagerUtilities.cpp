@@ -477,6 +477,9 @@ namespace GameManagerUtilities
 		auto attackerNum = 0, defenderNum = 1; // index 0 = A, index 1 = B
 		string attackerName = "A";
 		IBattleshipGameAlgo *pPlayers[] = { A , B };
+
+		Graphics::showConsoleCursor(false); //hide the console cursor
+
 		Graphics::printStartOfGame(board, ROW_SIZE, COL_SIZE);
 
 		//The game goes on until one of the players has no more ships or both ran out of moves.
@@ -507,6 +510,7 @@ namespace GameManagerUtilities
 		printGameResults(playerAttributesArr);
 		delete A;
 		delete B;
+		Graphics::showConsoleCursor(true); //show the console cursor again
 		return EXIT_SUCCESS;
 	}
 

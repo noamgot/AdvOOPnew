@@ -13,9 +13,6 @@ int main(int argc, char** argv)
 	PlayerAttributes playerAttributesArr[2];
 	IBattleshipGameAlgo *A, *B;
 
-	//hide the console cursor
-	Graphics::showConsoleCursor(false);
-
 	// allocate individual boards
 	auto boardA = allocateBoard(ROW_SIZE, COL_SIZE), boardB = allocateBoard(ROW_SIZE, COL_SIZE);
 
