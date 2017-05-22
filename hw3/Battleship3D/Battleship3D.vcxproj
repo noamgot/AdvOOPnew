@@ -163,6 +163,9 @@
     <ClInclude Include="IBattleshipGameAlgo.h" />
     <ClInclude Include="Ship.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\AdvancedProgramming_Ex3.pdf" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
