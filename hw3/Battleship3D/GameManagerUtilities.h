@@ -12,10 +12,8 @@ using namespace GameUtilities;
 
 namespace GameManagerUtilities
 {
-	/* input argument for playing without graphics */
-	const string PARAM_QUIET("-quiet");
-	/* input argument for setting the delay between operations when playing with graphics */
-	const string PARAM_DELAY("-delay");
+	/* input argument for setting the amount of threads */
+	const string PARAM_THREADS("-threads=");
 	const string BOARD_FILE_SUFFIX(".sboard");
 	const string LIB_FILE_SUFFIX(".dll");
 	const string BAD_STRING("!@#"); // for getDirPath validation
@@ -34,7 +32,7 @@ namespace GameManagerUtilities
 	int initGameBoardsAndPaths(int argc, char **argv, string(&board)[ROW_SIZE], char **boardA, char* *boardB,
 		string& dirPath, string& dllPathA, string& dllPathB);
 
-	int processInputArguments(int argc, char** argv, string& dirPath);
+	int processInputArguments(int argc, char** argv, string& dirPath, int& numThreads);
 	
 	void changeCurrentPlayer(int& attackerNum, int& defenderNum, string& attackerName);
 

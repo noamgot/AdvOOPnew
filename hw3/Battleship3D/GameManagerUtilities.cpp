@@ -17,8 +17,9 @@ namespace GameManagerUtilities
 	{
 		auto errorOccurred = false;
 		string boardPath;
+		int numThreads;
 		// process program arguments
-		if (processInputArguments(argc, argv, dirPath) < 0)
+		if (processInputArguments(argc, argv, dirPath, numThreads) < 0)
 		{
 			return -1;
 		}
@@ -42,25 +43,33 @@ namespace GameManagerUtilities
 		return errorOccurred ? -1 : 0;
 	}
 
-	int GameManagerUtilities::processInputArguments(int argc, char** argv, string& dirPath)
-	{
-		auto gotDirPath = false;
-		if (argc >= 2)
-		{ // we accept the arguments in any order, and we assume that if a folder path is given it is the first argument
-			for (auto i = 1; i < argc; ++i)
-			{
-				if (i == 1)
-				{ // we assume that if there's a folder path it is the first argument
-					dirPath = argv[1];
-					gotDirPath = true;
-				}
-			}
-		}
-		if (!gotDirPath) // directory path not given
+	int GameManagerUtilities::processInputArguments(int argc, char** argv, string& dirPath, int& numThreads)
+	{	
+		char *p;
+		if (argc == 1) // no arguments given
 		{
 			dirPath = getDirPath();
 		}
-		// convert the given directory path to full path
+		else
+		{
+			dirPath = argv[1];
+			for (auto i = 2; i < argc; i++)
+			{
+				if (string(argv[i]).substr(0, PARAM_THREADS.size()) == PARAM_THREADS)
+				{
+					int _numThreads = strtol(argv[i] + PARAM_THREADS.size(), &p, 10);
+					if (!*p && _numThreads > 0)
+					{
+						numThreads = _numThreads;
+						break;
+					}
+					// if there's not a valid positive after PARAM_THREADS - ignore...
+					
+				}
+
+			}
+		}
+
 		return convertToFullPath(dirPath);
 	}
 
@@ -78,7 +87,7 @@ namespace GameManagerUtilities
 		case DESTROYER:
 			return DESTROYER_SCORE;
 		default:
-			return -1000;
+			return -1000; // for debug
 		}
 	}
 

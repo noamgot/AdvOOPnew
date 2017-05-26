@@ -1,5 +1,6 @@
 #include "GameManagerUtilities.h"
 #include <ctime>
+#include "MyBoardData.h"
 
 using namespace std;
 using namespace GameManagerUtilities;

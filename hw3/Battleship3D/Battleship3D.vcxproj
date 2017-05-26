@@ -146,21 +146,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BoardData.cpp" />
-    <ClCompile Include="Coordinate.cpp" />
+    <ClCompile Include="BattleshipTournament.cpp" />
     <ClCompile Include="DLLManager.cpp" />
     <ClCompile Include="GameManagerUtilities.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyBoardData.cpp" />
+    <ClCompile Include="MyQueue.cpp" />
     <ClCompile Include="Ship.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BoardData.h" />
-    <ClInclude Include="Coordinate.h" />
+    <ClInclude Include="BattleshipTournament.h" />
     <ClInclude Include="DLLManager.h" />
     <ClInclude Include="GameManagerUtilities.h" />
     <ClInclude Include="GameUtilities.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
+    <ClInclude Include="MyBoardData.h" />
+    <ClInclude Include="MyQueue.h" />
     <ClInclude Include="Ship.h" />
   </ItemGroup>
   <ItemGroup>
