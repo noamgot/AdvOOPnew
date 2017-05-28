@@ -13,9 +13,13 @@ void BattleshipTournament::runGames()
 {
 	while (_tournamentIsRunning)
 	{
-		auto game = _gamesQueue.pop();
-		auto A = std::make_unique<IBattleshipGameAlgo>();
-		auto B = std::make_unique<IBattleshipGameAlgo>();
+		try
+		{
+			auto game = _gamesQueue.pop();
+			auto A = std::make_unique<IBattleshipGameAlgo>();
+			auto B = std::make_unique<IBattleshipGameAlgo>();
+		}
+		catch (MyQueue<Game>::IsDead&){} // means the tournament is over...
 
 	}
 	
@@ -37,4 +41,5 @@ void BattleshipTournament::runTournament()
 	{
 		t.join();
 	}
+	reporter.join();
 }
