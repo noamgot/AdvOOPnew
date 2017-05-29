@@ -36,7 +36,10 @@
     <ClCompile Include="BattleshipTournament.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MyQueue.cpp">
+    <ClCompile Include="GameMananger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SafeQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,7 +65,10 @@
     <ClInclude Include="BattleshipTournament.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MyQueue.h">
+    <ClInclude Include="GameMananger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SafeQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

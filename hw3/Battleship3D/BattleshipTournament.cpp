@@ -1,9 +1,10 @@
 ﻿#include "BattleshipTournament.h"
 #include "IBattleshipGameAlgo.h"
+#include "GameMananger.h"
 
 void BattleshipTournament::reporterMethod()
 {
-	while(_tournamentIsRunning)
+	while(true)
 	{
 		
 	}
@@ -11,15 +12,16 @@ void BattleshipTournament::reporterMethod()
 
 void BattleshipTournament::runGames()
 {
-	while (_tournamentIsRunning)
+	while (true)
 	{
 		try
 		{
 			auto game = _gamesQueue.pop();
-			auto A = std::make_unique<IBattleshipGameAlgo>();
-			auto B = std::make_unique<IBattleshipGameAlgo>();
+			GameMananger currentGameMngr(game);
+			currentGameMngr.runGame();
 		}
-		catch (MyQueue<Game>::IsDead&){} // means the tournament is over...
+		catch (SafeQueue<Game>::IsDead&) { return; } // means the tournament is over...
+		
 
 	}
 	
@@ -35,8 +37,7 @@ void BattleshipTournament::runTournament()
 
 	// code code code
 
-
-	//_tournamentIsRunning = false;
+	_gamesQueue.kill(); // let the threads know the games production is done
 	for (auto& t : _threadsVector)
 	{
 		t.join();

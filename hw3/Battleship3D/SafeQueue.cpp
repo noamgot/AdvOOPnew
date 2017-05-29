@@ -1,14 +1,14 @@
-﻿#include "MyQueue.h"
+﻿#include "SafeQueue.h"
 
-template <typename T>
-T MyQueue<T>::pop()
+template <class T>
+T SafeQueue<T>::pop()
 {
 	std::unique_lock<std::mutex> mlock(_mutex);
 	_cv.wait(mlock, [this] {return !(_queue.empty() && _isAlive); });
 	// if the queue is not empty, we still want to consume the next game (even if _isAlive = false)
 	if(!_queue.empty())
 	{
-		T item = _queue.front();
+		T item = std::move(_queue.front());
 		_queue.pop();
 		return item;
 		
@@ -19,8 +19,8 @@ T MyQueue<T>::pop()
 	throw IsDead();	
 }
 
-template <typename T>
-void MyQueue<T>::push(const T& item)
+template <class T>
+void SafeQueue<T>::push(const T& item)
 {
 	std::unique_lock<std::mutex> mlock(_mutex);
 	_queue.push(item);
@@ -28,8 +28,8 @@ void MyQueue<T>::push(const T& item)
 	_cv.notify_one();
 }
 
-template <typename T>
-void MyQueue<T>::push(T&& item)
+template <class T>
+void SafeQueue<T>::push(T&& item)
 {
 	std::unique_lock<std::mutex> mlock(_mutex);
 	_queue.push(std::move(item));
@@ -37,14 +37,14 @@ void MyQueue<T>::push(T&& item)
 	_cv.notify_one();
 }
 
-template <typename T>
-void MyQueue<T>::kill()
+template <class T>
+void SafeQueue<T>::kill()
 {
-	std::unique_lock<std::mutex> mlock(_mutex);
+	//std::unique_lock<std::mutex> mlock(_mutex);
 	_isAlive = false;
-	mlock.unlock();
+	//mlock.unlock();
 	_cv.notify_all();
 	// wait until all elements are consumed
-	_cv.wait(mlock, [this] {return _queue.empty(); });
+	//_cv.wait(mlock, [this] {return _queue.empty(); });
 }
 

@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <thread>
-#include "MyQueue.h"
+#include "SafeQueue.h"
 
 //todo - it's here just for now - we'll move it later (@noam)
 struct Game
@@ -19,18 +19,17 @@ struct Game
 class BattleshipTournament
 {
 	static constexpr size_t DEFAULT_NUM_THREADS = 4;
-	volatile bool _tournamentIsRunning;
 	std::string _path;
 	size_t _numThreads;
 	std::vector<std::thread> _threadsVector;
-	MyQueue<Game> _gamesQueue;
+	SafeQueue<Game> _gamesQueue;
 	
 	void reporterMethod();
 	void runGames(); // threads function
 
 public:
 	explicit BattleshipTournament(std::string path, size_t numThreads = DEFAULT_NUM_THREADS) 
-						: _tournamentIsRunning(true) ,_path(path), _numThreads(numThreads), _threadsVector(_numThreads) {}
+						:_path(path), _numThreads(numThreads), _threadsVector(_numThreads) {}
 	void runTournament();
 	void insertGame(Game game) { _gamesQueue.push(game); }
 	
