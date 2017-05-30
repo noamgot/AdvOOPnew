@@ -13,7 +13,7 @@ using namespace GameUtilities;
 namespace GameManagerUtilities
 {
 	/* input argument for setting the amount of threads */
-	const string PARAM_THREADS("-threads=");
+	const string PARAM_THREADS("-threads");
 	const string BOARD_FILE_SUFFIX(".sboard");
 	const string LIB_FILE_SUFFIX(".dll");
 	const string BAD_STRING("!@#"); // for getDirPath validation
@@ -34,7 +34,7 @@ namespace GameManagerUtilities
 
 	int processInputArguments(int argc, char** argv, string& dirPath, int& numThreads);
 	
-	void changeCurrentPlayer(int& attackerNum, int& defenderNum, string& attackerName);
+	void changeAttacker(int& attackerNum, int& defenderNum);
 
 	/* prints the final results of the game */
 	void printGameResults(PlayerAttributes playerAttributesArr[]);

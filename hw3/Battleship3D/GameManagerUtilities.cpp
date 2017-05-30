@@ -55,13 +55,16 @@ namespace GameManagerUtilities
 			dirPath = argv[1];
 			for (auto i = 2; i < argc; i++)
 			{
-				if (string(argv[i]).substr(0, PARAM_THREADS.size()) == PARAM_THREADS)
+				if (string(argv[i]) == PARAM_THREADS)
 				{
-					int _numThreads = strtol(argv[i] + PARAM_THREADS.size(), &p, 10);
-					if (!*p && _numThreads > 0)
+					if (i + 1 < argc)
 					{
-						numThreads = _numThreads;
-						break;
+						int _numThreads = strtol(argv[i+1], &p, 10);
+						if (!*p && _numThreads > 0)
+						{
+							numThreads = _numThreads;
+							break;
+						}
 					}
 					// if there's not a valid positive after PARAM_THREADS - ignore...
 					
@@ -91,9 +94,8 @@ namespace GameManagerUtilities
 		}
 	}
 
-	void GameManagerUtilities::changeCurrentPlayer(int& attackerNum, int& defenderNum, string& attackerName)
+	void GameManagerUtilities::changeAttacker(int& attackerNum, int& defenderNum)
 	{
-		attackerName = attackerNum ? "A" : "B";
 		// switch attacker and defender
 		attackerNum ^= 1;
 		defenderNum ^= 1;
@@ -469,7 +471,7 @@ namespace GameManagerUtilities
 			//Skip if current player is out of moves.
 			if (!playerAttributesArr[attackerNum].hasMoves)
 			{
-				changeCurrentPlayer(attackerNum, defenderNum, attackerName);
+				changeAttacker(attackerNum, defenderNum);
 				continue;
 			}
 
@@ -481,7 +483,7 @@ namespace GameManagerUtilities
 					playerAttributesArr[attackerNum].hasMoves = false; // attacker has ran out of moves
 				}
 				// we switch player and continue - even if the move is invalid (i.e we ignore invalid moves)
-				changeCurrentPlayer(attackerNum, defenderNum, attackerName);
+				changeAttacker(attackerNum, defenderNum);
 				continue;
 
 			}
@@ -516,7 +518,7 @@ namespace GameManagerUtilities
 			}
 		}
 		//Change player
-		changeCurrentPlayer(attackerNum, defenderNum, attackerName);
+		changeAttacker(attackerNum, defenderNum);
 	}
 
 	void GameManagerUtilities::handleMiss(pair<int,int> move, IBattleshipGameAlgo *A, IBattleshipGameAlgo *B ,int attackerNum)
