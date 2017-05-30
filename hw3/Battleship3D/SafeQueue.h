@@ -31,7 +31,7 @@ public:
 	void push(const T& item);
 	void push(T&& item);
 
-	void kill();
+	//void kill();
 
 /*	bool empty()
 	{

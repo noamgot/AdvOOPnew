@@ -10,10 +10,11 @@ struct Game
 	std::string dll1Path;
 	std::string dll2Path;
 	std::string boardPath;
+	bool isValid;
 
-	Game() = default;
+	Game() : isValid(false){} // "poisoned" game object
 	Game(std::string dll1Path_, std::string dll2Path_, std::string boardPath_)
-		: dll1Path(dll1Path_), dll2Path(dll2Path_), boardPath(boardPath_){}
+		: dll1Path(dll1Path_), dll2Path(dll2Path_), boardPath(boardPath_), isValid(true){}
 };
 
 class BattleshipTournament

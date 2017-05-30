@@ -4,8 +4,14 @@ template <class T>
 T SafeQueue<T>::pop()
 {
 	std::unique_lock<std::mutex> mlock(_mutex);
-	_cv.wait(mlock, [this] {return !(_queue.empty() && _isAlive); });
-	// if the queue is not empty, we still want to consume the next game (even if _isAlive = false)
+	//_cv.wait(mlock, [this] {return !(_queue.empty() && _isAlive); });
+	_cv.wait(mlock, [this] {return !_queue.empty(); });
+	T item = std::move(_queue.front());
+	_queue.pop();
+	return item;
+
+
+	/*// if the queue is not empty, we still want to consume the next game (even if _isAlive = false)
 	if(!_queue.empty())
 	{
 		T item = std::move(_queue.front());
@@ -16,7 +22,7 @@ T SafeQueue<T>::pop()
 	// in this case the queue is empty - we notify all waiting threads (and especially the one that waits on kill())
 	mlock.unlock();
 	_cv.notify_all();
-	throw IsDead();	
+	throw IsDead();	*/
 }
 
 template <class T>
@@ -37,14 +43,15 @@ void SafeQueue<T>::push(T&& item)
 	_cv.notify_one();
 }
 
+/*
 template <class T>
 void SafeQueue<T>::kill()
 {
-	//std::unique_lock<std::mutex> mlock(_mutex);
+	std::unique_lock<std::mutex> mlock(_mutex);
 	_isAlive = false;
-	//mlock.unlock();
+	mlock.unlock();
 	_cv.notify_all();
-	// wait until all elements are consumed
-	//_cv.wait(mlock, [this] {return _queue.empty(); });
+
 }
+*/
 
