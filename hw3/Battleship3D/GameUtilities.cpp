@@ -111,7 +111,6 @@ namespace GameUtilities
 
 	int GameUtilities::getDirectoryFileList(const string dirPath, vector<string>& fileListVector)
 	{
-		string line;
 		fileListVector.clear();
 		auto sysDIR("2>NUL dir /a-d /b \"" + dirPath + "\"");
 		char buffer[BUF_SIZE];
@@ -124,7 +123,7 @@ namespace GameUtilities
 		}
 		while (fgets(buffer, BUF_SIZE - 1, fileList))
 		{
-			line = string(buffer);
+			string line(buffer);
 			line.pop_back(); // clear new line character
 			fileListVector.push_back(line);
 		}
@@ -132,10 +131,10 @@ namespace GameUtilities
 		return 0;
 	}
 
-	bool GameUtilities::endsWith(const string line, const string suffix)
+	bool GameUtilities::endsWith(const string str, const string suffix)
 	{
-		auto pos = line.rfind(suffix);
-		return pos != string::npos && pos == line.length() - suffix.length();
+		auto pos = str.rfind(suffix);
+		return pos != string::npos && pos == str.length() - suffix.length();
 	}
 
 	int getPathByType(string& filePath, const string dirPath, const string fileSuffix, eFileType fileType, int playerNum)
@@ -155,7 +154,7 @@ namespace GameUtilities
 					case eFileType::DLL_FILE:
 						cout << "Missing an algorithm (dll) file looking in path: " << dirPath << endl;
 						break;
-					case eFileType::ATTACK_FILE:
+					default:
 						break;
 				}
 			}

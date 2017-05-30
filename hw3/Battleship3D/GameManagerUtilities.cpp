@@ -393,14 +393,12 @@ namespace GameManagerUtilities
 
 	string GameManagerUtilities::getDirPath()
 	{
-		char *buff = nullptr;
-		buff = _getcwd(buff, MAX_PATH_LEN);
-		if (!buff)
+		char buff[MAX_PATH_LEN];
+		if (!_getcwd(buff, MAX_PATH_LEN - 1))
 		{
 			return BAD_STRING; //signs the string is bad
 		}
 		string temp(buff);
-		delete buff; // memory was allocated by _getcwd
 		return temp;
 	}
 

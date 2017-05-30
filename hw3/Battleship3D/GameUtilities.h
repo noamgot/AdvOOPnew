@@ -23,8 +23,6 @@ namespace GameUtilities
 	{
 		BOARD_FILE,
 		DLL_FILE,
-		ATTACK_FILE
-
 	};
 
 	bool isValidPath(const string dirPath);

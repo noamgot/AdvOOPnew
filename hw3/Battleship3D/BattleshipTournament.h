@@ -3,18 +3,21 @@
 #include <vector>
 #include <thread>
 #include "SafeQueue.h"
+#include "IBattleshipGameAlgo.h"
+#include "MyBoardData.h"
 
 //todo - it's here just for now - we'll move it later (@noam)
 struct Game
 {
-	std::string dll1Path;
-	std::string dll2Path;
-	std::string boardPath;
+	std::unique_ptr<IBattleshipGameAlgo> _A;
+	std::unique_ptr<IBattleshipGameAlgo> _B;
+	MyBoardData _board;
 	bool isValid;
 
 	Game() : isValid(false){} // "poisoned" game object
-	Game(std::string dll1Path_, std::string dll2Path_, std::string boardPath_)
-		: dll1Path(dll1Path_), dll2Path(dll2Path_), boardPath(boardPath_), isValid(true){}
+	// todo - check how to initialize...
+/*	Game(std::unique_ptr<IBattleshipGameAlgo> A, std::unique_ptr<IBattleshipGameAlgo> B, MyBoardData board)
+		: _A(A), _B(B), _board(board), isValid(true){}*/
 };
 
 class BattleshipTournament
