@@ -15,10 +15,11 @@ public:
 
 	// this struct is for handling end of tournament - it gets thrown when a thread gets to an empty queue
 	// after the games production is done
-	struct IsDead{}; 
-	
+	//struct IsDead{}; 
 
-	SafeQueue() : _isAlive(true){}
+	SafeQueue() = default;	
+
+	//SafeQueue() : _isAlive(true){}
 	// block copy & move ctors and assignments
 	SafeQueue(const SafeQueue& other) = delete;
 	SafeQueue& operator=(const SafeQueue& other) = delete;
@@ -43,7 +44,7 @@ private:
 	std::queue<T> _queue;
 	std::mutex _mutex;
 	std::condition_variable _cv;
-	bool _isAlive;
+//	bool _isAlive;
 };
 
 

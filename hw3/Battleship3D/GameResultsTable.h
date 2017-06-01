@@ -9,7 +9,7 @@ class GameResultsTable
 {
 public:
 	GameResultsTable() = delete;
-	GameResultsTable(int numPlayers, int numRounds) : _numPlayers(numPlayers), _numRounds(numRounds) { _table.resize(numRounds); }
+	GameResultsTable(int numPlayers, int numRounds) : _numPlayers(numPlayers) { _table.resize(numRounds); }
 	
 
 	// block copy & move ctors and assignments
@@ -27,5 +27,4 @@ private:
 	std::mutex _mutex;
 	std::condition_variable _cv;
 	int _numPlayers;
-	int _numRounds;
 };

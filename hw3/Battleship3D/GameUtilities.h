@@ -7,6 +7,7 @@ using namespace std;
 
 namespace GameUtilities
 {
+
 	const int DEFAULT_SHIPS_COUNT = 5;
 	const int BUF_SIZE = 1024;
 

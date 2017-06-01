@@ -2,13 +2,26 @@
 #include <ctime>
 #include "MyBoardData.h"
 #include <iostream>
+#include "DLLManager.h"
+#include "BattleshipTournament.h"
 
 using namespace std;
 using namespace GameManagerUtilities;
 using namespace GameUtilities;
 
 
-void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles, vector<string>& dllFiles, const string dirPath)
+std::string removeSuffix(const std::string& filename) 
+{
+	auto lastdot = filename.find_last_of(".");
+	if (lastdot == std::string::npos)
+	{
+		return filename;
+	}
+	return filename.substr(0, lastdot);
+}
+
+void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles, 
+					vector<string>& dllFiles, vector<string>& playerNames, const string dirPath)
 {
 	// copy all relevant files to the filteredFileList vector
 	for (auto& file : dirFiles)
@@ -21,6 +34,7 @@ void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles, 
 		else if (endsWith(file, LIB_FILE_SUFFIX))
 		{
 			dllFiles.push_back(fullPath);
+			playerNames.push_back(removeSuffix(file));
 		}
 
 	}
@@ -30,7 +44,7 @@ int main(int argc, char** argv)
 {
 
 	string dirPath;
-	int numThreads;
+	int numThreads = BattleshipTournament::DEFAULT_NUM_THREADS;
 	if (GameManagerUtilities::processInputArguments(argc, argv, dirPath, numThreads) < 0)
 	{
 		return -1;
@@ -41,13 +55,21 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	vector<string> dirFiles, boardFiles, dllFiles;
+	vector<string> dirFiles, boardFiles, dllFiles, playerNames;
 	if (getDirectoryFileList(dirPath, dirFiles) < 0)
 	{
 		return -1;
 	}
-	filterDirFiles(dirFiles, boardFiles, dllFiles, dirPath);
+	filterDirFiles(dirFiles, boardFiles, dllFiles, playerNames, dirPath);
 
+	std::vector<std::vector<std::vector<std::vector<char>>>> gameBoards;
+	std::vector<GetAlgoFuncType> players;
+	BattleshipTournament tournamentMngr(gameBoards, players, playerNames, numThreads);
+	tournamentMngr.runTournament();
+	return EXIT_SUCCESS;
+}
+	
+	
 
 
 
@@ -80,4 +102,3 @@ int main(int argc, char** argv)
 
 	// Let the game begin!!!
 	return playTheGame(A, B, playerAttributesArr, board);*/
-}
