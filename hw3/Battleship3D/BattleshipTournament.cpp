@@ -1,12 +1,33 @@
 ﻿#include "BattleshipTournament.h"
 #include "IBattleshipGameAlgo.h"
 #include "GameMananger.h"
+#include <iostream>
+#include <iomanip>
+
+//todo - CHANGE!!!!!
+#define OFFSET 15
+void BattleshipTournament::printCurrentResults() const
+{
+	std::cout << "#" << std::setw(OFFSET) << "Team Name" << std::setw(OFFSET) << "Wins";
+	std::cout << std::setw(OFFSET) << "Losses" << std::setw(OFFSET) << "%";
+	std::cout << std::setw(OFFSET) << "Pts For" << std::setw(OFFSET) << "Pts Against\n" << std::endl;
+
+	auto cnt = 1;
+	for (auto& gr : _cumulativeResults)
+	{
+		std::cout << cnt++ << std::setw(OFFSET) << _playersNames[gr.ID] << std::setw(OFFSET) << gr.wins;
+		std::cout << std::setw(OFFSET) << gr.loses << std::setw(OFFSET) << std::fixed << std::setprecision(2) << gr.percentage;
+		std::cout << std::setw(OFFSET) << gr.ptsFor << std::setw(OFFSET) << gr.ptsAgainst << std::endl;		
+	}
+	std::cout << std::endl;
+}
 
 void BattleshipTournament::reporterMethod()
 {
-	while(true)
+	for (auto i = 1; i <= _numRounds; i++)
 	{
-		
+		updateCumulativeResults(i); // update round i results
+		printCurrentResults();
 	}
 }
 
@@ -33,6 +54,26 @@ void BattleshipTournament::runGames()
 
 	}
 	
+}
+
+void BattleshipTournament::updateCumulativeResults(int round)
+{
+	const std::vector<PlayerGameResults>& roundResults = _resultsTable.getRoundResults(round);
+	for(auto& gr : roundResults)
+	{
+		if (round == 1)
+		{
+			_cumulativeResults[gr.ID] = gr;
+			
+		}
+		else
+		{
+			_cumulativeResults[gr.ID] += gr;
+			
+		}
+		// sort cumulative results in descending order (by percentage)
+		std::sort(_cumulativeResults.begin(), _cumulativeResults.end(), std::greater<PlayerGameResults>());
+	}
 }
 
 void BattleshipTournament::runTournament()

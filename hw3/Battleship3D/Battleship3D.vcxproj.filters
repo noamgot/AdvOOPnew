@@ -42,10 +42,7 @@
     <ClCompile Include="SafeQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AbstractPlayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SmartPlayer.cpp">
+    <ClCompile Include="GameResultsTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,10 +74,7 @@
     <ClInclude Include="SafeQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AbstractPlayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SmartPlayer.h">
+    <ClInclude Include="GameResultsTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

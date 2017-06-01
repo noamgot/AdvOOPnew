@@ -151,6 +151,7 @@
     <ClCompile Include="DLLManager.cpp" />
     <ClCompile Include="GameManagerUtilities.cpp" />
     <ClCompile Include="GameMananger.cpp" />
+    <ClCompile Include="GameResultsTable.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyBoardData.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="DLLManager.h" />
     <ClInclude Include="GameManagerUtilities.h" />
     <ClInclude Include="GameMananger.h" />
+    <ClInclude Include="GameResultsTable.h" />
     <ClInclude Include="GameUtilities.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
     <ClInclude Include="MyBoardData.h" />

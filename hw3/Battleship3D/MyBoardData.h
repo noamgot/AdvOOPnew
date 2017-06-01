@@ -1,10 +1,12 @@
 ﻿#pragma once
 #include "IBattleshipGameAlgo.h"
 #include <vector>
+#include <memory>
 
 class MyBoardData : public BoardData
 {
 public:
+	MyBoardData() = default;
 	MyBoardData(int rows, int cols, int depth);
 
 	char charAt(Coordinate c) const override { return _board[c.row][c.col][c.depth]; }
