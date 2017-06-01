@@ -1,8 +1,11 @@
 #pragma once
-#include "AbstractPlayer.h"
 #include <set>
 #include <deque>
-
+#include "GameUtilities.h"
+#include "MyBoardData.h"
+#include <list>
+#include <ctime>
+#include <algorithm>
 
 enum Direction
 {
@@ -10,8 +13,11 @@ enum Direction
 	DOWN,
 	RIGHT,
 	LEFT,
+	BOTTOM,
+	TOP,
 	VERTICAL,
 	HORIZONAL,
+	DEPTH,
 	NONE
 };
 
@@ -24,49 +30,57 @@ enum eSign : char
 	UNKNOWN = ' '
 };
 
-class SmartPlayer :	public AbstractPlayer
+class SmartPlayer : IBattleshipGameAlgo
 {
 protected:
-	static const int NUMBER_OF_DIRECTIONS = 4;
+	static const int NUMBER_OF_DIRECTIONS = 6;
 	static const int SHIP_MAX_LENGTH = 4;
 
 	// A set for the coordinates of the player's ships
-	set<pair<int, int>>  mMyCoords;			
+	set<Coordinate>  mMyCoords;			
 
 	// A set for keeping track of where enemy attacks land.
-	set<pair<int, int>>  mEnemyAttackCoords;	
+	set<Coordinate>  mEnemyAttackCoords;
 
 	// A queue for high priority (follow up) attacks
-	deque<pair<int, int>> mHighPriorityQueue;
+	deque<Coordinate> mHighPriorityQueue;
+
+	int mRows;
+	int mCols;
+	int mDepth;
+	int mPlayerNum;
+	int mShipsCount; // number of living ships - starting from DEFAULT_SHIPS_COUNT
+	MyBoardData mBoard;
+	deque<Coordinate> mMovesQueue;
 
 	//Returns whether the coordinates are valid - in the inner representation (0 - COL/ROW SIZE -1)
-	bool SmartPlayer::isPointValid(int row, int col) const
+	bool SmartPlayer::isPointValid(int row, int col, int depth) const
 	{
-		return GameUtilities::isLegalMove(row + 1, col + 1, mRows, mCols);
+		return GameUtilities::isLegalMove(row + 1, col + 1, depth + 1, mRows, mCols, mDepth);
 	}
 	//Returns whether the coordinates are valid - in the inner representation (0 - COL/ROW SIZE -1) (overload)
-	bool SmartPlayer::isPointValid(pair<int, int> point) const
+	bool SmartPlayer::isPointValid(Coordinate point) const
 	{
-		return GameUtilities::isLegalMove(point, mRows, mCols);
+		return GameUtilities::isLegalMove(point, mRows, mCols, mDepth);
 	}
 
 	//Replaces the old_char with new_char and we return true. if the square did not hold old_char nothing happens and we return false.
 	//If reverse = true the char will be replaced only if it is NOT equal to old_char.
-	bool replaceChar(int row, int col, char old_char, char new_char, bool reverse = false);
+	bool replaceChar(int row, int col, int depth, char old_char, char new_char, bool reverse = false);
 
 	// Adds the coordinates to the attack queue if they are unknown or searches for the first unknown coordinates in the direction dir points.
-	void addTarget(int row, int col, deque<pair<int, int>>& attackQueue, Direction dir = NONE);
+	void addTarget(int row, int col, int depth, deque<Coordinate>& attackQueue, Direction dir = NONE);
 
 	// The main loop of addTarget (born from code duplication).
-	void addTargetLoop(int row, int col, int rowMod, int colMod, deque<pair<int, int>>& attackQueue, Direction dir, Direction orientation, Direction positiveDirection, Direction negativeDirection);
+	void addTargetLoop(int row, int col, int depth, int rowMod, int colMod, int depthMod, deque<Coordinate>& attackQueue, Direction dir, Direction orientation, Direction positiveDirection, Direction negativeDirection);
 
 	//Returns a pair of booleans, the first is true iff the point is a valid point and the second is true iff these coordinates contain the char c.
-	pair<bool, bool> verifyChar(int row, int col, char c);
+	pair<bool, bool> verifyChar(int row, int col, int depth, char c);
 
 	//Returns whether this square is adjacent to a ship. Does not assumes coordinates are valid.
-	bool isNearChar(int row, int col, eSign s, Direction* dir = nullptr); 
+	bool isNearChar(int row, int col, int depth, eSign s, Direction* dir = nullptr); 
 
-	pair<int, int> attackFromPriorityQuque(deque<pair<int, int>>& priorityQueue);
+	Coordinate attackFromPriorityQuque(deque<Coordinate>& priorityQueue);
 
 	// Convert the board the player received so that it is labeled by the enum eSign.
 	// Used for analysis purposes
@@ -76,7 +90,7 @@ protected:
 	void analyzeAttackResult();
 
 	// Wrapper fucntion for outlineSunkenEnemyShips(int row, int col) for getting the direction first.
-	void outlineSunkenEnemyShips(int row, int col);				    
+	void outlineSunkenEnemyShips(int row, int col, int depth);				    
 
 	// Mark the area around a sunken ship as eSight::Empty so it won't be targeted.
 	// In this function we take care of:
@@ -101,28 +115,30 @@ protected:
 	// OXO
 	// OXO
 	//  O <--- and this, in the vertical case 
-	void outlineSunkenEnemyShips(int row, int col, Direction dir); 
+	void outlineSunkenEnemyShips(int row, int col, int depth, Direction dir); 
 
 	// Wrapper fucntion for void sinkShip(int srow, int scol, Direction dir) for getting the direction first.
-	void sinkShip(int row, int col);
+	void sinkShip(int row, int col, int depth);
 
 	// Transforms a destroyed ship to a sunken one (so that its outline can be labeled empty.
-	void sinkShip(int row, int col, Direction dir);
+	void sinkShip(int row, int col, int depth, Direction dir);
 
 	// The main loop of outlineSunkenEnemyShips (born from code duplication).
-	void SmartPlayer::outlineLoop(int row, int col, int rowMod, int colMod, bool reverse);
+	void SmartPlayer::outlineLoop(int row, int col, int depth, int rowMod, int colMod, int depthMod, bool reverse);
 
 	// The function pokes the coordinates adjacent to the (row,col) it is given and depening
 	// On the value of outline decides it to call outlineSunkenEnemyShips(row, col , dir)  or sinkShip(row, col ,dir)
 	// where dir = HORIZONAL or VERTICAL depending on the results of the poking 
-	bool SmartPlayer::findDirection(int row, int col, bool outline);
+	bool findDirection(int row, int col, int depth, bool outline);
 
+	bool init();
+	
 
 public:
 	SmartPlayer(){}
 	~SmartPlayer(){}
-	void setBoard(int player, const char **board, int numRows, int numCols) override; // called once to notify player on his board
-	bool init(const string& path) override;
-	void notifyOnAttackResult(int player, int row, int col, AttackResult result) override; // notify on last move result
-	pair<int, int> attack() override; // ask player for his move
+	void setBoard(const BoardData& board); // called once to notify player about his board // called once to notify player on his boardd
+	void notifyOnAttackResult(int player, Coordinate move, AttackResult result); // notify on last move result
+	void setPlayer(int player);
+	Coordinate attack() override; // ask player for his move
 };

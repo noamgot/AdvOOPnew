@@ -5,12 +5,15 @@ void AbstractPlayer::setBoard(const BoardData& board)
 	mRows = board.rows();
 	mCols = board.cols();
 	mDepth = board.depth();
-	mBoard = MyBoardData(board);
-	for (auto i = 0; i < numRows; ++i)
+	for (auto row = 0; row < mRows; ++row)
 	{
-		for (auto j = 0; j < numCols; ++j)
+		for (auto col = 0; col < mCols; ++col)
 		{
-			mBoard[i][j] = board[i][j];
+			for (auto depth = 0; depth < mDepth; ++depth)
+			{
+				Coordinate coordinate = Coordinate(row, col, depth);
+				mBoard.setChar(coordinate, board.charAt(coordinate));
+			}			
 		}
 	}
 }

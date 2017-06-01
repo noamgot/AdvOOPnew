@@ -24,11 +24,11 @@ class Ship
 {
 	int mSize;
 	//  a map of coordinates = if <x,y> is true it means this coordinate was not hit
-	std::map<std::pair<int,int>, bool > mCoordinates;
+	std::map<Coordinate, bool > mCoordinates;
 	eShipType mType;
 
 public:
-	Ship::Ship(int size, eShipType type, std::map<std::pair<int, int>, bool> coordinates) :
+	Ship::Ship(int size, eShipType type, std::map<Coordinate, bool> coordinates) :
 		mSize(size),
 		mCoordinates(coordinates),
 		mType(type)
@@ -40,13 +40,13 @@ public:
 	eShipType getType() const { return mType; }
 
 	/* getter for the ship's coordinates */
-	std::map<std::pair<int, int>, bool> getCoordinates() const { return  mCoordinates; }
+	std::map<Coordinate, bool> getCoordinates() const { return  mCoordinates; }
 
 	int getSize() const { return mSize; }
 
 	/*Update the ship's after it gets a hit. return true if a real hit occurs
 	 * (i.e a "living" ship tile is hit) */
-	bool handleHit(std::pair<int,int> coords, AttackResult& res);	
+	bool handleHit(Coordinate coords, AttackResult& res);	
 
 	
 };

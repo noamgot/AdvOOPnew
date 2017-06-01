@@ -1,7 +1,7 @@
 #include "Ship.h"
 
 
-bool Ship::handleHit(std::pair<int,int> coords, AttackResult& res)
+bool Ship::handleHit(Coordinate coords, AttackResult& res)
 {
 	if (this->mSize <= 0) // ship is already sunk
 	{

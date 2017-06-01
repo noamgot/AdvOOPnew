@@ -34,14 +34,14 @@ namespace GameUtilities
 	                     bool& fileNotFound, int playerNum, bool allowSingleFile);
 
 	/*returns true iff the move is legal*/
-	inline bool isLegalMove(int x, int y, int numOfRows, int numOfCols)
+	inline bool isLegalMove(int x, int y, int z,  int numOfRows, int numOfCols, int depth)
 	{
-		return !(x < 1 || x > numOfRows || y < 1 || y > numOfCols);
+		return !(x < 1 || x > numOfRows || y < 1 || y > numOfCols || z > depth || z < 1);
 	}
 
-	inline bool isLegalMove(pair<int,int> move, int numOfRows, int numOfCols)
+	inline bool isLegalMove(Coordinate move, int numOfRows, int numOfCols, int depth)
 	{
-		return isLegalMove(move.first, move.second, numOfRows ,numOfCols);
+		return isLegalMove(move.row, move.col, move.depth, numOfRows ,numOfCols, depth);
 	}
 
 	/* functions for allocating and deleteing boards of size rows*cols */
