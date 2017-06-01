@@ -24,7 +24,7 @@ void BattleshipTournament::printCurrentResults() const
 
 void BattleshipTournament::reporterMethod()
 {
-	for (auto i = 1; i < _numRounds; i++)
+	for (auto i = 1; i <= _numRounds; i++)
 	{
 		updateCumulativeResults(i); // update round i results
 		printCurrentResults();
