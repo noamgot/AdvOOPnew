@@ -5,11 +5,9 @@ void AbstractPlayer::setBoard(const BoardData& board)
 	mRows = board.rows();
 	mCols = board.cols();
 	mDepth = board.depth();
-	// allocate memory for the player's board and copy the given board
-	mBoard.resize(numRows);
+	mBoard = MyBoardData(board);
 	for (auto i = 0; i < numRows; ++i)
 	{
-		mBoard[i].resize(numCols);
 		for (auto j = 0; j < numCols; ++j)
 		{
 			mBoard[i][j] = board[i][j];
