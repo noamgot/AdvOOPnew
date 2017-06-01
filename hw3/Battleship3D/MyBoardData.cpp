@@ -9,3 +9,7 @@ MyBoardData::MyBoardData(int rows, int cols, int depth)
 	_depth = depth;
 }
 
+MyBoardData::MyBoardData(BoardData &board)
+{
+}
+

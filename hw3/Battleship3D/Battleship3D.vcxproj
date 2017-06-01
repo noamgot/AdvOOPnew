@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AbstractPlayer.cpp" />
     <ClCompile Include="BattleshipTournament.cpp" />
     <ClCompile Include="DLLManager.cpp" />
     <ClCompile Include="GameManagerUtilities.cpp" />
@@ -156,8 +157,10 @@
     <ClCompile Include="MyBoardData.cpp" />
     <ClCompile Include="SafeQueue.cpp" />
     <ClCompile Include="Ship.cpp" />
+    <ClCompile Include="SmartPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AbstractPlayer.h" />
     <ClInclude Include="BattleshipTournament.h" />
     <ClInclude Include="DLLManager.h" />
     <ClInclude Include="GameManagerUtilities.h" />
@@ -168,6 +171,7 @@
     <ClInclude Include="MyBoardData.h" />
     <ClInclude Include="SafeQueue.h" />
     <ClInclude Include="Ship.h" />
+    <ClInclude Include="SmartPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\AdvancedProgramming_Ex3.pdf" />
