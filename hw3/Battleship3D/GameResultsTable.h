@@ -1,15 +1,16 @@
 ﻿#pragma once
-#include <condition_variable>
 #include <vector>
-#include "BattleshipTournament.h"
+#include <mutex>
+#include "PlayerGameResults.h"
 
-// todo - consider being friend class with BattleshipTournament
+
+// todo - consider being friend class with CompetitionManager
 
 class GameResultsTable
 {
 public:
-	GameResultsTable() = delete;
-	GameResultsTable(int numPlayers, int numRounds) : _numPlayers(numPlayers) { _table.resize(numRounds); }
+	GameResultsTable() = default;
+	GameResultsTable(size_t numPlayers, size_t numRounds) : _numPlayers(numPlayers), _table(numRounds){}
 	
 
 	// block copy & move ctors and assignments
@@ -21,10 +22,11 @@ public:
 	/* the wanted round results*/
 	const std::vector<PlayerGameResults>& getRoundResults(int round);
 	void updateTable(int round, PlayerGameResults gameResults);
+	void notifyEndGame() { _cv.notify_one(); }
 
 private:
 	std::vector<std::vector<PlayerGameResults>> _table;
 	std::mutex _mutex;
 	std::condition_variable _cv;
-	int _numPlayers;
+	size_t _numPlayers;
 };

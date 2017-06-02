@@ -147,28 +147,32 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AbstractPlayer.cpp" />
-    <ClCompile Include="BattleshipTournament.cpp" />
+    <ClCompile Include="CompetitionManager.cpp" />
     <ClCompile Include="DLLManager.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManagerUtilities.cpp" />
     <ClCompile Include="GameMananger.cpp" />
     <ClCompile Include="GameResultsTable.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyBoardData.cpp" />
+    <ClCompile Include="PlayerGameResults.cpp" />
     <ClCompile Include="SafeQueue.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="SmartPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractPlayer.h" />
-    <ClInclude Include="BattleshipTournament.h" />
+    <ClInclude Include="CompetitionManager.h" />
     <ClInclude Include="DLLManager.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="GameManagerUtilities.h" />
     <ClInclude Include="GameMananger.h" />
     <ClInclude Include="GameResultsTable.h" />
     <ClInclude Include="GameUtilities.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
     <ClInclude Include="MyBoardData.h" />
+    <ClInclude Include="PlayerGameResults.h" />
     <ClInclude Include="SafeQueue.h" />
     <ClInclude Include="Ship.h" />
     <ClInclude Include="SmartPlayer.h" />

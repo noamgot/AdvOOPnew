@@ -3,7 +3,7 @@
 
 int GameMananger::runGame()
 {
-	MyBoardData boardA(_boardData.rows(), _boardData.cols(), _boardData.depth());
+	/*MyBoardData boardA(_boardData.rows(), _boardData.cols(), _boardData.depth());
 	MyBoardData boardB(_boardData.rows(), _boardData.cols(), _boardData.depth());
 	initIndividualBoards(boardA, boardB);
 
@@ -37,7 +37,7 @@ int GameMananger::runGame()
 		}
 		handleMove(board, currentMove, attackerNum, defenderNum, attackerName, A, B, playerAttributesArr);
 	}
-	//printGameResults(playerAttributesArr);
+	//printGameResults(playerAttributesArr);*/
 	return EXIT_SUCCESS;
 }
 

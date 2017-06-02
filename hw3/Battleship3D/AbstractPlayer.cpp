@@ -31,8 +31,8 @@ Coordinate AbstractPlayer::attack()
 	return Coordinate(-1, -1, -1);
 }
 
-bool AbstractPlayer::init(const string& path)
+/*bool AbstractPlayer::init(const string& path)
 {
 	// validate path
 	return GameUtilities::isValidPath(path);
-}
+}*/

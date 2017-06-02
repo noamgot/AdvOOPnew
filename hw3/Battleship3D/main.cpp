@@ -3,17 +3,17 @@
 #include "MyBoardData.h"
 #include <iostream>
 #include "DLLManager.h"
-#include "BattleshipTournament.h"
+#include "CompetitionManager.h"
 
 using namespace std;
 using namespace GameManagerUtilities;
 using namespace GameUtilities;
 
 
-std::string removeSuffix(const std::string& filename) 
+string removeSuffix(const string& filename) 
 {
 	auto lastdot = filename.find_last_of(".");
-	if (lastdot == std::string::npos)
+	if (lastdot == string::npos)
 	{
 		return filename;
 	}
@@ -44,8 +44,8 @@ int main(int argc, char** argv)
 {
 
 	string dirPath;
-	int numThreads = BattleshipTournament::DEFAULT_NUM_THREADS;
-	if (GameManagerUtilities::processInputArguments(argc, argv, dirPath, numThreads) < 0)
+	int numThreads = CompetitionManager::DEFAULT_NUM_THREADS;
+	if (processInputArguments(argc, argv, dirPath, numThreads) < 0)
 	{
 		return -1;
 	}
@@ -62,9 +62,10 @@ int main(int argc, char** argv)
 	}
 	filterDirFiles(dirFiles, boardFiles, dllFiles, playerNames, dirPath);
 
-	std::vector<std::vector<std::vector<std::vector<char>>>> gameBoards;
-	std::vector<GetAlgoFuncType> players;
-	BattleshipTournament tournamentMngr(gameBoards, players, playerNames, numThreads);
+	vector<vector3D<char>> gameBoards(2);
+	vector<GetAlgoFuncType> players(playerNames.size());
+	//playerNames = { "Jordy-Jordalish", "Ben-El Tavorush", "Stat-Boy (Oy-oy-oy)" };
+	CompetitionManager tournamentMngr(gameBoards, players, playerNames, numThreads);
 	tournamentMngr.runTournament();
 	return EXIT_SUCCESS;
 }

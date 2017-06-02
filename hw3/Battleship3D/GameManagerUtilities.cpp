@@ -238,7 +238,7 @@ namespace GameManagerUtilities
 			if (playerAttributes.shipList[i].getType() == shipType)
 			{
 				//Make sure this coordinate belongs to this ship
-				if (playerAttributes.shipList[i].getCoordinates().count(coords) == 1)
+			/*	if (playerAttributes.shipList[i].getCoordinates().count(coords) == 1)
 				{
 					validAttack = playerAttributes.shipList[i].handleHit(coords, res);
 					if (res == AttackResult::Sink)
@@ -246,7 +246,7 @@ namespace GameManagerUtilities
 						playerAttributes.shipsCount--;
 					}
 					break;
-				}
+				}*/
 			}
 		}
 		return validAttack;
@@ -260,13 +260,13 @@ namespace GameManagerUtilities
 		{
 			return false;
 		}
-		pPlayer->setBoard(playerNum, board, ROW_SIZE, COL_SIZE);
+		//pPlayer->setBoard(playerNum, board, ROW_SIZE, COL_SIZE);
 		initPlayersAttributes(playerAttributesArr[playerNum], board);
-		if (!pPlayer->init(dirPath))
+		/*if (!pPlayer->init(dirPath))
 		{
 			cout << "Algorithm initialization failed for dll: " << dllPath << endl;
 			return false;
-		}
+		}*/
 		return true;
 	}
 
@@ -454,7 +454,8 @@ namespace GameManagerUtilities
 			coordinates[make_pair(i + 1, j + 1)] = true;
 			size++;
 		}
-		return Ship(size, charToShipType(c), coordinates);
+		//return Ship(size, charToShipType(c), coordinates);
+		return Ship(); // todo - change!!!!!! just for tests...
 	}
 
 
@@ -476,7 +477,7 @@ namespace GameManagerUtilities
 			}
 
 			auto currentMove = pPlayers[attackerNum]->attack();
-			if (!isLegalMove(currentMove, ROW_SIZE, COL_SIZE))
+			/*if (!isLegalMove(currentMove, ROW_SIZE, COL_SIZE))
 			{
 				if (currentMove.first == -1 && currentMove.second == -1) // an exception - means no more moves
 				{
@@ -487,7 +488,7 @@ namespace GameManagerUtilities
 				continue;
 
 			}
-			handleMove(board, currentMove, attackerNum, defenderNum, attackerName, A, B, playerAttributesArr);
+			handleMove(board, currentMove, attackerNum, defenderNum, attackerName, A, B, playerAttributesArr);*/
 		}
 		printGameResults(playerAttributesArr);
 		delete A;
@@ -523,8 +524,8 @@ namespace GameManagerUtilities
 
 	void GameManagerUtilities::handleMiss(pair<int,int> move, IBattleshipGameAlgo *A, IBattleshipGameAlgo *B ,int attackerNum)
 	{
-		A->notifyOnAttackResult(attackerNum, move.first, move.second, AttackResult::Miss);
-		B->notifyOnAttackResult(attackerNum, move.first, move.second, AttackResult::Miss);	
+		/*A->notifyOnAttackResult(attackerNum, move.first, move.second, AttackResult::Miss);
+		B->notifyOnAttackResult(attackerNum, move.first, move.second, AttackResult::Miss);	*/
 	}
 
 	void GameManagerUtilities::handleHitOrSink(pair<int,int> move, bool &validAttack, IBattleshipGameAlgo *A, IBattleshipGameAlgo *B,
@@ -533,8 +534,8 @@ namespace GameManagerUtilities
 		AttackResult attackResult;
 		validAttack = registerHit(playerAttributesArr[(isupper(hitChar) ? 0 : 1)], move, charToShipType(hitChar), attackResult);
 		//notify players on attack results
-		A->notifyOnAttackResult(attackerNum, move.first, move.second, attackResult);
-		B->notifyOnAttackResult(attackerNum, move.first, move.second, attackResult);
+		/*A->notifyOnAttackResult(attackerNum, move.first, move.second, attackResult);
+		B->notifyOnAttackResult(attackerNum, move.first, move.second, attackResult);*/
 		if (attackResult == AttackResult::Sink)
 		{
 			// if hitChar is an UPPERCASE char - than A was hit and B gets the points (and vice versa)

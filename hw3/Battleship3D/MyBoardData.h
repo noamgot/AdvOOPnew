@@ -2,6 +2,7 @@
 #include "IBattleshipGameAlgo.h"
 #include <vector>
 #include <memory>
+#include "CompetitionManager.h"
 
 class MyBoardData : public BoardData
 {
@@ -13,6 +14,6 @@ public:
 	void setChar(Coordinate coor, char ch) { _board[coor.row][coor.col][coor.depth] = ch; }
 
 private:
-	std::vector<std::vector<std::vector<char>>> _board; // 3D board!
+	vector3D<char>_board; // 3D board!
 	
 };

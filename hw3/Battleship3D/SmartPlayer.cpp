@@ -150,7 +150,7 @@ bool SmartPlayer::init()
 	}
 	srand(static_cast<unsigned int>(time(nullptr))); // Seed the PRG for all of our random needs.
 
-	random_shuffle(std::begin(valid_moves), std::end(valid_moves));
+	random_shuffle(begin(valid_moves), end(valid_moves));
 	for (auto move : valid_moves)
 	{
 		mMovesQueue.push_back(move);
@@ -353,6 +353,7 @@ void SmartPlayer::setPlayer(int player)
 
 IBattleshipGameAlgo* GetAlgorithm()
 {
-	IBattleshipGameAlgo* newP = new SmartPlayer;
-	return newP;
+	/*IBattleshipGameAlgo* newP = new SmartPlayer;
+	return newP;*/
+	return nullptr;
 }

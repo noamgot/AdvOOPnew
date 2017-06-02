@@ -20,11 +20,21 @@ enum class eShipType
 	SHIP_TYPE_ERROR
 };
 
+namespace std
+{
+	template<> struct less<Coordinate>
+	{
+		bool operator() (const Coordinate& lhs, const Coordinate& rhs) const
+		{
+			return lhs.row < rhs.row;
+		}
+	};
+}
 class Ship
 {
 	int mSize;
 	//  a map of coordinates = if <x,y> is true it means this coordinate was not hit
-	std::map<Coordinate, bool > mCoordinates;
+	std::map<Coordinate, bool> mCoordinates;
 	eShipType mType;
 
 public:

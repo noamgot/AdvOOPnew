@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "BattleshipTournament.h"
+#include "CompetitionManager.h"
 #include "IBattleshipGameAlgo.h"
 #include "MyBoardData.h"
 
@@ -16,8 +16,8 @@ public:
 	PlayerGameResults get_grB() const {	return _grB;}
 
 private:
-	std::unique_ptr<IBattleshipGameAlgo> _A;
-	std::unique_ptr<IBattleshipGameAlgo> _B;
+	unique_ptr<IBattleshipGameAlgo> _A;
+	unique_ptr<IBattleshipGameAlgo> _B;
 	MyBoardData _boardData;
 
 	PlayerGameResults _grA;

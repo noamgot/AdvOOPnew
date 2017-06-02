@@ -7,19 +7,13 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include "Game.h"
 
 template <class T>
 class SafeQueue
 {
 public:
-
-	// this struct is for handling end of tournament - it gets thrown when a thread gets to an empty queue
-	// after the games production is done
-	//struct IsDead{}; 
-
-	SafeQueue() = default;	
-
-	//SafeQueue() : _isAlive(true){}
+	SafeQueue() = default;
 	// block copy & move ctors and assignments
 	SafeQueue(const SafeQueue& other) = delete;
 	SafeQueue& operator=(const SafeQueue& other) = delete;
@@ -32,19 +26,39 @@ public:
 	void push(const T& item);
 	void push(T&& item);
 
-	//void kill();
-
-/*	bool empty()
-	{
-		std::lock_guard<std::mutex> mlock(_mutex);
-		return _queue.empty();
-	}*/
 	
 private:
 	std::queue<T> _queue;
 	std::mutex _mutex;
 	std::condition_variable _cv;
-//	bool _isAlive;
 };
 
+template <class T>
+T SafeQueue<T>::pop()
+{
+	std::unique_lock<std::mutex> mlock(_mutex);
+	_cv.wait(mlock, [this] {return !_queue.empty(); });
+	T item = std::move(_queue.front());
+	_queue.pop();
+	return item;
+
+}
+
+template <class T>
+void SafeQueue<T>::push(const T& item)
+{
+	std::unique_lock<std::mutex> mlock(_mutex);
+	_queue.push(item);
+	mlock.unlock();
+	_cv.notify_one();
+}
+
+template <class T>
+void SafeQueue<T>::push(T&& item)
+{
+	std::unique_lock<std::mutex> mlock(_mutex);
+	_queue.push(std::move(item));
+	mlock.unlock();
+	_cv.notify_one();
+}
 
