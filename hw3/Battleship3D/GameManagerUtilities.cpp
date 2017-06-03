@@ -7,8 +7,10 @@
 #include <direct.h>
 #include <set>
 #include <map>
+#include <cctype>
 #include <stdlib.h>
 #include <Windows.h>
+#include "CompetitionManager.h"
 
 namespace GameManagerUtilities
 {
@@ -251,7 +253,7 @@ namespace GameManagerUtilities
 		}
 		return validAttack;
 	}
-
+	/*
 	bool GameManagerUtilities::initPlayer(IBattleshipGameAlgo*& pPlayer, int playerNum, const char** board,
 		const string dirPath, const string dllPath, PlayerAttributes playerAttributesArr[], DLLManager& dllMngr)
 	{
@@ -266,10 +268,10 @@ namespace GameManagerUtilities
 		{
 			cout << "Algorithm initialization failed for dll: " << dllPath << endl;
 			return false;
-		}*/
+		}
 		return true;
 	}
-
+	*/
 	int GameManagerUtilities::printBoardErrors(bitset<4>& errShipsA, bitset<4>& errShipsB, int shipCountA, int shipCountB, int adjCheck)
 	{
 		auto ret = 0;
@@ -542,4 +544,233 @@ namespace GameManagerUtilities
 			playerAttributesArr[(isupper(hitChar) ? 1 : 0)].score += calculateSinkScore(hitChar);
 		}		
 	}
+
+	void GameManagerUtilities::initBoards3D(const vector<string>& boardPaths, vector<vector3d>& boards)
+	{
+		for (string boardPath : boardPaths)
+		{
+			int rows = 0;
+			int cols = 0;
+			int depth = 0;
+			string line;
+			ifstream boardFile(boardPath);
+			if (!boardFile.is_open())
+			{
+				cout << "Error: opening board file failed" << endl;
+				continue;
+			}
+			set<char> charSet{ WATER, BOAT,MISSLE_SHIP, SUBMARINE, DESTROYER, char(tolower(BOAT)),
+				char(tolower(MISSLE_SHIP)), char(tolower(SUBMARINE)), char(tolower(DESTROYER)) };
+
+			getline(boardFile, line);
+			if (boardFile.eof() || boardFile.fail())
+			{
+				continue;
+			}
+			if (getDims(line, rows, cols, depth) <= 0)
+			{
+				continue;
+			}
+
+			vector3d board(rows, std::vector<std::vector<char>>(cols, std::vector<char>(depth)));
+
+			//MyBoardData board(rows, cols, depth);
+			// if first line after dimensions is not empty - bad format
+			getline(boardFile, line);
+			if (!boardFile.eof() && !line.empty())
+			{
+				continue;
+			}
+			getline(boardFile, line);
+
+			for (int k = 0; k < depth ; k++)
+			{
+				for (int i = 0; i < rows; i++)
+				{
+					for (int j = 0; j < cols; j++)
+					{
+						if (boardFile.eof() || line.empty() || j >= line.size())
+						{
+							board[i][j][k] = ' ';
+						}
+						else
+						{
+							board[i][j][k] = charSet.find(line[j]) == charSet.end() ? ' ' : line[j];
+						}
+					}
+					if (!boardFile.eof() && !line.empty() && i != rows-1)
+					{
+						getline(boardFile, line);
+					}
+				}
+				if (boardFile.eof())
+				{
+					continue;
+				}
+				while (getline(boardFile, line))
+				{
+					if (line.empty())
+					{
+						getline(boardFile, line);
+						break;
+					}
+				}
+			}
+
+			boardFile.close();
+			if (checkBoard3D(board) < 0)
+			{
+				continue;
+			}
+			boards.push_back(board);
+		}
+	}
+
+	int GameManagerUtilities::getDims(const string line, int& rows, int& cols, int& depth)
+	{
+		int j = 0;
+		for (int i = 0; i <= 2; i++)
+		{
+			string buff = "";
+			while (j < line.size() && line[j] != 'x' && line[j] != 'X')
+			{
+				if (std::isdigit(line[j]) == 0)
+				{
+					return -1;
+				}
+				buff += line[j];
+				j++;
+			}
+			j++;
+			if (i == 0)
+			{
+				cols = stoi(buff);
+			}
+			if (i == 1)
+			{
+				rows = stoi(buff);
+			}
+			if (i == 2)
+			{
+				depth = stoi(buff);
+			}
+		}
+		return rows*cols*depth;
+	}
+
+	int GameManagerUtilities::checkShape3D(vector3d& board, const int size, int k, int i, int j)
+	{
+		int rows = board.size();
+		int cols = board[0].size();
+		int depth = board[0][0].size();
+		auto verL = 1, horL = 1, depL = 1;
+		// run horizontally, check above, below, inwards and outwards
+		while (j + horL < cols && board[i][j][k] == board[i][j + horL][k])
+		{
+			if ((i + 1 < rows && board[i][j][k] == board[i + 1][j + horL][k]) ||
+				(i - 1 >= 0 && board[i][j][k] == board[i - 1][j + horL][k]) ||
+				(k + 1 < depth && board[i][j][k] == board[i][j + horL][k + 1]) ||
+				(k - 1 >= 0 && board[i][j][k] == board[i][j + horL][k - 1]))
+			{
+				return -1;
+			}
+			horL++;
+		}
+		// run vertically, check right, left, inwards and outwards
+		while (i + verL < rows && board[i][j][k] == board[i + verL][j][k])
+		{
+			if ((j + 1 < cols && board[i][j][k] == board[i + verL][j + 1][k]) ||
+				(j - 1 >= 0 && board[i][j][k] == board[i + verL][j - 1][k]) ||
+				(k + 1 < depth && board[i][j][k] == board[i + verL][j][k + 1]) ||
+				(k - 1 >= 0 && board[i][j][k] == board[i + verL][j][k - 1]))
+			{
+				return -1;
+			}
+			verL++;
+		}
+		// run depth, check right, left, above and below
+		while (k + depL < depth && board[i][j][k] == board[i][j][k + depL])
+		{
+			if ((j + 1 < cols && board[i][j][k] == board[i][j + 1][k + depL]) ||
+				(j - 1 >= 0 && board[i][j][k] == board[i][j - 1][k + depL]) ||
+				(i + 1 < rows && board[i][j][k] == board[i + 1][j][k + depL]) ||
+				(i - 1 >= 0 && board[i][j][k] == board[i - 1][j][k + depL]))
+			{
+				return -1;
+			}
+			depL++;
+		}
+
+		// check for misshape in size (no dimension matches ship size or 2 or more dimensions are longer than 1 cell)
+		if ((horL != size && verL != size && depL != size) || (horL > 1 && verL > 1) || (horL > 1 && depL > 1) || (verL > 1 && depL > 1))
+		{
+			return -1;
+		}
+		return 1;
+	}
+
+	int GameManagerUtilities::checkBoard3D(vector3d& board)
+	{
+		int rows = board.size();
+		int cols = board[0].size();
+		int depth = board[0][0].size();
+		auto shipCountA = 0, shipCountB = 0, isShipA = 0, isShipB = 0, adjCheck = 0;
+		map<char, int> shipsA = { { BOAT,1 },{ MISSLE_SHIP,2 },{ SUBMARINE,3 },{ DESTROYER,4 } };
+		map<char, int> shipsB = { { char(tolower(BOAT)),1 },{ char(tolower(MISSLE_SHIP)),2 },
+		{ char(tolower(SUBMARINE)),3 },{ char(tolower(DESTROYER)),4 } };
+		bitset<4> errShipsA, errShipsB;// error flags for ship misshapes
+
+		for (auto k = 0; k < depth; k++)
+		{
+			for (auto i = 0; i < rows; i++)
+			{
+				for (auto j = 0; j < cols; j++)
+				{
+					if (board[i][j][k] != ' ')
+					{
+						isShipA = shipsA[board[i][j][k]] != 0;       // 1 if its a ship, otherwise 0
+						isShipB = shipsB[board[i][j][k]] != 0;
+						if (isShipA || isShipB)
+						{
+							// check if its new
+							if (!(k != 0 && board[i][j][k - 1] == board[i][j][k] ||
+								i != 0 && board[i - 1][j][k] == board[i][j][k] ||
+								j != 0 && board[i][j - 1][k] == board[i][j][k]))
+							{
+								// check for misshape
+								if (checkShape3D(board, shipsB[tolower(board[i][j][k])], k, i, j) < 0)
+								{
+									if (isShipA)
+									{
+										errShipsA[shipsA[board[i][j][k]] - 1] = 1;
+									}
+									if (isShipB)
+									{
+										errShipsB[shipsB[board[i][j][k]] - 1] = 1;
+									}
+									return -1;
+								}
+								else
+								{
+									shipCountA += isShipA;
+									shipCountB += isShipB;
+								}
+							}
+							// Check if any adjacent ships exist
+							if (k != 0 && board[i][j][k - 1] != board[i][j][k] && board[i][j][k - 1] != ' ' ||
+								i != 0 && board[i - 1][j][k] != board[i][j][k] && board[i - 1][j][k] != ' ' ||
+								j != 0 && board[i][j - 1][k] != board[i][j][k] && board[i][j - 1][k] != ' ')
+							{
+								adjCheck = 1;
+								return -1;
+							}
+						}
+					}
+				}
+			}
+		}
+		return 1;
+	}
+
+
 }

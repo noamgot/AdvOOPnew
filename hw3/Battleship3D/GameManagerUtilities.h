@@ -9,6 +9,7 @@ using namespace GameUtilities;
 #define ROW_SIZE 10
 #define COL_SIZE 10
 
+typedef vector<vector<vector<char>>> vector3d;
 
 namespace GameManagerUtilities
 {
@@ -95,4 +96,15 @@ namespace GameManagerUtilities
 	/* a helper function to the initPlayerShipsList method */
 	Ship handleShipDiscovery(int iOrig, int jOrig, int numOfRows, int numOfCols, const char** board);
 
+	/* given a vector of paths to sboard files, loads only the valid ones into vector<vector3d> boards */
+	void initBoards3D(const vector<string>& boardPaths, vector<vector3d>& boards);
+
+	/* parses the dimension line (first line in .sboard file) into rows, columns and depth */
+	int getDims(const string line, int& rows, int& cols, int& depth);
+
+	/* checks if the ship's shape starting at board[i][j][k] is valid */
+	int checkShape3D(vector3d& board, const int size, int k, int i, int j);
+
+	/* checks if the passed board is valid */
+	int checkBoard3D(vector3d& board);
 }
