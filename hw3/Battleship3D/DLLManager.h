@@ -20,7 +20,7 @@ public:
 
 	void loadLibs(const std::vector<std::string> dlls);
 	IBattleshipGameAlgo* loadAlgo(int n);
-	const int size();
+	int size() const;
 
 private:
 	int loadDLL(const std::string path);

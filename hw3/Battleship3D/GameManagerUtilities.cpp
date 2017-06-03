@@ -48,20 +48,18 @@ namespace GameManagerUtilities
 	int GameManagerUtilities::processInputArguments(int argc, char** argv, string& dirPath, int& numThreads)
 	{	
 		char *p;
-		if (argc == 1) // no arguments given
-		{
-			dirPath = getDirPath();
-		}
-		else
-		{
-			dirPath = argv[1];
-			for (auto i = 2; i < argc; i++)
+		auto gotDirPath = false;
+		if (argc >= 2)
+		{ 
+			// we accept the arguments in any order, 
+			// and we assume that if a folder path is given it is the first argument
+			for (auto i = 1; i < argc; ++i)
 			{
 				if (string(argv[i]) == PARAM_THREADS)
 				{
 					if (i + 1 < argc)
 					{
-						int _numThreads = strtol(argv[i+1], &p, 10);
+						int _numThreads = strtol(argv[i + 1], &p, 10);
 						if (!*p && _numThreads > 0)
 						{
 							numThreads = _numThreads;
@@ -69,12 +67,19 @@ namespace GameManagerUtilities
 						}
 					}
 					// if there's not a valid positive after PARAM_THREADS - ignore...
-					
 				}
-
+				else if (i == 1)
+				{ // we assume that if there's a folder path it is the first argument
+					dirPath = argv[1];
+					gotDirPath = true;
+				}
 			}
 		}
-
+		if (!gotDirPath) // directory path not given
+		{
+			dirPath = getDirPath();
+		}
+		// convert the given directory path to full path
 		return convertToFullPath(dirPath);
 	}
 
