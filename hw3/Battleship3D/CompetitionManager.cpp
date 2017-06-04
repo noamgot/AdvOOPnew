@@ -80,7 +80,8 @@ void CompetitionManager::runGames(int id)
 			std::cout << "thread " << std::this_thread::get_id() << " got the following game:" << std::endl;
 			std::cout << "board: " << game.boardID << ", A: " << game.idA  << ", B: " << game.idB << std::endl;
 		}*/
-		_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got the following game: boardID=" + to_string(game.boardID) + ", A=" + to_string(game.idA) + ", B: " + to_string(game.idB));
+		_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got the following game: boardID=" + 
+					to_string(game.boardID) + ", A=" + to_string(game.idA) + ", B=" + to_string(game.idB));
 		if(game.boardID == -1) // "poisoned" game
 		{
 /*			{

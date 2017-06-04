@@ -118,7 +118,6 @@ namespace GameUtilities
 		auto fileList = _popen(sysDIR.c_str(), "r");
 		if (!fileList)
 		{
-			perror("Error");
 			return -1;
 		}
 		while (fgets(buffer, BUF_SIZE - 1, fileList))

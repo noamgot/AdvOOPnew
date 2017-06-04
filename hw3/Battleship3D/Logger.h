@@ -20,7 +20,7 @@ public:
 	};
 
 
-	explicit Logger(std::string dirPath = "", const std::string fileName = "game.log");
+	explicit Logger(const std::string& dirPath, const std::string& fileName = "game.log");
 					
 	~Logger();
 	
