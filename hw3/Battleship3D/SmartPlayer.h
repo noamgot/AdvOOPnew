@@ -141,4 +141,5 @@ public:
 	void notifyOnAttackResult(int player, Coordinate move, AttackResult result) override; // notify on last move result
 	void setPlayer(int player) override;
 	Coordinate attack() override; // ask player for his move
+	static IBattleshipGameAlgo* GetAlgorithm();
 };

@@ -2,9 +2,13 @@
 #include <bitset>
 #include "GameUtilities.h"
 #include "DLLManager.h"
+#include "MyBoardData.h"
 
-#define ROW_SIZE 10
-#define COL_SIZE 10
+using namespace std;
+using namespace GameUtilities;
+
+#define PLAYER_A 0
+#define PLAYER_B 1
 
 // todo - unite with vector3D...
 typedef std::vector<std::vector<std::vector<char>>> vector3d;
@@ -24,7 +28,8 @@ namespace GameManagerUtilities
 		bool hasMoves;
 		int score;
 		int shipsCount;
-		std::vector<Ship> shipList;
+		vector<Ship> shipList;
+		bool won;
 	}PlayerAttributes;
 
 	/* initializing the game attributes, player boards and paths for the different files */
@@ -57,17 +62,17 @@ namespace GameManagerUtilities
 	int playTheGame(IBattleshipGameAlgo* A, IBattleshipGameAlgo* B, PlayerAttributes playerAttributesArr[], const std::string* board);
 
 	/* helper functions called inside playThe Game */
-	void handleMove(const std::string *board, std::pair<int, int> move, int &attackerNum, int &defenderNum, std::string &attackerName,
-		IBattleshipGameAlgo *A, IBattleshipGameAlgo *B, PlayerAttributes playerAttributesArr[]);
-	void handleMiss(std::pair<int, int> move, IBattleshipGameAlgo *A, IBattleshipGameAlgo *B, int attackerNum);	
-	void handleHitOrSink(std::pair<int, int> move, bool &validAttack, IBattleshipGameAlgo *A, IBattleshipGameAlgo *B,
+	void handleMove(const MyBoardData& board, Coordinate& move, int &attackerNum, int &defenderNum, unique_ptr<IBattleshipGameAlgo>& A,
+					unique_ptr<IBattleshipGameAlgo>& B, PlayerAttributes playerAttributesArr[]);
+	void handleMiss(Coordinate& move, unique_ptr<IBattleshipGameAlgo>& A, unique_ptr<IBattleshipGameAlgo>& B, int& attackerNum);
+	void handleHitOrSink(Coordinate& move, bool& validAttack, unique_ptr<IBattleshipGameAlgo>& A, unique_ptr<IBattleshipGameAlgo>& B,
 	                     char hitChar, int attackerNum, PlayerAttributes playerAttributesArr[]);
 
 	/* sets 2 individual boards - boardA and boardB - from board*/
-	void initIndividualBoards(std::string *board, char **boardA, char **boardB);
+	void initIndividualBoards(const MyBoardData& board, MyBoardData& boardA, MyBoardData& boardB);
 
 	/* Checks if the ship's shape starting at board[i][j] is valid */
-	int checkShape(std::string* board, const int size, int i, int j);
+	int checkShape(const MyBoardData& board, const int size, int i, int j);
 
 	/* prints the various error encountered on the board (if any)*/
 	int printBoardErrors(std::bitset<4>& errShipsA, std::bitset<4>& errShipsB, int shipCountA, int shipCountB, int adjCheck);

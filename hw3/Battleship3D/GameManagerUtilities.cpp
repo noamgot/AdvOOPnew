@@ -263,7 +263,7 @@ namespace GameManagerUtilities
 	}
 	/*
 	bool GameManagerUtilities::initPlayer(IBattleshipGameAlgo*& pPlayer, int playerNum, const char** board,
-		const string dirPath, const string dllPath, PlayerAttributes playerAttributesArr[], DLLManager& dllMngr)
+		const string dirPath, const string dllPath, PlayerAttributes _playerAttributes[], DLLManager& dllMngr)
 	{
 		pPlayer = dllMngr.loadAlgo(dllPath);
 		if (pPlayer == nullptr)
@@ -271,7 +271,7 @@ namespace GameManagerUtilities
 			return false;
 		}
 		//pPlayer->setBoard(playerNum, board, ROW_SIZE, COL_SIZE);
-		initPlayersAttributes(playerAttributesArr[playerNum], board);
+		initPlayersAttributes(_playerAttributes[playerNum], board);
 		/*if (!pPlayer->init(dirPath))
 		{
 			cout << "Algorithm initialization failed for dll: " << dllPath << endl;
@@ -491,14 +491,14 @@ namespace GameManagerUtilities
 			{
 				if (currentMove.first == -1 && currentMove.second == -1) // an exception - means no more moves
 				{
-					playerAttributesArr[attackerNum].hasMoves = false; // attacker has ran out of moves
+					_playerAttributes[attackerNum].hasMoves = false; // attacker has ran out of moves
 				}
 				// we switch player and continue - even if the move is invalid (i.e we ignore invalid moves)
 				changeAttacker(attackerNum, defenderNum);
 				continue;
 
 			}
-			handleMove(board, currentMove, attackerNum, defenderNum, attackerName, A, B, playerAttributesArr);*/
+			handleMove(board, currentMove, attackerNum, defenderNum, attackerName, A, B, _playerAttributes);*/
 		}
 		printGameResults(playerAttributesArr);
 		delete A;
@@ -507,8 +507,8 @@ namespace GameManagerUtilities
 	}
 
 
-	void GameManagerUtilities::handleMove(const string *board, pair<int, int> move, int &attackerNum, int &defenderNum, string &attackerName, 
-										IBattleshipGameAlgo *A, IBattleshipGameAlgo *B, PlayerAttributes playerAttributesArr[])
+	void GameManagerUtilities::handleMove(const MyBoardData& board, Coordinate& move, int &attackerNum, int &defenderNum, unique_ptr<IBattleshipGameAlgo>& A,
+		unique_ptr<IBattleshipGameAlgo>& B, PlayerAttributes playerAttributesArr[])
 	{
 		bool validAttack;
 		//remember moves are from 1 to ROW/COL SIZE while the board is from 0 to ROW/COL SIZE -1
@@ -532,14 +532,14 @@ namespace GameManagerUtilities
 		changeAttacker(attackerNum, defenderNum);
 	}
 
-	void GameManagerUtilities::handleMiss(pair<int,int> move, IBattleshipGameAlgo *A, IBattleshipGameAlgo *B ,int attackerNum)
+	void GameManagerUtilities::handleMiss(Coordinate& move, unique_ptr<IBattleshipGameAlgo>& A, unique_ptr<IBattleshipGameAlgo>& B, int& attackerNum)
 	{
-		/*A->notifyOnAttackResult(attackerNum, move.first, move.second, AttackResult::Miss);
-		B->notifyOnAttackResult(attackerNum, move.first, move.second, AttackResult::Miss);	*/
+		A->notifyOnAttackResult(attackerNum, move.first, move.second, AttackResult::Miss);
+		B->notifyOnAttackResult(attackerNum, move.first, move.second, AttackResult::Miss);
 	}
 
-	void GameManagerUtilities::handleHitOrSink(pair<int,int> move, bool &validAttack, IBattleshipGameAlgo *A, IBattleshipGameAlgo *B,
-	                                           char hitChar, int attackerNum, PlayerAttributes playerAttributesArr[])
+	void GameManagerUtilities::handleHitOrSink(Coordinate& move, bool& validAttack, unique_ptr<IBattleshipGameAlgo>& A, unique_ptr<IBattleshipGameAlgo>& B,
+										char hitChar, int attackerNum, PlayerAttributes playerAttributesArr[])
 	{
 		AttackResult attackResult;
 		validAttack = registerHit(playerAttributesArr[(isupper(hitChar) ? 0 : 1)], move, charToShipType(hitChar), attackResult);

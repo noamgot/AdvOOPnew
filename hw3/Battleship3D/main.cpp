@@ -90,12 +90,12 @@ int main(int argc, char** argv)
 	if (error)
 	{
 		return -1;
-	}
-/*	initBoards3D(boardFiles, boards);
-	dllMngr.loadLibs(dllFiles);*/
+	}*/
+	initBoards3D(boardFiles, boards);
+	dllMngr.loadLibs(dllFiles);
 
 
-	vector<vector3D<char>> gameBoards(2);
+		vector<vector3D<char>> gameBoards(2);
 	vector<GetAlgoFuncType> players(playerNames.size());
 	//playerNames = { "Jordy-Jordalish", "Ben-El Tavorush", "Stat-Boy (Oy-oy-oy)" };
 	// here we assume we have the valid boards and players
@@ -115,7 +115,7 @@ int main(int argc, char** argv)
 
 	/*string dirPath, board[ROW_SIZE], dllPathA, dllPathB;
 	DLLManager dllMngr;
-	PlayerAttributes playerAttributesArr[2];
+	PlayerAttributes _playerAttributes[2];
 	IBattleshipGameAlgo *A, *B;
 
 	// allocate individual boards
@@ -128,8 +128,8 @@ int main(int argc, char** argv)
 	}
 	
 	// initialize players and player attributes
-	if (!initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, dllPathA, playerAttributesArr, dllMngr) ||
-		!initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, dllPathB, playerAttributesArr, dllMngr))
+	if (!initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, dllPathA, _playerAttributes, dllMngr) ||
+		!initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, dllPathB, _playerAttributes, dllMngr))
 	{
 		return EXIT_FAILURE;
 	} 
@@ -139,4 +139,4 @@ int main(int argc, char** argv)
 	deleteBoard(boardB, ROW_SIZE);
 
 	// Let the game begin!!!
-	return playTheGame(A, B, playerAttributesArr, board);*/
+	return playTheGame(A, B, _playerAttributes, board);*/

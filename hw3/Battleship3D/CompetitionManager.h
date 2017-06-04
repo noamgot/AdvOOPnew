@@ -3,11 +3,13 @@
 #include "GameManagerUtilities.h"
 #include <thread>
 #include "SafeQueue.h"
+#include "GameManager.h"
 #include "GameResultsTable.h"
 #include "Game.h"
 #include <iostream>
 #include <iomanip>
 #include "Logger.h"
+
 
 
 template <typename T>

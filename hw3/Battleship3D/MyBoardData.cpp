@@ -11,5 +11,6 @@ MyBoardData::MyBoardData(int rows, int cols, int depth)
 
 MyBoardData::MyBoardData(BoardData &board)
 {
+
 }
 
