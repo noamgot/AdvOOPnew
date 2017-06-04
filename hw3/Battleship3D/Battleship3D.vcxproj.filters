@@ -24,9 +24,6 @@
     <ClCompile Include="MyBoardData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameMananger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameResultsTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -45,16 +42,19 @@
     <ClCompile Include="CompetitionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameManagerUtilities.cpp">
+    <ClCompile Include="Logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameUtilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameManager.cpp">
+    <ClCompile Include="GameRunner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DLLManager.cpp">
+    <ClCompile Include="AlgorithmLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,16 +89,19 @@
     <ClInclude Include="CompetitionManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameManagerUtilities.h">
+    <ClInclude Include="Logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameManager.h">
+    <ClInclude Include="GameRunner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DLLManager.h">
+    <ClInclude Include="AlgorithmLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

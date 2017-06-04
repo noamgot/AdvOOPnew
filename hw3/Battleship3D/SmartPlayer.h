@@ -1,7 +1,7 @@
 #pragma once
 #include <set>
 #include <deque>
-#include "GameUtilities.h"
+#include "Utilities.h"
 #include "MyBoardData.h"
 #include <list>
 #include <ctime>
@@ -56,12 +56,12 @@ protected:
 	//Returns whether the coordinates are valid - in the inner representation (0 - COL/ROW SIZE -1)
 	bool SmartPlayer::isPointValid(int row, int col, int depth) const
 	{
-		return GameUtilities::isLegalMove(row + 1, col + 1, depth + 1, mRows, mCols, mDepth);
+		return Utilities::isLegalMove(row + 1, col + 1, depth + 1, mRows, mCols, mDepth);
 	}
 	//Returns whether the coordinates are valid - in the inner representation (0 - COL/ROW SIZE -1) (overload)
 	bool SmartPlayer::isPointValid(Coordinate point) const
 	{
-		return GameUtilities::isLegalMove(point, mRows, mCols, mDepth);
+		return Utilities::isLegalMove(point, mRows, mCols, mDepth);
 	}
 
 	//Replaces the old_char with new_char and we return true. if the square did not hold old_char nothing happens and we return false.

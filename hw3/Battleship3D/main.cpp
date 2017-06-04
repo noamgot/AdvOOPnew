@@ -1,14 +1,14 @@
-#include "GameManagerUtilities.h"
+#include "GameUtilities.h"
 #include <string>
 #include "MyBoardData.h"
 #include <iostream>
-#include "DLLManager.h"
+#include "AlgorithmLoader.h"
 #include "CompetitionManager.h"
 #include "Logger.h"
 
 using namespace std;
-using namespace GameManagerUtilities;
 using namespace GameUtilities;
+using namespace Utilities;
 
 
 string removeSuffix(const string& filename) 
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
 {
 	std::shared_ptr<Logger> pLogger = std::make_shared<Logger>();
 	vector<vector3d> boards;
-	DLLManager dllMngr;
+	AlgorithmLoader dllMngr;
 	string dirPath;
 	int numThreads = CompetitionManager::DEFAULT_NUM_THREADS;
 	if (processInputArguments(argc, argv, dirPath, numThreads) < 0)
@@ -96,7 +96,7 @@ int main(int argc, char** argv)
 
 
 	/*string dirPath, board[ROW_SIZE], dllPathA, dllPathB;
-	DLLManager dllMngr;
+	AlgorithmLoader dllMngr;
 	PlayerAttributes _playerAttributes[2];
 	IBattleshipGameAlgo *A, *B;
 

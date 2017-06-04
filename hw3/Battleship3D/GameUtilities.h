@@ -1,73 +1,90 @@
-#pragma once
+﻿#pragma once
+#include <bitset>
+#include "Utilities.h"
+#include "AlgorithmLoader.h"
+#include "MyBoardData.h"
 
-#include "Ship.h"
-#include <vector>
+using namespace std;
+using namespace Utilities;
+
+
+
+// todo - unite with vector3D...
+typedef std::vector<std::vector<std::vector<char>>> vector3d;
 
 namespace GameUtilities
 {
+	/* input argument for setting the amount of threads */
+	const std::string PARAM_THREADS("-threads");
+	const std::string BOARD_FILE_SUFFIX(".sboard");
+	const std::string LIB_FILE_SUFFIX(".dll");
+	const std::string BAD_STRING("!@#"); // for getDirPath validation
+	const int MAX_PATH_LEN = 1024;
 
-	const int DEFAULT_SHIPS_COUNT = 5;
-	const int BUF_SIZE = 1024;
+	
 
-	enum eShipChar : char
-	{
-		BOAT = 'B',
-		MISSLE_SHIP = 'P',
-		SUBMARINE = 'M',
-		DESTROYER = 'D',
-		WATER = ' '
-	};
+	/* initializing the game attributes, player boards and paths for the different files */
+	int initGameBoardsAndPaths(int argc, char **argv, std::string(&board)[ROW_SIZE], char **boardA, char* *boardB,
+		std::string& dirPath, std::string& dllPathA, std::string& dllPathB);
 
-	enum class eFileType
-	{
-		BOARD_FILE,
-		DLL_FILE,
-	};
+	int processInputArguments(int argc, char** argv, std::string& dirPath, int& numThreads);
+	
 
-	bool isValidPath(const std::string dirPath);
+	/* prints the final results of the game */
+	void printGameResults(PlayerAttributes playerAttributesArr[]);
 
-	/* translate a given character to the corresponding ship type */
-	eShipType charToShipType(char c);
+	/* Initializes the battle boards according to the .sboard file in boardPath.
+	* results in a rows*cols board inside passed boards arguments - including
+	* individual boards for both players									  */
+	int initGameBoards(const std::string boardPath, std::string board[], char** boardA, char** boardB);
 
-	int findFileBySuffix(std::string& filePath, const std::string dirPath, const std::string suffix,
-	                     bool& fileNotFound, int playerNum, bool allowSingleFile);
+/*	/* player initialization #1#
+	bool initPlayer(IBattleshipGameAlgo*& pPlayer, int playerNum, const char** board, const string dirPath, const string dllPath, 
+					PlayerAttributes playerAttributesArr[], AlgorithmLoader& dllMngr);*/
 
-	/*returns true iff the move is legal*/
-	inline bool isLegalMove(int x, int y, int z,  int numOfRows, int numOfCols, int depth)
-	{
-		return !(x < 1 || x > numOfRows || y < 1 || y > numOfCols || z > depth || z < 1);
-	}
+	/* the main function of the game itself! */
+	int playTheGame(IBattleshipGameAlgo* A, IBattleshipGameAlgo* B, PlayerAttributes playerAttributesArr[], const std::string* board);
 
-	inline bool isLegalMove(Coordinate move, int numOfRows, int numOfCols, int depth)
-	{
-		return isLegalMove(move.row, move.col, move.depth, numOfRows ,numOfCols, depth);
-	}
+	/* sets 2 individual boards - boardA and boardB - from board*/
+	void initIndividualBoards(const MyBoardData& board, MyBoardData& boardA, MyBoardData& boardB);
 
-	/* functions for allocating and deleteing boards of size rows*cols */
-	char** allocateBoard(int rows, int cols);
-	void deleteBoard(char ** board, int rows);
+	/* Checks if the ship's shape starting at board[i][j] is valid */
+	int checkShape(const MyBoardData& board, const int size, int i, int j);
 
-	/* fills the fileListVector with a list of the directory contents.
-	 * returns 0 on success and -1 on failure */
-	int getDirectoryFileList(const std::string dirPath, std::vector<std::string>& fileListVector);
+	/* prints the various error encountered on the board (if any)*/
+	int printBoardErrors(std::bitset<4>& errShipsA, std::bitset<4>& errShipsB, int shipCountA, int shipCountB, int adjCheck);
 
-	/* filter the given file list so its elements which end with the given suffix are put in filteredFileList */
-	void filterAndSortFileList(const std::vector<std::string>& fileList, std::vector<std::string>& filteredFileList, const std::string suffix);
+	/* helper functions for printBoardErrors */
+	void printWrongSizeOrShapeError(std::bitset<4>& errShips, int& ret, const std::string player);
+	void printBadShipsCountErrror(int shipCount, int& ret, const std::string player);
 
-	/* checks if the string "line" ends with the given suffix (return true if it does and false o.w) */
-	bool endsWith(const std::string line, const std::string suffix);
+	/* validates the given board*/
+	int checkBoardValidity(std::string* board);
 
+	/* changes the given dirPath (relative or absolute) to its full path representation */
+	int convertToFullPath(std::string& dirPath);
 
-	/* gets the file path according to dirPath and the given file type.
-	 * it also converts the file path to its full path reresentation.
-	 * returns a negative number in case of failure, and 0 otherwise */
-	int getPathByType(std::string& filePath, const std::string dirPath, const std::string fileSuffix, 
-						eFileType fileType, int playerNum);
+	/* returns an absolute path to the current working directory */
+	std::string getDirPath();
 
-	// an overload for cases we need only one file of that type (i.e board game)
-	inline int getPathByType(std::string& filePath, const std::string dirPath, const std::string fileSuffix)
-	{
-		return getPathByType(filePath, dirPath, fileSuffix, eFileType::BOARD_FILE, 0);
-	}
+	/* initializes the given PlayerAttribute struct, according to the given board*/
+	void initPlayersAttributes(PlayerAttributes& playerAttributes, const char** playerBoard);
 
+	/* helper function - initializes the ship list in the given PlayerAttribute struct, according to the given board*/
+	void initPlayerShipsList(const char** board, int numOfRows, int numOfCols, PlayerAttributes& playerAttributes);
+
+	/* a helper function to the initPlayerShipsList method */
+	Ship handleShipDiscovery(int iOrig, int jOrig, int numOfRows, int numOfCols, const char** board);
+
+	/* given a vector of paths to sboard files, loads only the valid ones into vector<vector3d> boards */
+	void initBoards3D(const std::vector<std::string>& boardPaths, std::vector<vector3d>& boards);
+
+	/* parses the dimension line (first line in .sboard file) into rows, columns and depth */
+	int getDims(const std::string line, int& rows, int& cols, int& depth);
+
+	/* checks if the ship's shape starting at board[i][j][k] is valid */
+	int checkShape3D(vector3d& board, const int size, int k, int i, int j);
+
+	/* checks if the passed board is valid */
+	int checkBoard3D(vector3d& board);
 }

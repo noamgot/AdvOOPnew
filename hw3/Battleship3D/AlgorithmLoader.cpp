@@ -1,8 +1,8 @@
-﻿#include "DLLManager.h"
+﻿#include "AlgorithmLoader.h"
 #include <string>
 #include <iostream>
 
-DLLManager::~DLLManager()
+AlgorithmLoader::~AlgorithmLoader()
 {
 	for (auto itr = libs.begin(); itr != libs.end(); ++itr)
 	{
@@ -10,7 +10,7 @@ DLLManager::~DLLManager()
 	}
 }
 
-int DLLManager::loadDLL(const std::string path)
+int AlgorithmLoader::loadDLL(const std::string path)
 {
 	HINSTANCE hLib = LoadLibraryA(path.c_str());
 	if (!hLib)
@@ -31,7 +31,7 @@ int DLLManager::loadDLL(const std::string path)
 	return 1;
 }
 
-void DLLManager::loadLibs(const std::vector<std::string> dlls)
+void AlgorithmLoader::loadLibs(const std::vector<std::string> dlls)
 {
 	for (std::string path : dlls)
 	{
@@ -39,12 +39,12 @@ void DLLManager::loadLibs(const std::vector<std::string> dlls)
 	}
 }
 
-int DLLManager::size() const
+int AlgorithmLoader::size() const
 {
 	return libs.size();
 }
 
-IBattleshipGameAlgo* DLLManager::loadAlgo(int n)
+IBattleshipGameAlgo* AlgorithmLoader::loadAlgo(int n)
 {
 	if (n < 0 || n > libs.size()-1)
 	{

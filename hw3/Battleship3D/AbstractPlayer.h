@@ -1,7 +1,7 @@
 #pragma once
 
 #include <queue>
-#include "GameUtilities.h"
+#include "Utilities.h"
 #include "MyBoardData.h"
 
 class AbstractPlayer : public IBattleshipGameAlgo
@@ -16,7 +16,7 @@ protected:
 	std::deque<Coordinate> mMovesQueue;
 
 	// this class should not be instantiated in the game manager - hence the ctor & dtor are protected
-	AbstractPlayer() : mShipsCount(GameUtilities::DEFAULT_SHIPS_COUNT) , mBoard(){}
+	AbstractPlayer() : mShipsCount(Utilities::DEFAULT_SHIPS_COUNT) , mBoard(){}
 	~AbstractPlayer() {}
 public:
 

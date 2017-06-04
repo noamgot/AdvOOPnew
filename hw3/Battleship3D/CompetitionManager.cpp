@@ -82,12 +82,12 @@ void CompetitionManager::runGames(int id)
 /*		{
 			std::lock_guard<std::mutex> mlock(_coutMutex);
 			std::cout << "thread " << std::this_thread::get_id() << " got the following game:" << std::endl;
-			std::cout << "board: " << game.boardID << ", A: " << game.idA  << ", B: " << game.idB << std::endl;
+			std::cout << "board: " << game._boardID << ", A: " << game._idA  << ", B: " << game._idB << std::endl;
 		}*/
 		// If the game is "poisoned" it means that the competition is over 
 		// and this thread should terminate
-		_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got the following game: boardID=" + to_string(game.boardID) + ", A=" + to_string(game.idA) + ", B: " + to_string(game.idB));
-		if(game.boardID == -1) // "poisoned" game
+		_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got the following game: _boardID=" + to_string(game._boardID) + ", A=" + to_string(game._idA) + ", B: " + to_string(game._idB));
+		if(game._boardID == -1) // "poisoned" game
 		{
 /*			{
 				std::lock_guard<std::mutex> mlock(_coutMutex);
@@ -96,23 +96,28 @@ void CompetitionManager::runGames(int id)
 			_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got a poisoned game. Returning...");
 			return; 			
 		}
-		GameManager gameRunner(_players[game.idA], _players[game.idB], MyBoardData(_boards[game.boardID]));
+		// Start the game
+		GameRunner gameRunner(_players[game._idA], _players[game._idB], MyBoardData(_boards[game._boardID]), _pLogger);
 		gameRunner.runGame();
 		int roundA, roundB;
 		{
 			lock_guard<mutex> mlock(_mutex);
-			roundA = _roundsCnt[game.idA]++;
-			roundB = _roundsCnt[game.idB]++;
+			roundA = _roundsCnt[game._idA]++;
+			roundB = _roundsCnt[game._idB]++;
 /*			std::lock_guard<std::mutex> mlock2(_coutMutex);
 			std::cout << "thread " << std::this_thread::get_id() << " got round count:" << std::endl;
 			std::cout << "A: " << roundA+1 << ", B: " << roundB+1 << std::endl;*/
 		}
+
+		// Retrieve the game results
 		auto AWon = gameRunner.didAWin() ? 1 : 0;
 		auto BWon = gameRunner.didBWin() ? 1 : 0;
 		auto scoreA = gameRunner.getAScore();
 		auto scoreB = gameRunner.getBScore();
-		_resultsTable.updateTable(roundA, PlayerGameResults(game.idA, AWon, 1 - AWon, scoreA, scoreB, AWon * 100));
-		_resultsTable.updateTable(roundB, PlayerGameResults(game.idB, BWon, 1 - BWon, scoreA, scoreB, AWon * 100));
+		
+		// Insert game results to the results table.
+		_resultsTable.updateTable(roundA, PlayerGameResults(game._idA, AWon, 1 - AWon, scoreA, scoreB, AWon * 100));
+		_resultsTable.updateTable(roundB, PlayerGameResults(game._idB, BWon, 1 - BWon, scoreA, scoreB, BWon * 100));
 
 
 	}
