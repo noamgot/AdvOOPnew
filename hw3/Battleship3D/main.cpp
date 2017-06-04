@@ -42,7 +42,8 @@ void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles,
 
 int main(int argc, char** argv)
 {
-	// TODO - Uri: I'm getting the feeling the code for managing files, searching directories, validating them and loading them has become too distirbuted we should try to rearrnge it 
+	vector<vector3d> boards;
+	DLLManager dllMngr;
 	string dirPath;
 	int numThreads = CompetitionManager::DEFAULT_NUM_THREADS;
 	if (processInputArguments(argc, argv, dirPath, numThreads) < 0)
@@ -61,6 +62,19 @@ int main(int argc, char** argv)
 		return -1;
 	}
 	filterDirFiles(dirFiles, boardFiles, dllFiles, playerNames, dirPath);
+	/*if (boardFiles.size() == 0)
+	{
+		cout << "No board files (*.sboard) looking in path: " << dirPath << endl;
+		return -1;
+	}
+	if (dllFiles.size() < 2)
+	{
+		cout << "Missing algorithm (dll) files looking in path: " << dirPath << " (needs at least two)"  << endl;
+		return -1;
+	}*/
+	initBoards3D(boardFiles, boards);
+	dllMngr.loadLibs(dllFiles);
+
 
 	vector<vector3D<char>> gameBoards(2);
 	vector<GetAlgoFuncType> players(playerNames.size());

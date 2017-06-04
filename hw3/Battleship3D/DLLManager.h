@@ -18,7 +18,9 @@ public:
 	DLLManager(const DLLManager& dllMngr) = delete;
 	DLLManager& operator=(const DLLManager& dllMngr) = delete;
 
-	IBattleshipGameAlgo* loadAlgo(const std::string path);
+	void loadLibs(const std::vector<std::string> dlls);
+	IBattleshipGameAlgo* loadAlgo(int n);
+	const int size();
 
 private:
 	int loadDLL(const std::string path);

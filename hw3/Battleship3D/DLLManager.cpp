@@ -31,12 +31,25 @@ int DLLManager::loadDLL(const std::string path)
 	return 1;
 }
 
-IBattleshipGameAlgo* DLLManager::loadAlgo(const std::string path)
+void DLLManager::loadLibs(const std::vector<std::string> dlls)
 {
-	if (loadDLL(path) == -1)
+	for (std::string path : dlls)
+	{
+		loadDLL(path);
+	}
+}
+
+const int DLLManager::size()
+{
+	return libs.size();
+}
+
+IBattleshipGameAlgo* DLLManager::loadAlgo(int n)
+{
+	if (n < 0 || n > libs.size()-1)
 	{
 		return nullptr;
 	}
-	return std::get<2>(libs.back())();
+	return std::get<2>(libs.at(n))();
 }
 
