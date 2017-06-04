@@ -3,12 +3,15 @@
 #include "GameManagerUtilities.h"
 #include "IBattleshipGameAlgo.h"
 #include "MyBoardData.h"
+#include "Logger.h"
 
 class GameManager
 {
 public:
 	GameManager() = delete;
 	explicit GameManager(GetAlgoFuncType getAlgoA, GetAlgoFuncType getAlgoB, MyBoardData boardData);
+	GameMananger() = delete;
+	explicit GameMananger(Game game, std::shared_ptr<Logger> pLogger) : _grA(game.idA), _grB(game.idB), _pLogger(pLogger) {}
 	int runGame();
 
 	void initIndividualBoards(MyBoardData& boardA, MyBoardData& boardB) const;
@@ -26,7 +29,7 @@ private:
 	GameManagerUtilities::PlayerAttributes _playerAttributes[2];
 	MyBoardData _boardData;
 
-
 	PlayerGameResults _grA;
 	PlayerGameResults _grB;
+	std::shared_ptr<Logger> _pLogger;
 };

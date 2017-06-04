@@ -39,7 +39,7 @@ void DLLManager::loadLibs(const std::vector<std::string> dlls)
 	}
 }
 
-const int DLLManager::size()
+int DLLManager::size() const
 {
 	return libs.size();
 }

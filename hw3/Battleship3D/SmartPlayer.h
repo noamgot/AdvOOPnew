@@ -37,13 +37,13 @@ protected:
 	static const int SHIP_MAX_LENGTH = 4;
 
 	// A set for the coordinates of the player's ships
-	set<Coordinate>  mMyCoords;			
+	std::set<Coordinate>  mMyCoords;			
 
 	// A set for keeping track of where enemy attacks land.
-	set<Coordinate>  mEnemyAttackCoords;
+	std::set<Coordinate>  mEnemyAttackCoords;
 
 	// A queue for high priority (follow up) attacks
-	deque<Coordinate> mHighPriorityQueue;
+	std::deque<Coordinate> mHighPriorityQueue;
 
 	int mRows;
 	int mCols;
@@ -51,7 +51,7 @@ protected:
 	int mPlayerNum;
 	int mShipsCount; // number of living ships - starting from DEFAULT_SHIPS_COUNT
 	MyBoardData mBoard;
-	deque<Coordinate> mMovesQueue;
+	std::deque<Coordinate> mMovesQueue;
 
 	//Returns whether the coordinates are valid - in the inner representation (0 - COL/ROW SIZE -1)
 	bool SmartPlayer::isPointValid(int row, int col, int depth) const
@@ -69,18 +69,18 @@ protected:
 	bool replaceChar(int row, int col, int depth, char old_char, char new_char, bool reverse = false);
 
 	// Adds the coordinates to the attack queue if they are unknown or searches for the first unknown coordinates in the direction dir points.
-	void addTarget(int row, int col, int depth, deque<Coordinate>& attackQueue, Direction dir = NONE);
+	void addTarget(int row, int col, int depth, std::deque<Coordinate>& attackQueue, Direction dir = NONE);
 
 	// The main loop of addTarget (born from code duplication).
-	void addTargetLoop(int row, int col, int depth, int rowMod, int colMod, int depthMod, deque<Coordinate>& attackQueue, Direction dir, Direction orientation, Direction positiveDirection, Direction negativeDirection);
+	void addTargetLoop(int row, int col, int depth, int rowMod, int colMod, int depthMod, std::deque<Coordinate>& attackQueue, Direction dir, Direction orientation, Direction positiveDirection, Direction negativeDirection);
 
 	//Returns a pair of booleans, the first is true iff the point is a valid point and the second is true iff these coordinates contain the char c.
-	pair<bool, bool> verifyChar(int row, int col, int depth, char c);
+	std::pair<bool, bool> verifyChar(int row, int col, int depth, char c);
 
 	//Returns whether this square is adjacent to a ship. Does not assumes coordinates are valid.
 	bool isNearChar(int row, int col, int depth, eSign s, Direction* dir = nullptr); 
 
-	Coordinate attackFromPriorityQuque(deque<Coordinate>& priorityQueue);
+	Coordinate attackFromPriorityQuque(std::deque<Coordinate>& priorityQueue);
 
 	// Convert the board the player received so that it is labeled by the enum eSign.
 	// Used for analysis purposes

@@ -154,10 +154,10 @@
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameResultsTable.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
+    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyBoardData.cpp" />
     <ClCompile Include="PlayerGameResults.cpp" />
-    <ClCompile Include="SafeQueue.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="SmartPlayer.cpp" />
   </ItemGroup>
@@ -171,6 +171,7 @@
     <ClInclude Include="GameResultsTable.h" />
     <ClInclude Include="GameUtilities.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="MyBoardData.h" />
     <ClInclude Include="PlayerGameResults.h" />
     <ClInclude Include="SafeQueue.h" />

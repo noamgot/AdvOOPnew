@@ -24,7 +24,7 @@
     <ClCompile Include="MyBoardData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SafeQueue.cpp">
+    <ClCompile Include="GameMananger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameResultsTable.cpp">
