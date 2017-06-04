@@ -20,7 +20,7 @@ public:
 	};
 
 
-	explicit Logger(std::string dirPath = "", const std::string fileName = "game.log");
+	explicit Logger(const std::string& dirPath, const std::string& fileName = "game.log");
 					
 	~Logger();
 	
@@ -36,12 +36,6 @@ public:
 	{
 		logger._logFile << text.c_str() << std::endl;
 		return logger;
-	}
-
-	static void print()
-	{
-		static int cnt = 0;
-		std::cout << "hello from logger! cnt = " << ++cnt << std::endl;
 	}
 
 private:

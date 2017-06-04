@@ -4,19 +4,15 @@
 
 #define MAX_TIME_BUF_SIZE 64
 
-Logger::Logger(std::string dirPath, const std::string fileName) 
+Logger::Logger(const std::string& dirPath, const std::string& fileName) 
 				: _numWarnings(0U), _numErrors(0U)
 {
-	if (dirPath != "")
-	{
-		dirPath.push_back('\\');
-	}
-	_logFile.open(dirPath + fileName);
+	_logFile.open(dirPath + "\\" + fileName);
 	// Write the first lines
 	if (_logFile.is_open())
 	{
 		_logFile << getCurrentTime().c_str();
-		_logFile << " [START] LOG FILE CREATED. BATTLESHIP COMPETIOTION HAS STARTED RUNNING." << std::endl;
+		_logFile << " [START] LOG FILE CREATED. BATTLESHIP COMPETITION HAS STARTED RUNNING." << std::endl;
 		_logFile << "#################################################################################" << std::endl;
 	}
 

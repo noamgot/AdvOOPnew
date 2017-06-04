@@ -339,7 +339,6 @@ namespace GameUtilities
 	{
 		if (dirPath == BAD_STRING) //error occurred in getDirPath()
 		{
-			perror("Error");
 			return -1;
 		}
 		// get the full path of the directory
