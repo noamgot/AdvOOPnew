@@ -26,14 +26,6 @@ void CompetitionManager::printCurrentResults(vector<PlayerGameResults>& cumulati
 	for (auto& gr : cumulativeResults)
 	{
 		printTableEntry(generalWidth, playerNameWidth, cnt++, gr);
-		/*printElement(to_string(cnt++) + ".", generalWidth);
-		printElement(_playersNames[gr.ID], playerNameWidth);
-		printElement(gr.wins, generalWidth);
-		printElement(gr.losses, generalWidth);
-		cout << left << setw(generalWidth) << setfill(' ') << fixed << setprecision(2) << gr.percentage;
-		printElement(gr.ptsFor, generalWidth);
-		printElement(gr.ptsAgainst, generalWidth);
-		cout << endl;*/
 	}
 	cout << endl;
 }
