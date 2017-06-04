@@ -1,13 +1,13 @@
-#include "GameManagerUtilities.h"
+#include "GameUtilities.h"
 #include <ctime>
 #include "MyBoardData.h"
 #include <iostream>
-#include "DLLManager.h"
+#include "AlgorithmLoader.h"
 #include "CompetitionManager.h"
 
 using namespace std;
-using namespace GameManagerUtilities;
 using namespace GameUtilities;
+using namespace Utilities;
 
 
 string removeSuffix(const string& filename) 
@@ -43,7 +43,7 @@ void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles,
 int main(int argc, char** argv)
 {
 	vector<vector3d> boards;
-	DLLManager dllMngr;
+	AlgorithmLoader dllMngr;
 	string dirPath;
 	int numThreads = CompetitionManager::DEFAULT_NUM_THREADS;
 	if (processInputArguments(argc, argv, dirPath, numThreads) < 0)
@@ -91,8 +91,8 @@ int main(int argc, char** argv)
 
 
 	/*string dirPath, board[ROW_SIZE], dllPathA, dllPathB;
-	DLLManager dllMngr;
-	PlayerAttributes playerAttributesArr[2];
+	AlgorithmLoader dllMngr;
+	PlayerAttributes _playerAttributes[2];
 	IBattleshipGameAlgo *A, *B;
 
 	// allocate individual boards
@@ -105,8 +105,8 @@ int main(int argc, char** argv)
 	}
 	
 	// initialize players and player attributes
-	if (!initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, dllPathA, playerAttributesArr, dllMngr) ||
-		!initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, dllPathB, playerAttributesArr, dllMngr))
+	if (!initPlayer(A, 0, const_cast<const char **>(boardA), dirPath, dllPathA, _playerAttributes, dllMngr) ||
+		!initPlayer(B, 1, const_cast<const char **>(boardB), dirPath, dllPathB, _playerAttributes, dllMngr))
 	{
 		return EXIT_FAILURE;
 	} 
@@ -116,4 +116,4 @@ int main(int argc, char** argv)
 	deleteBoard(boardB, ROW_SIZE);
 
 	// Let the game begin!!!
-	return playTheGame(A, B, playerAttributesArr, board);*/
+	return playTheGame(A, B, _playerAttributes, board);*/
