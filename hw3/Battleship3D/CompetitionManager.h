@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include <vector>
-#include "GameUtilities.h"
+#include "GameManagerUtilities.h"
 #include <thread>
 #include "SafeQueue.h"
-#include "GameRunner.h"
+#include "GameManager.h"
 #include "GameResultsTable.h"
 #include "Game.h"
 #include <iostream>

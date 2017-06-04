@@ -98,7 +98,7 @@ void SmartPlayer::reLabelTheBoard()
 			for (auto depth = 0; depth < mDepth; ++depth)
 			{
 				Coordinate cord(row, col, depth);
-				if (mBoard.charAt(cord) != Utilities::eShipChar::WATER)
+				if (mBoard.charAt(cord) != GameUtilities::eShipChar::WATER)
 				{
 					mBoard.setChar(cord, SHIP);
 					mMyCoords.insert(cord);
@@ -322,7 +322,7 @@ void SmartPlayer::outlineSunkenEnemyShips(int row, int col, int depth)
 
 void SmartPlayer::notifyOnAttackResult(int player, Coordinate move, AttackResult result)
 {
-	if (!Utilities::isLegalMove(move, mRows, mCols, mDepth)) // ignore invalid moves
+	if (!GameUtilities::isLegalMove(move, mRows, mCols, mDepth)) // ignore invalid moves
 	{
 		return;
 	}

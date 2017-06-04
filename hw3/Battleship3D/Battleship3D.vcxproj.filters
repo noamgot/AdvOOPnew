@@ -45,16 +45,16 @@
     <ClCompile Include="CompetitionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameRunner.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utilities.cpp">
+    <ClCompile Include="GameManagerUtilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameUtilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AlgorithmLoader.cpp">
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DLLManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,16 +89,16 @@
     <ClInclude Include="CompetitionManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameRunner.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utilities.h">
+    <ClInclude Include="GameManagerUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AlgorithmLoader.h">
+    <ClInclude Include="GameManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DLLManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

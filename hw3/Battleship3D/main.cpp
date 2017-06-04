@@ -1,13 +1,13 @@
-#include "GameUtilities.h"
+#include "GameManagerUtilities.h"
 #include <ctime>
 #include "MyBoardData.h"
 #include <iostream>
-#include "AlgorithmLoader.h"
+#include "DLLManager.h"
 #include "CompetitionManager.h"
 
 using namespace std;
+using namespace GameManagerUtilities;
 using namespace GameUtilities;
-using namespace Utilities;
 
 
 string removeSuffix(const string& filename) 
@@ -43,7 +43,7 @@ void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles,
 int main(int argc, char** argv)
 {
 	vector<vector3d> boards;
-	AlgorithmLoader dllMngr;
+	DLLManager dllMngr;
 	string dirPath;
 	int numThreads = CompetitionManager::DEFAULT_NUM_THREADS;
 	if (processInputArguments(argc, argv, dirPath, numThreads) < 0)
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
 
 
 	/*string dirPath, board[ROW_SIZE], dllPathA, dllPathB;
-	AlgorithmLoader dllMngr;
+	DLLManager dllMngr;
 	PlayerAttributes _playerAttributes[2];
 	IBattleshipGameAlgo *A, *B;
 

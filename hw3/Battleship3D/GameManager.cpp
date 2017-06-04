@@ -1,7 +1,7 @@
-﻿#include "GameRunner.h"
+﻿#include "GameManager.h"
 
 
-GameRunner::GameRunner(GetAlgoFuncType getAlgoA, GetAlgoFuncType getAlgoB, MyBoardData boardData)
+GameManager::GameManager(GetAlgoFuncType getAlgoA, GetAlgoFuncType getAlgoB, MyBoardData boardData)
 {
 	_playerA = unique_ptr<IBattleshipGameAlgo>(getAlgoA());
 	_playerB = unique_ptr<IBattleshipGameAlgo>(getAlgoB());
@@ -9,7 +9,7 @@ GameRunner::GameRunner(GetAlgoFuncType getAlgoA, GetAlgoFuncType getAlgoB, MyBoa
 }
 
 
-int GameRunner::runGame()
+int GameManager::runGame()
 {
 	MyBoardData boardA(_boardData.rows(), _boardData.cols(), _boardData.depth());
 	MyBoardData boardB(_boardData.rows(), _boardData.cols(), _boardData.depth());
@@ -27,7 +27,7 @@ int GameRunner::runGame()
 		//Skip if current player is out of moves.
 		if (!_playerAttributes[attackerNum].hasMoves)
 		{
-			GameUtilities::changeAttacker(attackerNum, defenderNum);
+			GameManagerUtilities::changeAttacker(attackerNum, defenderNum);
 			continue;
 		}
 
@@ -36,7 +36,7 @@ int GameRunner::runGame()
 		{
 			// Player returned a dumb move or refuses to play like a big cry baby (or maybe it has a bug)
 			// we switch player and continue - even if the move is invalid (i.e we ignore invalid moves)
-			GameUtilities::changeAttacker(attackerNum, defenderNum);
+			GameManagerUtilities::changeAttacker(attackerNum, defenderNum);
 			continue;
 
 		}
@@ -50,7 +50,7 @@ int GameRunner::runGame()
 	return EXIT_SUCCESS;
 }
 
-void GameRunner::initIndividualBoards(MyBoardData& boardA, MyBoardData& boardB) const
+void GameManager::initIndividualBoards(MyBoardData& boardA, MyBoardData& boardB) const
 {
 	for (auto i = 0; i < _boardData.rows(); ++i)
 	{
@@ -84,22 +84,22 @@ void GameRunner::initIndividualBoards(MyBoardData& boardA, MyBoardData& boardB) 
 	
 }
 
-int GameRunner::getAScore() const
+int GameManager::getAScore() const
 {
 	return _playerAttributes[PLAYER_A].score;
 }
 
-int GameRunner::getBScore() const
+int GameManager::getBScore() const
 {
 	return _playerAttributes[PLAYER_B].score;
 }
 
-bool GameRunner::didAWin() const
+bool GameManager::didAWin() const
 {
 	return _playerAttributes[PLAYER_A].won;
 }
 
-bool GameRunner::didBWin() const
+bool GameManager::didBWin() const
 {
 	return _playerAttributes[PLAYER_B].won;
 }

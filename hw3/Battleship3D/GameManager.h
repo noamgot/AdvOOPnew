@@ -1,14 +1,14 @@
 ﻿#pragma once
 #include "CompetitionManager.h"
-#include "GameUtilities.h"
+#include "GameManagerUtilities.h"
 #include "IBattleshipGameAlgo.h"
 #include "MyBoardData.h"
 
-class GameRunner
+class GameManager
 {
 public:
-	GameRunner() = delete;
-	explicit GameRunner(GetAlgoFuncType getAlgoA, GetAlgoFuncType getAlgoB, MyBoardData boardData);
+	GameManager() = delete;
+	explicit GameManager(GetAlgoFuncType getAlgoA, GetAlgoFuncType getAlgoB, MyBoardData boardData);
 	int runGame();
 
 	void initIndividualBoards(MyBoardData& boardA, MyBoardData& boardB) const;
@@ -23,7 +23,7 @@ public:
 private:
 	unique_ptr<IBattleshipGameAlgo> _playerA;
 	unique_ptr<IBattleshipGameAlgo> _playerB;
-	GameUtilities::PlayerAttributes _playerAttributes[2];
+	GameManagerUtilities::PlayerAttributes _playerAttributes[2];
 	MyBoardData _boardData;
 
 

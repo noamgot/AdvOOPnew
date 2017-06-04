@@ -86,7 +86,7 @@ void CompetitionManager::runGames()
 			}*/
 			return; 			
 		}
-		GameRunner gameRunner(_players[game.idA], _players[game.idB], MyBoardData(_boards[game.boardID]));
+		GameManager gameRunner(_players[game.idA], _players[game.idB], MyBoardData(_boards[game.boardID]));
 		gameRunner.runGame();
 		int roundA, roundB;
 		{

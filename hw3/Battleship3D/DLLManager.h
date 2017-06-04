@@ -6,17 +6,17 @@
 
 typedef IBattleshipGameAlgo *(*GetAlgoFuncType)();
 
-class AlgorithmLoader
+class DLLManager
 {
 	//data members
 	std::vector<std::tuple<std::string, HINSTANCE, GetAlgoFuncType>> libs;
 
 public:
-	AlgorithmLoader(){}
-	~AlgorithmLoader();
+	DLLManager(){}
+	~DLLManager();
 	// blocking copy ctor & assignment operator (rule of three)
-	AlgorithmLoader(const AlgorithmLoader& dllMngr) = delete;
-	AlgorithmLoader& operator=(const AlgorithmLoader& dllMngr) = delete;
+	DLLManager(const DLLManager& dllMngr) = delete;
+	DLLManager& operator=(const DLLManager& dllMngr) = delete;
 
 	void loadLibs(const std::vector<std::string> dlls);
 	IBattleshipGameAlgo* loadAlgo(int n);
