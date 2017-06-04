@@ -135,10 +135,10 @@ protected:
 	
 
 public:
-	SmartPlayer(){}
+	SmartPlayer() : mRows(-1), mCols(-1), mDepth(-1), mPlayerNum(-1), mShipsCount(-1) {}
 	~SmartPlayer(){}
-	void setBoard(const BoardData& board); // called once to notify player about his board // called once to notify player on his boardd
-	void notifyOnAttackResult(int player, Coordinate move, AttackResult result); // notify on last move result
-	void setPlayer(int player);
+	void setBoard(const BoardData& board) override; // called once to notify player about his board // called once to notify player on his boardd
+	void notifyOnAttackResult(int player, Coordinate move, AttackResult result) override; // notify on last move result
+	void setPlayer(int player) override;
 	Coordinate attack() override; // ask player for his move
 };
