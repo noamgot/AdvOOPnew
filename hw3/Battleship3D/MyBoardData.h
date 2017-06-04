@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "IBattleshipGameAlgo.h"
 #include <vector>
-#include <memory>
 #include "CompetitionManager.h"
 
 class MyBoardData : public BoardData

@@ -1,5 +1,7 @@
 #include "SmartPlayer.h"
 
+using namespace std;
+
 
 bool SmartPlayer::isNearChar(int row, int col, int depth, eSign s, Direction* dir)
 {

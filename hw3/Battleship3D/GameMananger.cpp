@@ -56,18 +56,18 @@ void GameMananger::initIndividualBoards(MyBoardData& boardA, MyBoardData& boardB
 					if (isupper(c)) // a ship of A
 					{
 						boardA.setChar(coor, c);
-						boardB.setChar(coor, WATER);
+						boardB.setChar(coor, GameUtilities::WATER);
 					}
 					else // a ship of B
 					{
-						boardA.setChar(coor, WATER);
+						boardA.setChar(coor, GameUtilities::WATER);
 						boardB.setChar(coor, c);
 					}
 				}
 				else // a space - update both boards
 				{
-					boardA.setChar(coor, WATER);
-					boardB.setChar(coor, WATER);
+					boardA.setChar(coor, GameUtilities::WATER);
+					boardB.setChar(coor, GameUtilities::WATER);
 				}
 			}
 		}

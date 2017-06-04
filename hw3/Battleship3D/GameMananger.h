@@ -16,8 +16,8 @@ public:
 	PlayerGameResults get_grB() const {	return _grB;}
 
 private:
-	unique_ptr<IBattleshipGameAlgo> _A;
-	unique_ptr<IBattleshipGameAlgo> _B;
+	std::unique_ptr<IBattleshipGameAlgo> _A;
+	std::unique_ptr<IBattleshipGameAlgo> _B;
 	MyBoardData _boardData;
 
 	PlayerGameResults _grA;

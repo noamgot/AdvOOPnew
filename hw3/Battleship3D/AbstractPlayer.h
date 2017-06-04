@@ -4,10 +4,6 @@
 #include "GameUtilities.h"
 #include "MyBoardData.h"
 
-
-using namespace std;
-
-
 class AbstractPlayer : public IBattleshipGameAlgo
 {
 protected:
@@ -16,8 +12,8 @@ protected:
 	int mDepth;
 	int mShipsCount; // number of living ships - starting from DEFAULT_SHIPS_COUNT
 	int mPlayerNum;
-	MyBoardData mBoard; 
-	deque<Coordinate> mMovesQueue;
+	MyBoardData mBoard;
+	std::deque<Coordinate> mMovesQueue;
 
 	// this class should not be instantiated in the game manager - hence the ctor & dtor are protected
 	AbstractPlayer() : mShipsCount(GameUtilities::DEFAULT_SHIPS_COUNT) , mBoard(){}

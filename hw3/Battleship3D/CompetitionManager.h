@@ -7,12 +7,13 @@
 #include "Game.h"
 #include <iostream>
 #include <iomanip>
+#include "Logger.h"
 
 
 template <typename T>
-using vector2D = vector<vector<T>>;
+using vector2D = std::vector<std::vector<T>>;
 template <typename T>
-using vector3D =  vector<vector<vector<T>>>;
+using vector3D = std::vector<std::vector<std::vector<T>>>;
 
 class CompetitionManager
 {
@@ -20,8 +21,9 @@ public:
 
 	static constexpr size_t DEFAULT_NUM_THREADS = 4;
 
-	CompetitionManager(vector<vector3D<char>>& gameBoards, vector<GetAlgoFuncType>& players, vector<string>& playersNames, size_t numThreads);
-	void runTournament();
+	CompetitionManager(std::vector<vector3D<char>>& gameBoards, std::vector<GetAlgoFuncType>& players,
+		std::vector<std::string>& playersNames, std::shared_ptr<Logger> pLogger, size_t numThreads);
+	void runCompetition();
 
 private:
 	
@@ -30,21 +32,22 @@ private:
 	size_t _numBoards;
 	size_t _numPlayers;
 	size_t _numRounds;
-	vector<thread> _threadsVector;
+	std::vector<std::thread> _threadsVector;
 	SafeQueue<Game> _gamesQueue;	
 	GameResultsTable _resultsTable;
-	vector<string> _playersNames;
-	vector<vector3D<char>> _boards;
-	vector<GetAlgoFuncType> _players;
-	vector<int> _roundsCnt;
-	mutex _mutex /*, _coutMutex*/ ;
+	std::vector<std::string> _playersNames;
+	std::vector<vector3D<char>> _boards;
+	std::vector<GetAlgoFuncType> _players;
+	std::vector<int> _roundsCnt;
+	std::mutex _mutex /*, _coutMutex*/ ;
+	std::shared_ptr<Logger> _pLogger;
 
 
-	void printCurrentResults(vector<PlayerGameResults>& cumulativeResults)/*const*/;
+	void printCurrentResults(std::vector<PlayerGameResults>& cumulativeResults)/*const*/;
 	void reporterMethod();
-	void runGames(); // threads function
+	void runGames(int id); // threads function
 
-	void updateCumulativeResults(vector<PlayerGameResults>& cumulativeResults, int round);
+	void updateCumulativeResults(std::vector<PlayerGameResults>& cumulativeResults, int round);
 
 	size_t calcNumGames() const	{ return 2 * _numBoards * binomialCoeff(_numPlayers, 2); }
 
@@ -55,8 +58,12 @@ private:
 	}
 
 	template<typename T>
-	static void printElement(T t, const int& width)	{ cout << left << setw(width) << setfill(' ') << t;	}
-	static bool stringComp(string const& lhs, string const& rhs) { return lhs.size() < rhs.size();}
-	static size_t maxStringLength(vector<string> const &lines) { return max_element(lines.begin(), lines.end(), stringComp)->size();	}
+	static void printElement(T t, const size_t width)
+	{
+		std::cout << std::left << std::setw(width) << std::setfill(' ') << t;
+	}
+	void printTableEntry(size_t generalWidth, size_t playerNameWidth, int index, PlayerGameResults& gr);
+	static bool stringComp(std::string const& lhs, std::string const& rhs) { return lhs.size() < rhs.size();}
+	static size_t maxStringLength(std::vector<std::string> const &lines) { return max_element(lines.begin(), lines.end(), stringComp)->size();	}
 	
 };

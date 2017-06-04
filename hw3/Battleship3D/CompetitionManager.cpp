@@ -3,15 +3,14 @@
 #include <iostream>
 #include <iomanip>
 
+
+using namespace std;
 // todo - delete all commented debug prints
 
 void CompetitionManager::printCurrentResults(vector<PlayerGameResults>& cumulativeResults) //const
 {
 	static const auto generalWidth = 8;
 	static const auto playerNameWidth = maxStringLength(_playersNames) + 6;
-
-/*	lock_guard<mutex> mlock(_coutMutex);
-	cout << "################################## REPORTING #########################################" << endl;*/
 	
 	printElement("#", generalWidth);
 	printElement("Team Name", playerNameWidth);
@@ -23,14 +22,15 @@ void CompetitionManager::printCurrentResults(vector<PlayerGameResults>& cumulati
 	auto cnt = 1;
 	for (auto& gr : cumulativeResults)
 	{
-		printElement(to_string(cnt++) + ".", generalWidth);
+		printTableEntry(generalWidth, playerNameWidth, cnt++, gr);
+		/*printElement(to_string(cnt++) + ".", generalWidth);
 		printElement(_playersNames[gr.ID], playerNameWidth);
 		printElement(gr.wins, generalWidth);
 		printElement(gr.losses, generalWidth);
 		cout << left << setw(generalWidth) << setfill(' ') << fixed << setprecision(2) << gr.percentage;
 		printElement(gr.ptsFor, generalWidth);
 		printElement(gr.ptsAgainst, generalWidth);
-		cout << endl;
+		cout << endl;*/
 	}
 	cout << endl;
 }
@@ -41,6 +41,7 @@ void CompetitionManager::reporterMethod()
 		std::lock_guard<std::mutex> mlock(_coutMutex);
 		std::cout << "HELLO from reporter method!!!" << std::endl;
 	}*/
+	_pLogger->writeToLog("Reporter thread has started running");
 	vector<PlayerGameResults> cumulativeResults(_numPlayers);
 	vector<PlayerGameResults> sortedCumulativeResults(_numPlayers);
 	for(auto i = 0; i < _numPlayers; i++)
@@ -54,8 +55,9 @@ void CompetitionManager::reporterMethod()
 			std::lock_guard<std::mutex> mlock(_coutMutex);
 			std::cout << "reporter waiting for round " << i+1 << std::endl;
 		}*/
+		_pLogger->writeToLog("Reporter is waiting for round " + to_string(i+1) + " results");
 		updateCumulativeResults(cumulativeResults, i); // update round i results
-		
+		_pLogger->writeToLog("Reporter got round " + to_string(i + 1) + " results");
 		// copy and sort cumulative results in descending order (by percentage)
 		sortedCumulativeResults = cumulativeResults;
 		sort(sortedCumulativeResults.begin(), sortedCumulativeResults.end(), greater<PlayerGameResults>());
@@ -63,12 +65,13 @@ void CompetitionManager::reporterMethod()
 	}
 }
 
-void CompetitionManager::runGames()
+void CompetitionManager::runGames(int id)
 {
 /*	{
 		std::lock_guard<std::mutex> mlock(_coutMutex);
 		std::cout << "thread " << std::this_thread::get_id() << " is running!" << std::endl;
 	}*/
+	_pLogger->writeToLog("Worker thread no. " + to_string(id) + " has started running");
 	while (true)
 	{
 		auto game = _gamesQueue.pop();
@@ -77,12 +80,14 @@ void CompetitionManager::runGames()
 			std::cout << "thread " << std::this_thread::get_id() << " got the following game:" << std::endl;
 			std::cout << "board: " << game.boardID << ", A: " << game.idA  << ", B: " << game.idB << std::endl;
 		}*/
+		_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got the following game: boardID=" + to_string(game.boardID) + ", A=" + to_string(game.idA) + ", B: " + to_string(game.idB));
 		if(game.boardID == -1) // "poisoned" game
 		{
 /*			{
 				std::lock_guard<std::mutex> mlock(_coutMutex);
 				std::cout << "thread " << std::this_thread::get_id() << " got a poisoned game! exiting..." << std::endl;				
 			}*/
+			_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got a poisoned game. Returning...");
 			return; 			
 		}
 		//GameMananger currentGameMngr(game);
@@ -126,12 +131,25 @@ size_t CompetitionManager::factorial(size_t n)
 	return res;
 }
 
-CompetitionManager::CompetitionManager(vector<vector3D<char>>& boards, vector<GetAlgoFuncType>& players,
-											vector<string>& playersNames, size_t numThreads)
-	:_numThreads(numThreads), _numBoards(boards.size()), _numPlayers(players.size()),
-	_numRounds(2 * _numBoards * (_numPlayers - 1)), _resultsTable(_numPlayers, _numRounds), _roundsCnt(_numPlayers,0)
+void CompetitionManager::printTableEntry(size_t generalWidth, size_t playerNameWidth, int index, PlayerGameResults& gr)
 {
-	swap(_boards, boards);
+	printElement(to_string(index) + ".", generalWidth);
+	printElement(_playersNames[gr.ID], playerNameWidth);
+	printElement(gr.wins, generalWidth);
+	printElement(gr.losses, generalWidth);
+	cout << left << setw(generalWidth) << setfill(' ') << fixed << setprecision(2) << gr.percentage;
+	printElement(gr.ptsFor, generalWidth);
+	printElement(gr.ptsAgainst, generalWidth);
+	cout << endl;
+}
+
+CompetitionManager::CompetitionManager(std::vector<vector3D<char>>& gameBoards, std::vector<GetAlgoFuncType>& players, 
+						std::vector<std::string>& playersNames, std::shared_ptr<Logger> pLogger, size_t numThreads)
+	: _numThreads(numThreads), _numBoards(gameBoards.size()), _numPlayers(players.size()), 
+	_numRounds(2 * _numBoards * (_numPlayers - 1)),	_resultsTable(_numPlayers, _numRounds), 
+	_roundsCnt(_numPlayers,0), _pLogger(pLogger)
+{
+	swap(_boards, gameBoards);
 	swap(_players, players);
 	swap(_playersNames, playersNames);
 	auto numGames = calcNumGames();
@@ -142,15 +160,17 @@ CompetitionManager::CompetitionManager(vector<vector3D<char>>& boards, vector<Ge
 	_threadsVector.resize(_numThreads);
 }
 
-void CompetitionManager::runTournament()
+
+void CompetitionManager::runCompetition()
 {
+	_pLogger->writeToLog("Initializing competition threads");
 	thread reporter(&CompetitionManager::reporterMethod, this);
-	for (auto& t : _threadsVector)
+	for (auto i = 0; i < _numThreads; i++)
 	{
-		t = thread(&CompetitionManager::runGames, this);
+		_threadsVector[i] = thread(&CompetitionManager::runGames, this, i+1);
 	}
 	vector<Game> games;
-	// insert games to queue'
+	
 	for(auto i = 0; i < _numBoards; i++)
 	{
 		for(auto j = 0; j < _numPlayers; j++)
@@ -166,6 +186,8 @@ void CompetitionManager::runTournament()
 	}
 	srand(unsigned(time(nullptr)));
 	random_shuffle(games.begin(), games.end());
+	// insert games to queue'
+	_pLogger->writeToLog("Inserting games to game queue");
 	for(auto g : games)
 	{
 		_gamesQueue.push(g);
@@ -176,11 +198,12 @@ void CompetitionManager::runTournament()
 		_gamesQueue.push(Game());
 	}
 	
-	
+	_pLogger->writeToLog("Waiting for games to be played...");
 	for (auto& t : _threadsVector)
 	{
 		t.join();
 	}
+	_pLogger->writeToLog("All games have been played.");
 	// notify the reporter thread in case it is still waiting
 	_resultsTable.notifyEndGame();	
 	reporter.join();

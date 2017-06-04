@@ -12,6 +12,9 @@
 #include <Windows.h>
 #include "CompetitionManager.h"
 
+using namespace std;
+using namespace GameUtilities;
+
 namespace GameManagerUtilities
 {
 	int initGameBoardsAndPaths(int argc, char **argv, string(&board)[ROW_SIZE], char **boardA, char* *boardB,
@@ -554,9 +557,7 @@ namespace GameManagerUtilities
 	{
 		for (string boardPath : boardPaths)
 		{
-			int rows = 0;
-			int cols = 0;
-			int depth = 0;
+			auto rows = 0, cols = 0, depth = 0;
 			string line;
 			ifstream boardFile(boardPath);
 			if (!boardFile.is_open())
@@ -588,19 +589,19 @@ namespace GameManagerUtilities
 			}
 			getline(boardFile, line);
 
-			for (int k = 0; k < depth ; k++)
+			for (auto k = 0; k < depth ; k++)
 			{
-				for (int i = 0; i < rows; i++)
+				for (auto i = 0; i < rows; i++)
 				{
-					for (int j = 0; j < cols; j++)
+					for (auto j = 0; j < cols; j++)
 					{
 						if (boardFile.eof() || line.empty() || j >= line.size())
 						{
-							board[i][j][k] = ' ';
+							board[i][j][k] = WATER;
 						}
 						else
 						{
-							board[i][j][k] = charSet.find(line[j]) == charSet.end() ? ' ' : line[j];
+							board[i][j][k] = charSet.find(line[j]) == charSet.end() ? WATER : line[j];
 						}
 					}
 					if (!boardFile.eof() && !line.empty() && i != rows-1)
@@ -665,9 +666,9 @@ namespace GameManagerUtilities
 
 	int GameManagerUtilities::checkShape3D(vector3d& board, const int size, int k, int i, int j)
 	{
-		int rows = board.size();
-		int cols = board[0].size();
-		int depth = board[0][0].size();
+		auto rows = board.size();
+		auto cols = board[0].size();
+		auto depth = board[0][0].size();
 		auto verL = 1, horL = 1, depL = 1;
 		// run horizontally, check above, below, inwards and outwards
 		while (j + horL < cols && board[i][j][k] == board[i][j + horL][k])
@@ -714,11 +715,12 @@ namespace GameManagerUtilities
 		return 1;
 	}
 
+	//todo - add prints to logger
 	int GameManagerUtilities::checkBoard3D(vector3d& board)
 	{
-		int rows = board.size();
-		int cols = board[0].size();
-		int depth = board[0][0].size();
+		auto rows = board.size();
+		auto cols = board[0].size();
+		auto depth = board[0][0].size();
 		auto shipCountA = 0, shipCountB = 0, isShipA = 0, isShipB = 0, adjCheck = 0;
 		map<char, int> shipsA = { { BOAT,1 },{ MISSLE_SHIP,2 },{ SUBMARINE,3 },{ DESTROYER,4 } };
 		map<char, int> shipsB = { { char(tolower(BOAT)),1 },{ char(tolower(MISSLE_SHIP)),2 },
@@ -755,11 +757,8 @@ namespace GameManagerUtilities
 									}
 									return -1;
 								}
-								else
-								{
-									shipCountA += isShipA;
-									shipCountB += isShipB;
-								}
+								shipCountA += isShipA;
+								shipCountB += isShipB;
 							}
 							// Check if any adjacent ships exist
 							if (k != 0 && board[i][j][k - 1] != board[i][j][k] && board[i][j][k - 1] != ' ' ||
