@@ -36,9 +36,6 @@
     <ClCompile Include="GameMananger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SafeQueue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameResultsTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

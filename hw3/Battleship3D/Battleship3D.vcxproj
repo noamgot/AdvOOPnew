@@ -158,7 +158,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyBoardData.cpp" />
     <ClCompile Include="PlayerGameResults.cpp" />
-    <ClCompile Include="SafeQueue.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="SmartPlayer.cpp" />
   </ItemGroup>
