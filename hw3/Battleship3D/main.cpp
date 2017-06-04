@@ -72,15 +72,16 @@ int main(int argc, char** argv)
 		cout << "Missing algorithm (dll) files looking in path: " << dirPath << " (needs at least two)"  << endl;
 		return -1;
 	}*/
-	initBoards3D(boardFiles, boards);
-	dllMngr.loadLibs(dllFiles);
+	/*initBoards3D(boardFiles, boards);
+	dllMngr.loadLibs(dllFiles); */
 
 
-	vector<vector3D<char>> gameBoards(2);
+		vector<vector3D<char>> gameBoards(2);
 	vector<GetAlgoFuncType> players(playerNames.size());
 	//playerNames = { "Jordy-Jordalish", "Ben-El Tavorush", "Stat-Boy (Oy-oy-oy)" };
-	CompetitionManager tournamentMngr(gameBoards, players, playerNames, numThreads);
-	tournamentMngr.runTournament();
+	CompetitionManager tournamentMngr(gameBoards, players, playerNames, pLogger, numThreads);
+	tournamentMngr.runCompetition();
+	pLogger->writeToLog("", false, Logger::eLogType::LOG_END);
 	return EXIT_SUCCESS;
 }
 	
