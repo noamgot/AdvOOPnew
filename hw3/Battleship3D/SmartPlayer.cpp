@@ -131,6 +131,7 @@ void SmartPlayer::setBoard(const BoardData &board)
 			}
 		}
 	}
+	// TODO - Add ship counting
 }
 
 bool SmartPlayer::init()
