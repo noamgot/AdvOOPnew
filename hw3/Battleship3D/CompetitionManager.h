@@ -1,16 +1,16 @@
 ﻿#pragma once
 #include <vector>
-#include "GameUtilities.h"
 #include <thread>
+#include <iostream>
+#include <iomanip>
+#include "Utilities.h"
 #include "SafeQueue.h"
 #include "GameRunner.h"
 #include "GameResultsTable.h"
 #include "Game.h"
-#include <iostream>
-#include <iomanip>
 #include "Logger.h"
-
-
+#include "AlgorithmLoader.h"
+#include "MyBoardData.h"
 
 
 

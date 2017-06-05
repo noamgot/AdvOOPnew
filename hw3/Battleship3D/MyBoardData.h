@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "IBattleshipGameAlgo.h"
 #include <vector>
 #include "Ship.h"
 #include "CommonUtilities.h"

@@ -1,5 +1,4 @@
 ﻿#include "CompetitionManager.h"
-#include "Game.h"
 #include <iostream>
 #include <iomanip>
 

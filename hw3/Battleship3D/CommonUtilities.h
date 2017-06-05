@@ -3,7 +3,7 @@
 #include "Ship.h"
 #include <vector>
 
-namespace CommonUtilities
+namespace Utilities
 {
 	template <typename T>
 	using vector2D = std::vector<std::vector<T>>;
