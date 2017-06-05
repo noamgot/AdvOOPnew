@@ -1,8 +1,7 @@
 ﻿#pragma once
 #include "IBattleshipGameAlgo.h"
-#include <vector>
-#include <tuple>
-#include <windows.h>
+#include "CommonUtilities.h"
+
 
 typedef IBattleshipGameAlgo *(*GetAlgoFuncType)();
 

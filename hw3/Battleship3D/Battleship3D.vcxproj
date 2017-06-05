@@ -146,14 +146,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AbstractPlayer.cpp" />
     <ClCompile Include="CompetitionManager.cpp" />
     <ClCompile Include="AlgorithmLoader.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="GameRunner.cpp" />
     <ClCompile Include="GameResultsTable.cpp" />
-    <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="CommonUtilities.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyBoardData.cpp" />
@@ -162,14 +161,13 @@
     <ClCompile Include="SmartPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AbstractPlayer.h" />
     <ClInclude Include="CompetitionManager.h" />
     <ClInclude Include="AlgorithmLoader.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameUtilities.h" />
     <ClInclude Include="GameRunner.h" />
     <ClInclude Include="GameResultsTable.h" />
-    <ClInclude Include="Utilities.h" />
+    <ClInclude Include="CommonUtilities.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="MyBoardData.h" />

@@ -3,8 +3,7 @@
 // Logger code based on: https://github.com/SFML/SFML/wiki/Source:-Simple-File-Logger-(by-mateandmetal)
 
 #include <fstream>
-#include <iostream>
-#include <mutex>
+#include "CommonUtilities.h"
 
 
 class Logger {

@@ -1,16 +1,12 @@
 ﻿#pragma once
-#include <bitset>
-#include "Utilities.h"
+#include "CommonUtilities.h"
+#include "Game.h"
+#include "GameResultsTable.h"
+#include "PlayerGameResults.h"
 #include "AlgorithmLoader.h"
-#include "MyBoardData.h"
 
 using namespace std;
-using namespace Utilities;
-
-
-
-// todo - unite with vector3D...
-typedef std::vector<std::vector<std::vector<char>>> vector3d;
+using namespace CommonUtilities;
 
 namespace GameUtilities
 {

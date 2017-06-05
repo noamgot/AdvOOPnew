@@ -13,7 +13,6 @@
 #include "CompetitionManager.h"
 
 using namespace std;
-using namespace Utilities;
 
 namespace GameUtilities
 {

@@ -1,13 +1,9 @@
 ﻿#pragma once
-#include "PlayerGameResults.h"
 #include "IBattleshipGameAlgo.h"
-#include "MyBoardData.h"
-#include "Logger.h"
-#include "AlgorithmLoader.h"
 #include "GameUtilities.h"
 
+
 using namespace std;
-using namespace Utilities;
 
 #define PLAYER_A 0
 #define PLAYER_B 1
@@ -64,5 +60,5 @@ private:
 
 
 	/* initializes the given PlayerAttribute struct, according to the given board*/
-	void initPlayersAttributes(PlayerAttributes& playerAttributes, const MyBoardData& board);
+	void initPlayersAttributes(PlayerAttributes& playerAttributes, const MyBoardData& board, const int player_id);
 };

@@ -1,14 +1,14 @@
 
-#include "Utilities.h"
+#include "CommonUtilities.h"
 #include <iostream>
 #include <filesystem>
 #include <Windows.h>
 
 using namespace std;
 
-namespace Utilities
+namespace CommonUtilities
 {
-	eShipType Utilities::charToShipType(char c)
+	eShipType CommonUtilities::charToShipType(char c)
 	{
 		switch (toupper(c))
 		{
@@ -26,7 +26,7 @@ namespace Utilities
 	}
 
 
-	char** Utilities::allocateBoard(int rows, int cols)
+	char** CommonUtilities::allocateBoard(int rows, int cols)
 	{
 		auto board = new char *[rows];
 		for (auto i = 0; i < rows; ++i)
@@ -36,7 +36,7 @@ namespace Utilities
 		return board;
 	}
 
-	void Utilities::deleteBoard(char** board, int rows)
+	void CommonUtilities::deleteBoard(char** board, int rows)
 	{
 		for (auto i = 0; i < rows; ++i)
 		{
@@ -46,7 +46,7 @@ namespace Utilities
 	}
 
 
-	void Utilities::filterAndSortFileList(const vector<string>& fileList, vector<string>& filteredFileList, const string suffix)
+	void CommonUtilities::filterAndSortFileList(const vector<string>& fileList, vector<string>& filteredFileList, const string suffix)
 	{
 		// copy all relevant files to the filteredFileList vector
 		for (auto i = 0; i < fileList.size(); i++)
@@ -61,7 +61,7 @@ namespace Utilities
 		sort(filteredFileList.begin(), filteredFileList.end());
 	}
 
-	int Utilities::findFileBySuffix(string& filePath, const string dirPath, const string suffix,
+	int CommonUtilities::findFileBySuffix(string& filePath, const string dirPath, const string suffix,
 	                                    bool& fileNotFound, int playerNum, bool allowSingleFile)
 	{
 		// for debug; should not get here
@@ -101,7 +101,7 @@ namespace Utilities
 	}
 
 
-	bool Utilities::isValidPath(const string dirPath)
+	bool CommonUtilities::isValidPath(const string dirPath)
 	{
 		auto dwAttrib = GetFileAttributesA(dirPath.c_str());
 		return dwAttrib != INVALID_FILE_ATTRIBUTES &&
@@ -109,7 +109,7 @@ namespace Utilities
 	}
 
 
-	int Utilities::getDirectoryFileList(const string dirPath, vector<string>& fileListVector)
+	int CommonUtilities::getDirectoryFileList(const string dirPath, vector<string>& fileListVector)
 	{
 		fileListVector.clear();
 		auto sysDIR("2>NUL dir /a-d /b \"" + dirPath + "\"");
@@ -131,7 +131,7 @@ namespace Utilities
 		return 0;
 	}
 
-	bool Utilities::endsWith(const string str, const string suffix)
+	bool CommonUtilities::endsWith(const string str, const string suffix)
 	{
 		auto pos = str.rfind(suffix);
 		return pos != string::npos && pos == str.length() - suffix.length();

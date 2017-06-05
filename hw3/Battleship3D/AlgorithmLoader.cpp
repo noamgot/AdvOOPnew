@@ -1,6 +1,4 @@
 ﻿#include "AlgorithmLoader.h"
-#include <string>
-#include <iostream>
 
 AlgorithmLoader::~AlgorithmLoader()
 {
