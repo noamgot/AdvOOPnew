@@ -1,21 +1,17 @@
 ﻿#pragma once
 #include <vector>
-#include "GameUtilities.h"
 #include <thread>
+#include <iostream>
+#include <iomanip>
+#include "Utilities.h"
 #include "SafeQueue.h"
 #include "GameRunner.h"
 #include "GameResultsTable.h"
 #include "Game.h"
-#include <iostream>
-#include <iomanip>
 #include "Logger.h"
+#include "AlgorithmLoader.h"
+#include "MyBoardData.h"
 
-
-
-template <typename T>
-using vector2D = std::vector<std::vector<T>>;
-template <typename T>
-using vector3D = std::vector<std::vector<std::vector<T>>>;
 
 class CompetitionManager
 {

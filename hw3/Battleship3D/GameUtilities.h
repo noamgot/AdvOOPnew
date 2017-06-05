@@ -31,25 +31,14 @@ namespace GameUtilities
 	
 
 	/* prints the final results of the game */
-	void printGameResults(PlayerAttributes playerAttributesArr[]);
-
-	/* Initializes the battle boards according to the .sboard file in boardPath.
-	* results in a rows*cols board inside passed boards arguments - including
-	* individual boards for both players									  */
-	int initGameBoards(const std::string boardPath, std::string board[], char** boardA, char** boardB);
+	//void printGameResults(PlayerAttributes playerAttributesArr[]);
 
 /*	/* player initialization #1#
 	bool initPlayer(IBattleshipGameAlgo*& pPlayer, int playerNum, const char** board, const string dirPath, const string dllPath, 
 					PlayerAttributes playerAttributesArr[], AlgorithmLoader& dllMngr);*/
 
 	/* the main function of the game itself! */
-	int playTheGame(IBattleshipGameAlgo* A, IBattleshipGameAlgo* B, PlayerAttributes playerAttributesArr[], const std::string* board);
-
-	/* sets 2 individual boards - boardA and boardB - from board*/
-	void initIndividualBoards(const MyBoardData& board, MyBoardData& boardA, MyBoardData& boardB);
-
-	/* Checks if the ship's shape starting at board[i][j] is valid */
-	int checkShape(const MyBoardData& board, const int size, int i, int j);
+	//int playTheGame(IBattleshipGameAlgo* A, IBattleshipGameAlgo* B, PlayerAttributes playerAttributesArr[], const std::string* board);
 
 	/* prints the various error encountered on the board (if any)*/
 	int printBoardErrors(std::bitset<4>& errShipsA, std::bitset<4>& errShipsB, int shipCountA, int shipCountB, int adjCheck);
@@ -58,18 +47,14 @@ namespace GameUtilities
 	void printWrongSizeOrShapeError(std::bitset<4>& errShips, int& ret, const std::string player);
 	void printBadShipsCountErrror(int shipCount, int& ret, const std::string player);
 
-	/* validates the given board*/
-	int checkBoardValidity(std::string* board);
-
 	/* changes the given dirPath (relative or absolute) to its full path representation */
 	int convertToFullPath(std::string& dirPath);
 
 	/* returns an absolute path to the current working directory */
 	std::string getDirPath();
 
-
 	/* helper function - initializes the ship list in the given PlayerAttribute struct, according to the given board*/
-	void initPlayerShipsList(const char** board, int numOfRows, int numOfCols, PlayerAttributes& playerAttributes);
+	//void initPlayerShipsList(const char** board, int numOfRows, int numOfCols, PlayerAttributes& playerAttributes);
 
 	/* a helper function to the initPlayerShipsList method */
 	Ship handleShipDiscovery(int iOrig, int jOrig, int numOfRows, int numOfCols, const char** board);

@@ -90,7 +90,7 @@ int main(int argc, char** argv)
 	if (error)
 	{
 		return -1;
-	}*/
+	}
 	initBoards3D(boardFiles, boards);
 	dllMngr.loadLibs(dllFiles);
 

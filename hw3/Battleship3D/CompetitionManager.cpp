@@ -1,5 +1,4 @@
 ﻿#include "CompetitionManager.h"
-#include "Game.h"
 #include <iostream>
 #include <iomanip>
 
@@ -89,7 +88,8 @@ void CompetitionManager::runGames(int id)
 			return; 			
 		}
 		// Start the game
-		GameRunner gameRunner(_players[game._idA], _players[game._idB], MyBoardData(_boards[game._boardID]), _pLogger);
+		// TODO: take care of MyBoardData argument
+		GameRunner gameRunner(_players[game._idA], _players[game._idB], MyBoardData(/*_boards[game._boardID]*/), _pLogger);
 		gameRunner.runGame();
 		int roundA, roundB;
 		{

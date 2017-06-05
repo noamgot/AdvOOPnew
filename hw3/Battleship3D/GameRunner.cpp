@@ -207,10 +207,10 @@ bool GameRunner::registerHit(PlayerAttributes& playerAttributes, Coordinate coor
 	return validAttack;
 }
 
-void GameUtilities::initPlayersAttributes(PlayerAttributes& playerAttributes, const MyBoardData& board)
+/*void GameRunner::initPlayersAttributes(PlayerAttributes& playerAttributes, const MyBoardData& board)
 {
 	playerAttributes.hasMoves = true;
 	playerAttributes.score = 0;
 	playerAttributes.shipsCount = DEFAULT_SHIPS_COUNT;
-	initPlayerShipsList(playerBoard, ROW_SIZE, COL_SIZE, playerAttributes);
-}
+	GameUtilities::initPlayerShipsList(playerBoard, ROW_SIZE, COL_SIZE, playerAttributes);
+}*/

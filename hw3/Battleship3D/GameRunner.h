@@ -1,9 +1,13 @@
 ﻿#pragma once
-#include "CompetitionManager.h"
-#include "GameUtilities.h"
+#include "PlayerGameResults.h"
 #include "IBattleshipGameAlgo.h"
 #include "MyBoardData.h"
 #include "Logger.h"
+#include "AlgorithmLoader.h"
+#include "GameUtilities.h"
+
+using namespace std;
+using namespace Utilities;
 
 #define PLAYER_A 0
 #define PLAYER_B 1
@@ -13,7 +17,7 @@ typedef struct _PlayerAttributes
 	bool hasMoves;
 	int score;
 	int shipsCount;
-	vector<Ship> shipList;
+	std::vector<Ship> shipList;
 	bool won;
 }PlayerAttributes;
 
