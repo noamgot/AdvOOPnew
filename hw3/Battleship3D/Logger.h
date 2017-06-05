@@ -29,7 +29,7 @@ public:
 	Logger& operator=(const Logger& other) = delete;
 
 	void writeToLog(const std::string msg, bool writeToConsole = false, const eLogType logType = eLogType::LOG_INFO);
-
+	//todo move to private
 	// Overload << operator using log type
 	friend Logger &operator << (Logger &logger, const eLogType logType);
 	friend Logger &operator << (Logger &logger, const std::string text) 

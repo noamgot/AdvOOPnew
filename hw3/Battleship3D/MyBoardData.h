@@ -16,6 +16,5 @@ public:
 	std::vector<Ship> getShipList(const int& player_id) { return _ships[player_id]; }
 private:
 	vector3D<char>_board; // 3D board!
-	std::vector<std::vector<Ship>> _ships;
-	
+	vector2D<Ship> _ships;
 };

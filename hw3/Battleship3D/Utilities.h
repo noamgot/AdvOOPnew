@@ -10,8 +10,6 @@ using vector3D = std::vector<std::vector<std::vector<T>>>;
 
 namespace Utilities
 {
-
-	const int DEFAULT_SHIPS_COUNT = 5;
 	const int BUF_SIZE = 1024;
 
 	enum eShipChar : char
