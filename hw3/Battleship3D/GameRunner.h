@@ -1,7 +1,8 @@
 ﻿#pragma once
 #include "IBattleshipGameAlgo.h"
 #include "GameUtilities.h"
-
+#include "MyBoardData.h"
+#include "Logger.h"
 
 using namespace std;
 

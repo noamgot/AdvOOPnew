@@ -9,10 +9,7 @@
 #include <bitset>
 #include <mutex>
 #include "Ship.h"
-#include "MyBoardData.h"
-#include "Logger.h"
 #include "SafeQueue.h"
-#include "AlgorithmLoader.h"
 
 namespace CommonUtilities
 {

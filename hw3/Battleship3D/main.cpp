@@ -2,7 +2,6 @@
 #include <string>
 #include "MyBoardData.h"
 #include <iostream>
-
 #include "CompetitionManager.h"
 
 

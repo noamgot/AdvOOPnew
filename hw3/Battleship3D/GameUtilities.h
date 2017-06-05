@@ -4,6 +4,7 @@
 #include "GameResultsTable.h"
 #include "PlayerGameResults.h"
 #include "AlgorithmLoader.h"
+#include "MyBoardData.h"
 
 using namespace std;
 using namespace CommonUtilities;
@@ -41,7 +42,7 @@ namespace GameUtilities
 
 	/* helper functions for printBoardErrors */
 	void printWrongSizeOrShapeError(std::bitset<4>& errShips, int& ret, const std::string player);
-	void printBadShipsCountErrror(int shipCount, int& ret, const std::string player);
+	void printBadShipsCountError(int shipCountA, int shipCountB);
 
 	/* changes the given dirPath (relative or absolute) to its full path representation */
 	int convertToFullPath(std::string& dirPath);
@@ -55,7 +56,7 @@ namespace GameUtilities
 	/* a helper function to the initPlayerShipsList method */
 	Ship handleShipDiscovery(int iOrig, int jOrig, int numOfRows, int numOfCols, const char** board);
 
-	/* given a vector of paths to sboard files, loads only the valid ones into vector<vector3d> boards */
+	/* given a vector of paths to sboard files, loads only the valid ones into vector<MyBoardData> boards */
 	void initBoards3D(const std::vector<std::string>& boardPaths, std::vector<MyBoardData>& boards);
 
 	/* parses the dimension line (first line in .sboard file) into rows, columns and depth */

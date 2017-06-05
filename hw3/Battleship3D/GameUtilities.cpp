@@ -79,8 +79,7 @@ namespace GameUtilities
 		// Print possible errors
 		printWrongSizeOrShapeError(errShipsA, ret, "A");
 		printWrongSizeOrShapeError(errShipsB, ret, "B");
-		printBadShipsCountErrror(shipCountA, ret, "A");
-		printBadShipsCountErrror(shipCountB, ret, "B");
+		printBadShipsCountError(shipCountA, shipCountB);
 		if (adjCheck)
 		{
 			cout << "Adjacent Ships on Board" << endl;
@@ -109,13 +108,11 @@ namespace GameUtilities
 		}
 	}
 
-	void GameUtilities::printBadShipsCountErrror(int shipCount, int& ret, const string player)
+	void GameUtilities::printBadShipsCountError(int shipCountA, int shipCountB)
 	{
-		if (shipCount != DEFAULT_SHIPS_COUNT)
+		if (shipCountA != shipCountB)
 		{
-			string filler = shipCount > DEFAULT_SHIPS_COUNT ? "many" : "few";
-			cout << "Too " << filler << " ships for player " << player << endl;
-			ret = -1;
+			//todo - LOG an unfair board
 		}
 	}
 

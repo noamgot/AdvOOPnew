@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Ship.h"
 #include "CommonUtilities.h"
 

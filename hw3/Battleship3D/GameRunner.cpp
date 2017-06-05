@@ -191,7 +191,7 @@ bool GameRunner::registerHit(PlayerAttributes& playerAttributes, Coordinate coor
 {
 	auto i = 0;
 	auto validAttack = false;
-	for (; i < CommonUtilities::DEFAULT_SHIPS_COUNT; i++)
+	for (; i < playerAttributes.shipList.size(); i++)
 	{
 		if (playerAttributes.shipList[i].getType() == shipType)
 		{
@@ -202,6 +202,7 @@ bool GameRunner::registerHit(PlayerAttributes& playerAttributes, Coordinate coor
 				if (res == AttackResult::Sink)
 				{
 					playerAttributes.shipsCount--;
+
 				}
 				break;
 			}

@@ -4,6 +4,7 @@
 #include "CommonUtilities.h"
 #include <list>
 #include <algorithm>
+#include "MyBoardData.h"
 
 enum Direction
 {
