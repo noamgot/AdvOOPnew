@@ -18,6 +18,7 @@ public:
 	AlgorithmLoader& operator=(const AlgorithmLoader& dllMngr) = delete;
 
 	void loadLibs(const std::vector<std::string> dlls);
+	void exportAlgos(std::vector<GetAlgoFuncType>& algos);
 	IBattleshipGameAlgo* loadAlgo(int n);
 	int size() const;
 

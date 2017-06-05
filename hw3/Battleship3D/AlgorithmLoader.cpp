@@ -37,6 +37,14 @@ void AlgorithmLoader::loadLibs(const std::vector<std::string> dlls)
 	}
 }
 
+void AlgorithmLoader::exportAlgos(std::vector<GetAlgoFuncType>& algos)
+{
+	for (int i = 0; i < libs.size(); i++)
+	{
+		algos.push_back(std::get<2>(libs[i]));
+	}
+}
+
 int AlgorithmLoader::size() const
 {
 	return libs.size();
@@ -48,6 +56,6 @@ IBattleshipGameAlgo* AlgorithmLoader::loadAlgo(int n)
 	{
 		return nullptr;
 	}
-	return std::get<2>(libs.at(n))();
+	return std::get<2>(libs[n])();
 }
 
