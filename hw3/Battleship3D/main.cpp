@@ -44,7 +44,8 @@ void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles,
 int main(int argc, char** argv)
 {
 	vector<MyBoardData> boards;
-	AlgorithmLoader dllMngr;
+	vector<GetAlgoFuncType> algos;
+	AlgorithmLoader algoLoader;
 	string dirPath;
 	auto error = false;
 	int numThreads = CompetitionManager::DEFAULT_NUM_THREADS;
@@ -90,7 +91,8 @@ int main(int argc, char** argv)
 		return -1;
 	}
 	GameUtilities::initBoards3D(boardFiles, boards);
-	dllMngr.loadLibs(dllFiles);
+	algoLoader.loadLibs(dllFiles);
+	algoLoader.exportAlgos(algos);
 
 
 	vector<MyBoardData> gameBoards(2);
