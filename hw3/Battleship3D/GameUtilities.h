@@ -55,15 +55,21 @@ namespace GameUtilities
 	/* a helper function to the initPlayerShipsList method */
 	Ship handleShipDiscovery(int iOrig, int jOrig, int numOfRows, int numOfCols, const char** board);
 
-	/* given a vector of paths to sboard files, loads only the valid ones into vector<vector3D> boards */
-	void initBoards3D(const std::vector<std::string>& boardPaths, std::vector<CommonUtilities::RawBoard>& boards);
+	/* given a vector of paths to sboard files, loads only the valid ones into vector<vector3d> boards */
+	void initBoards3D(const std::vector<std::string>& boardPaths, std::vector<MyBoardData>& boards);
 
 	/* parses the dimension line (first line in .sboard file) into rows, columns and depth */
 	int getDims(const std::string line, int& rows, int& cols, int& depth);
 
 	/* checks if the ship's shape starting at board[i][j][k] is valid */
-	int checkShape3D(RawBoard& board, const int size, int k, int i, int j);
+	int checkShape3D(MyBoardData& board, const int size, int i, int j, int k);
+
+	/* registers the ship starting at board[i][j][k] to the passed board 
+	 * kDir, iDir, jDir indicates the "direction vector" of the ship
+	 * i.e if kDir = 0, iDir = 1, jDir = 0, the ship orientation is vertrical
+	 */
+	void registerShip(MyBoardData& board, const int size, int i, int j, int k, int iDir, int jDir, int kDir);
 
 	/* checks if the passed board is valid */
-	int checkBoard3D(RawBoard& board);
+	int checkBoard3D(MyBoardData& board);
 }

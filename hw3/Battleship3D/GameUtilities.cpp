@@ -199,7 +199,7 @@ namespace GameUtilities
 		return Ship(); // todo - change!!!!!! just for tests...
 	}
 
-	void GameUtilities::initBoards3D(const vector<string>& boardPaths, vector<RawBoard>& boards)
+	void GameUtilities::initBoards3D(const vector<string>& boardPaths, vector<MyBoardData>& boards)
 	{
 		for (string boardPath : boardPaths)
 		{
@@ -224,9 +224,9 @@ namespace GameUtilities
 				continue;
 			}
 
-			RawBoard board(rows, std::vector<std::vector<char>>(cols, std::vector<char>(depth)));
-
-			//MyBoardData board(rows, cols, depth);
+			//vector3D<char> board(rows, std::vector<std::vector<char>>(cols, std::vector<char>(depth)));
+			MyBoardData board(rows, cols, depth);
+			
 			// if first line after dimensions is not empty - bad format
 			getline(boardFile, line);
 			if (!boardFile.eof() && !line.empty())
@@ -310,12 +310,12 @@ namespace GameUtilities
 		return rows*cols*depth;
 	}
 
-	int GameUtilities::checkShape3D(RawBoard& board, const int size, int k, int i, int j)
+	int GameUtilities::checkShape3D(MyBoardData& board, const int size, int i, int j, int k)
 	{
-		auto rows = board.size();
-		auto cols = board[0].size();
-		auto depth = board[0][0].size();
-		auto verL = 1, horL = 1, depL = 1;
+		auto rows = board.rows();
+		auto cols = board.cols();
+		auto depth = board.depth();
+		auto verL = 1, horL = 1, depL = 1, maxL = 0;
 		// run horizontally, check above, below, inwards and outwards
 		while (j + horL < cols && board[i][j][k] == board[i][j + horL][k])
 		{
@@ -358,15 +358,37 @@ namespace GameUtilities
 		{
 			return -1;
 		}
+
+		// call for a ship register, the direction which it's length equals the size of the ship is the dierction of the ship
+		registerShip(board, size, i, j, k, verL == size ? 1 : 0, horL == size ? 1 : 0, depL == size ? 1 : 0);
+
 		return 1;
 	}
 
-	//todo - add prints to logger
-	int GameUtilities::checkBoard3D(RawBoard& board)
+	void GameUtilities::registerShip(MyBoardData& board, const int size, int i, int j, int k, int iDir, int jDir, int kDir)
 	{
-		auto rows = board.size();
-		auto cols = board[0].size();
-		auto depth = board[0][0].size();
+		eShipType type = charToShipType(board[i][j][k]);
+		int playernum = isupper(board[i][j][k]) == 0 ? 1 : 0;
+		map<Coordinate, bool> shipMap;
+		for (int l = 0; l < size; l++)
+		{			
+			shipMap.insert(make_pair(Coordinate(i + 1, j + 1, k + 1), true));
+			k += kDir;
+			i += iDir;
+			j += jDir;
+		}
+		board.addShip(playernum, Ship(size, type, shipMap));
+	}
+
+	//todo - add prints to logger
+	int GameUtilities::checkBoard3D(MyBoardData& board)
+	{
+		//auto rows = board.size();
+		//auto cols = board[0].size();
+		//auto depth = board[0][0].size();
+		auto rows = board.rows();
+		auto cols = board.cols();
+		auto depth = board.depth();
 		auto shipCountA = 0, shipCountB = 0, isShipA = 0, isShipB = 0, adjCheck = 0;
 		map<char, int> shipsA = { { BOAT,1 },{ MISSLE_SHIP,2 },{ SUBMARINE,3 },{ DESTROYER,4 } };
 		map<char, int> shipsB = { { char(tolower(BOAT)),1 },{ char(tolower(MISSLE_SHIP)),2 },
@@ -391,7 +413,7 @@ namespace GameUtilities
 								j != 0 && board[i][j - 1][k] == board[i][j][k]))
 							{
 								// check for misshape
-								if (checkShape3D(board, shipsB[tolower(board[i][j][k])], k, i, j) < 0)
+								if (checkShape3D(board, shipsB[tolower(board[i][j][k])],  i, j, k) < 0)
 								{
 									if (isShipA)
 									{
