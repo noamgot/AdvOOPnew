@@ -45,7 +45,7 @@ void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles,
 
 int main(int argc, char** argv)
 {
-	vector<vector3d> boards;
+	vector<MyBoardData> boards;
 	AlgorithmLoader dllMngr;
 	string dirPath;
 	auto error = false;
@@ -77,7 +77,7 @@ int main(int argc, char** argv)
 		return -1;
 	}
 	filterDirFiles(dirFiles, boardFiles, dllFiles, playerNames, dirPath);
-	if (boardFiles.size() == 0)
+	/*if (boardFiles.size() == 0)
 	{
 		pLogger->writeToLog("No board files (*.sboard) looking in path: " + dirPath, true, Logger::eLogType::LOG_ERROR);
 		error = true;
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
 	{
 		pLogger->writeToLog("Missing algorithm (dll) files looking in path: " + dirPath + " (needs at least two)", true, Logger::eLogType::LOG_ERROR);
 		error = true;
-	}
+	}*/
 	if (error)
 	{
 		return -1;
