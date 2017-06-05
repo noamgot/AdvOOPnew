@@ -26,7 +26,8 @@ namespace std
 	{
 		bool operator() (const Coordinate& lhs, const Coordinate& rhs) const
 		{
-			return lhs.row < rhs.row;
+			return sqrt(pow(double(lhs.row), 2) + pow(double(lhs.col), 2) + pow(double(lhs.depth), 2))
+					< sqrt(pow(double(rhs.row), 2) + pow(double(rhs.col), 2) + pow(double(rhs.depth), 2));
 		}
 	};
 }
