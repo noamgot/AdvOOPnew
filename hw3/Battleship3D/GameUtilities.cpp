@@ -18,7 +18,7 @@ using namespace Utilities;
 namespace GameUtilities
 {
 	//TODO - no usages - delete this
-	int initGameBoardsAndPaths(int argc, char **argv, string(&board)[ROW_SIZE], char **boardA, char* *boardB,
+	/*int initGameBoardsAndPaths(int argc, char **argv, string(&board)[ROW_SIZE], char **boardA, char* *boardB,
 		string& dirPath, string& dllPathA, string& dllPathB)
 	{
 		auto errorOccurred = false;
@@ -47,7 +47,7 @@ namespace GameUtilities
 			errorOccurred = true;
 		}
 		return errorOccurred ? -1 : 0;
-	}
+	}*/
 
 	int GameUtilities::processInputArguments(int argc, char** argv, string& dirPath, int& numThreads)
 	{	
@@ -103,7 +103,7 @@ namespace GameUtilities
 	}
 
 
-	int GameUtilities::initGameBoards(const string boardPath, string board[], char** boardA, char** boardB)
+	/*int GameUtilities::initGameBoards(const string boardPath, string board[], char** boardA, char** boardB)
 	{
 		ifstream boardFile(boardPath);
 		if (!boardFile.is_open())
@@ -152,10 +152,10 @@ namespace GameUtilities
 		}
 		initIndividualBoards(board, boardA, boardB);
 		return 0;
-	}
+	}*/
 
 	//TODO - no usages - delete this
-	void GameUtilities::initIndividualBoards(string *board, char **boardA, char **boardB)
+/*	void GameUtilities::initIndividualBoards(string *board, char **boardA, char **boardB)
 	{
 		char c;
 		for (auto i = 0; i < ROW_SIZE; ++i)
@@ -183,10 +183,9 @@ namespace GameUtilities
 				}
 			}
 		}
-	}
+	}*/
 
-
-	int GameUtilities::checkShape(string* board, const int size, int i, int j)
+	/*int GameUtilities::checkShape(string* board, const int size, int i, int j)
 	{
 		auto verL = 1, horL = 1;
 		// run horizontally, check above and below
@@ -215,7 +214,7 @@ namespace GameUtilities
 			return -1;
 		}
 		return 1;
-	}
+	}*/
 
 	/*
 	bool GameUtilities::initPlayer(IBattleshipGameAlgo*& pPlayer, int playerNum, const char** board,
@@ -282,7 +281,7 @@ namespace GameUtilities
 		}
 	}
 
-	int GameUtilities::checkBoardValidity(string* board)
+/*	int GameUtilities::checkBoardValidity(string* board)
 	{
 		auto shipCountA = 0, shipCountB = 0, isShipA = 0, isShipB = 0, adjCheck = 0;
 		map<char, int> shipsA = { { BOAT,1 },{ MISSLE_SHIP,2 },{ SUBMARINE,3 },{ DESTROYER,4 } };
@@ -333,7 +332,7 @@ namespace GameUtilities
 			}
 		}
 		return printBoardErrors(errShipsA, errShipsB, shipCountA, shipCountB, adjCheck);
-	}
+	}*/
 
 	int GameUtilities::convertToFullPath(string& dirPath)
 	{
@@ -389,13 +388,7 @@ namespace GameUtilities
 		}
 	}
 
-	void GameUtilities::initPlayersAttributes(PlayerAttributes& playerAttributes, const char** playerBoard)
-	{
-		playerAttributes.hasMoves = true;
-		playerAttributes.score = 0;
-		playerAttributes.shipsCount = DEFAULT_SHIPS_COUNT;
-		initPlayerShipsList(playerBoard, ROW_SIZE, COL_SIZE, playerAttributes);
-	}
+	
 
 	Ship GameUtilities::handleShipDiscovery(int iOrig, int jOrig, int numOfRows, int numOfCols, const char** board)
 	{
@@ -424,7 +417,7 @@ namespace GameUtilities
 	}
 
 	//TODO - no usages - delete this
-	int GameUtilities::playTheGame(IBattleshipGameAlgo* A, IBattleshipGameAlgo* B, PlayerAttributes playerAttributesArr[], const string* board)
+	/*int GameUtilities::playTheGame(IBattleshipGameAlgo* A, IBattleshipGameAlgo* B, PlayerAttributes playerAttributesArr[], const string* board)
 	{
 		auto attackerNum = 0, defenderNum = 1; // index 0 = A, index 1 = B
 		string attackerName = "A";
@@ -453,13 +446,13 @@ namespace GameUtilities
 				continue;
 
 			}
-			handleMove(board, currentMove, attackerNum, defenderNum, attackerName, A, B, _playerAttributes);*/
+			handleMove(board, currentMove, attackerNum, defenderNum, attackerName, A, B, _playerAttributes);
 		}
 		printGameResults(playerAttributesArr);
 		delete A;
 		delete B;
 		return EXIT_SUCCESS;
-	}
+	}*/
 
 
 

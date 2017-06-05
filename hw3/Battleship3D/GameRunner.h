@@ -57,4 +57,8 @@ private:
 	int calculateSinkScore(char c);
 
 	void changeAttacker(int& attackerNum, int& defenderNum);
+
+
+	/* initializes the given PlayerAttribute struct, according to the given board*/
+	void initPlayersAttributes(PlayerAttributes& playerAttributes, const MyBoardData& board);
 };

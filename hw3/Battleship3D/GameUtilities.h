@@ -24,8 +24,8 @@ namespace GameUtilities
 	
 
 	/* initializing the game attributes, player boards and paths for the different files */
-	int initGameBoardsAndPaths(int argc, char **argv, std::string(&board)[ROW_SIZE], char **boardA, char* *boardB,
-		std::string& dirPath, std::string& dllPathA, std::string& dllPathB);
+/*	int initGameBoardsAndPaths(int argc, char **argv, std::string(&board)[ROW_SIZE], char **boardA, char* *boardB,
+		std::string& dirPath, std::string& dllPathA, std::string& dllPathB);*/
 
 	int processInputArguments(int argc, char** argv, std::string& dirPath, int& numThreads);
 	
@@ -67,8 +67,6 @@ namespace GameUtilities
 	/* returns an absolute path to the current working directory */
 	std::string getDirPath();
 
-	/* initializes the given PlayerAttribute struct, according to the given board*/
-	void initPlayersAttributes(PlayerAttributes& playerAttributes, const char** playerBoard);
 
 	/* helper function - initializes the ship list in the given PlayerAttribute struct, according to the given board*/
 	void initPlayerShipsList(const char** board, int numOfRows, int numOfCols, PlayerAttributes& playerAttributes);
