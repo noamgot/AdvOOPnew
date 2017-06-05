@@ -146,7 +146,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AbstractPlayer.cpp" />
     <ClCompile Include="CompetitionManager.cpp" />
     <ClCompile Include="AlgorithmLoader.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -162,7 +161,6 @@
     <ClCompile Include="SmartPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AbstractPlayer.h" />
     <ClInclude Include="CompetitionManager.h" />
     <ClInclude Include="AlgorithmLoader.h" />
     <ClInclude Include="Game.h" />

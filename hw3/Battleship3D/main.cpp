@@ -2,13 +2,11 @@
 #include <string>
 #include "MyBoardData.h"
 #include <iostream>
-#include "AlgorithmLoader.h"
+
 #include "CompetitionManager.h"
-#include "Logger.h"
+
 
 using namespace std;
-using namespace GameUtilities;
-using namespace CommonUtilities;
 
 
 string removeSuffix(const string& filename) 
@@ -28,11 +26,11 @@ void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles,
 	for (auto& file : dirFiles)
 	{
 		auto fullPath = dirPath + "\\" + file;
-		if (endsWith(file, BOARD_FILE_SUFFIX))
+		if (endsWith(file, GameUtilities::BOARD_FILE_SUFFIX))
 		{
 			boardFiles.push_back(fullPath);
 		}
-		else if (endsWith(file, LIB_FILE_SUFFIX))
+		else if (endsWith(file, GameUtilities::LIB_FILE_SUFFIX))
 		{
 			dllFiles.push_back(fullPath);
 			playerNames.push_back(removeSuffix(file));
@@ -50,7 +48,7 @@ int main(int argc, char** argv)
 	string dirPath;
 	auto error = false;
 	int numThreads = CompetitionManager::DEFAULT_NUM_THREADS;
-	if (processInputArguments(argc, argv, dirPath, numThreads) < 0)
+	if (GameUtilities::processInputArguments(argc, argv, dirPath, numThreads) < 0)
 	{
 		return -1;
 	}
@@ -91,11 +89,11 @@ int main(int argc, char** argv)
 	{
 		return -1;
 	}
-	initBoards3D(boardFiles, boards);
+	GameUtilities::initBoards3D(boardFiles, boards);
 	dllMngr.loadLibs(dllFiles);
 
 
-		vector<vector3D<char>> gameBoards(2);
+	vector<MyBoardData> gameBoards(2);
 	vector<GetAlgoFuncType> players(playerNames.size());
 	//playerNames = { "Jordy-Jordalish", "Ben-El Tavorush", "Stat-Boy (Oy-oy-oy)" };
 	// here we assume we have the valid boards and players

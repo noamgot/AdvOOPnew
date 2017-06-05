@@ -13,7 +13,6 @@
 #include "CompetitionManager.h"
 
 using namespace std;
-using namespace CommonUtilities;
 
 namespace GameUtilities
 {
@@ -200,7 +199,7 @@ namespace GameUtilities
 		return Ship(); // todo - change!!!!!! just for tests...
 	}
 
-	void GameUtilities::initBoards3D(const vector<string>& boardPaths, vector<vector3d>& boards)
+	void GameUtilities::initBoards3D(const vector<string>& boardPaths, vector<RawBoard>& boards)
 	{
 		for (string boardPath : boardPaths)
 		{

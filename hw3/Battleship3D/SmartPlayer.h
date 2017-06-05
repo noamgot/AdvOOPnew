@@ -2,9 +2,7 @@
 #include <set>
 #include <deque>
 #include "CommonUtilities.h"
-#include "MyBoardData.h"
 #include <list>
-#include <ctime>
 #include <algorithm>
 
 enum Direction

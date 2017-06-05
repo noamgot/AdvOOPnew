@@ -1,8 +1,9 @@
 ﻿#pragma once
-#include <bitset>
 #include "CommonUtilities.h"
+#include "Game.h"
+#include "GameResultsTable.h"
+#include "PlayerGameResults.h"
 #include "AlgorithmLoader.h"
-#include "MyBoardData.h"
 
 using namespace std;
 using namespace CommonUtilities;
@@ -55,7 +56,7 @@ namespace GameUtilities
 	Ship handleShipDiscovery(int iOrig, int jOrig, int numOfRows, int numOfCols, const char** board);
 
 	/* given a vector of paths to sboard files, loads only the valid ones into vector<vector3D> boards */
-	void initBoards3D(const std::vector<std::string>& boardPaths, std::vector<RawBoard>& boards);
+	void initBoards3D(const std::vector<std::string>& boardPaths, std::vector<CommonUtilities::RawBoard>& boards);
 
 	/* parses the dimension line (first line in .sboard file) into rows, columns and depth */
 	int getDims(const std::string line, int& rows, int& cols, int& depth);

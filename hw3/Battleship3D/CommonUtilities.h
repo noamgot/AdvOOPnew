@@ -1,15 +1,27 @@
 #pragma once
-
-#include "Ship.h"
 #include <vector>
+#include <thread>
+#include <iostream>
+#include <tuple>
+#include <windows.h>
+#include <string>
+#include <iomanip>
+#include <bitset>
+#include <mutex>
+#include "Ship.h"
+#include "MyBoardData.h"
+#include "Logger.h"
+#include "SafeQueue.h"
+#include "AlgorithmLoader.h"
 
-namespace Utilities
+namespace CommonUtilities
 {
 	template <typename T>
 	using vector2D = std::vector<std::vector<T>>;
 	template <typename T>
 	using vector3D = std::vector<std::vector<std::vector<T>>>;
 	typedef vector3D<char> RawBoard;
+
 
 	const int DEFAULT_SHIPS_COUNT = 5;
 	const int BUF_SIZE = 1024;
@@ -28,6 +40,7 @@ namespace Utilities
 		BOARD_FILE,
 		DLL_FILE,
 	};
+
 
 	bool isValidPath(const std::string dirPath);
 
