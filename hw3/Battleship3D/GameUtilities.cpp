@@ -13,7 +13,7 @@
 #include "CompetitionManager.h"
 
 using namespace std;
-using namespace Utilities;
+using namespace CommonUtilities;
 
 namespace GameUtilities
 {
@@ -457,7 +457,7 @@ namespace GameUtilities
 
 
 
-	void GameUtilities::initBoards3D(const vector<string>& boardPaths, vector<vector3d>& boards)
+	void GameUtilities::initBoards3D(const vector<string>& boardPaths, vector<RawBoard>& boards)
 	{
 		for (string boardPath : boardPaths)
 		{
@@ -482,7 +482,7 @@ namespace GameUtilities
 				continue;
 			}
 
-			vector3d board(rows, std::vector<std::vector<char>>(cols, std::vector<char>(depth)));
+			RawBoard board(rows, std::vector<std::vector<char>>(cols, std::vector<char>(depth)));
 
 			//MyBoardData board(rows, cols, depth);
 			// if first line after dimensions is not empty - bad format
@@ -568,7 +568,7 @@ namespace GameUtilities
 		return rows*cols*depth;
 	}
 
-	int GameUtilities::checkShape3D(vector3d& board, const int size, int k, int i, int j)
+	int GameUtilities::checkShape3D(RawBoard& board, const int size, int k, int i, int j)
 	{
 		auto rows = board.size();
 		auto cols = board[0].size();
@@ -620,7 +620,7 @@ namespace GameUtilities
 	}
 
 	//todo - add prints to logger
-	int GameUtilities::checkBoard3D(vector3d& board)
+	int GameUtilities::checkBoard3D(RawBoard& board)
 	{
 		auto rows = board.size();
 		auto cols = board[0].size();

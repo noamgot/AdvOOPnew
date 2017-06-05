@@ -12,10 +12,7 @@
 
 
 
-template <typename T>
-using vector2D = std::vector<std::vector<T>>;
-template <typename T>
-using vector3D = std::vector<std::vector<std::vector<T>>>;
+
 
 class CompetitionManager
 {
@@ -23,7 +20,7 @@ public:
 
 	static constexpr size_t DEFAULT_NUM_THREADS = 4;
 
-	CompetitionManager(std::vector<vector3D<char>>& gameBoards, std::vector<GetAlgoFuncType>& players,
+	CompetitionManager(std::vector<MyBoardData>& gameBoards, std::vector<GetAlgoFuncType>& players,
 		std::vector<std::string>& playersNames, std::shared_ptr<Logger> pLogger, size_t numThreads);
 	void runCompetition();
 
@@ -38,7 +35,7 @@ private:
 	SafeQueue<Game> _gamesQueue;	
 	GameResultsTable _resultsTable;
 	std::vector<std::string> _playersNames;
-	std::vector<vector3D<char>> _boards;
+	std::vector<MyBoardData> _boards;
 	std::vector<GetAlgoFuncType> _players;
 	std::vector<int> _roundsCnt;
 	std::mutex _mutex /*, _coutMutex*/ ;

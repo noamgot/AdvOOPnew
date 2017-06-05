@@ -76,18 +76,18 @@ void GameRunner::initIndividualBoards(MyBoardData& boardA, MyBoardData& boardB) 
 					if (isupper(c)) // a ship of A
 					{
 						boardA.setChar(coor, c);
-						boardB.setChar(coor, Utilities::WATER);
+						boardB.setChar(coor, CommonUtilities::WATER);
 					}
 					else // a ship of B
 					{
-						boardA.setChar(coor, Utilities::WATER);
+						boardA.setChar(coor, CommonUtilities::WATER);
 						boardB.setChar(coor, c);
 					}
 				}
 				else // a space - update both boards
 				{
-					boardA.setChar(coor, Utilities::WATER);
-					boardB.setChar(coor, Utilities::WATER);
+					boardA.setChar(coor, CommonUtilities::WATER);
+					boardB.setChar(coor, CommonUtilities::WATER);
 				}
 			}
 		}
@@ -207,10 +207,12 @@ bool GameRunner::registerHit(PlayerAttributes& playerAttributes, Coordinate coor
 	return validAttack;
 }
 
-void GameUtilities::initPlayersAttributes(PlayerAttributes& playerAttributes, const MyBoardData& board)
+void GameRunner::initPlayersAttributes(PlayerAttributes& playerAttributes, const MyBoardData& board, const int player_id)
 {
 	playerAttributes.hasMoves = true;
 	playerAttributes.score = 0;
-	playerAttributes.shipsCount = DEFAULT_SHIPS_COUNT;
-	initPlayerShipsList(playerBoard, ROW_SIZE, COL_SIZE, playerAttributes);
+	playerAttributes.shipsCount = board.getShipCount();
+	playerAttributes.won = false;
+	playerAttributes.shipList = board.getShipList(player_id);
+
 }

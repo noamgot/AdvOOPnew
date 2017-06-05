@@ -89,7 +89,7 @@ void CompetitionManager::runGames(int id)
 			return; 			
 		}
 		// Start the game
-		GameRunner gameRunner(_players[game._idA], _players[game._idB], MyBoardData(_boards[game._boardID]), _pLogger);
+		GameRunner gameRunner(_players[game._idA], _players[game._idB], _boards[game._boardID], _pLogger);
 		gameRunner.runGame();
 		int roundA, roundB;
 		{
@@ -148,7 +148,7 @@ void CompetitionManager::printTableEntry(size_t generalWidth, size_t playerNameW
 	cout << endl;
 }
 
-CompetitionManager::CompetitionManager(std::vector<vector3D<char>>& gameBoards, std::vector<GetAlgoFuncType>& players, 
+CompetitionManager::CompetitionManager(std::vector<MyBoardData>& gameBoards, std::vector<GetAlgoFuncType>& players, 
 						std::vector<std::string>& playersNames, std::shared_ptr<Logger> pLogger, size_t numThreads)
 	: _numThreads(numThreads), _numBoards(gameBoards.size()), _numPlayers(players.size()), 
 	_numRounds(2 * _numBoards * (_numPlayers - 1)),	_resultsTable(_numPlayers, _numRounds), 

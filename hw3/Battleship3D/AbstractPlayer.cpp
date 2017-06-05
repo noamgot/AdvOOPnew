@@ -34,5 +34,5 @@ Coordinate AbstractPlayer::attack()
 /*bool AbstractPlayer::init(const string& path)
 {
 	// validate path
-	return Utilities::isValidPath(path);
+	return CommonUtilities::isValidPath(path);
 }*/

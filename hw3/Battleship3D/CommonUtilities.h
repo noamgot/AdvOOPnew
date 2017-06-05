@@ -3,8 +3,13 @@
 #include "Ship.h"
 #include <vector>
 
-namespace Utilities
+namespace CommonUtilities
 {
+	template <typename T>
+	using vector2D = std::vector<std::vector<T>>;
+	template <typename T>
+	using vector3D = std::vector<std::vector<std::vector<T>>>;
+	typedef vector3D<char> RawBoard;
 
 	const int DEFAULT_SHIPS_COUNT = 5;
 	const int BUF_SIZE = 1024;

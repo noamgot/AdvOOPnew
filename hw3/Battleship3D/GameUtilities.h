@@ -1,16 +1,11 @@
 ﻿#pragma once
 #include <bitset>
-#include "Utilities.h"
+#include "CommonUtilities.h"
 #include "AlgorithmLoader.h"
 #include "MyBoardData.h"
 
 using namespace std;
-using namespace Utilities;
-
-
-
-// todo - unite with vector3D...
-typedef std::vector<std::vector<std::vector<char>>> vector3d;
+using namespace CommonUtilities;
 
 namespace GameUtilities
 {
@@ -74,15 +69,15 @@ namespace GameUtilities
 	/* a helper function to the initPlayerShipsList method */
 	Ship handleShipDiscovery(int iOrig, int jOrig, int numOfRows, int numOfCols, const char** board);
 
-	/* given a vector of paths to sboard files, loads only the valid ones into vector<vector3d> boards */
-	void initBoards3D(const std::vector<std::string>& boardPaths, std::vector<vector3d>& boards);
+	/* given a vector of paths to sboard files, loads only the valid ones into vector<vector3D> boards */
+	void initBoards3D(const std::vector<std::string>& boardPaths, std::vector<RawBoard>& boards);
 
 	/* parses the dimension line (first line in .sboard file) into rows, columns and depth */
 	int getDims(const std::string line, int& rows, int& cols, int& depth);
 
 	/* checks if the ship's shape starting at board[i][j][k] is valid */
-	int checkShape3D(vector3d& board, const int size, int k, int i, int j);
+	int checkShape3D(RawBoard& board, const int size, int k, int i, int j);
 
 	/* checks if the passed board is valid */
-	int checkBoard3D(vector3d& board);
+	int checkBoard3D(RawBoard& board);
 }

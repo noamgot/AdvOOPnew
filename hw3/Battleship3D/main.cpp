@@ -8,7 +8,7 @@
 
 using namespace std;
 using namespace GameUtilities;
-using namespace Utilities;
+using namespace CommonUtilities;
 
 
 string removeSuffix(const string& filename) 
@@ -45,7 +45,7 @@ void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles,
 
 int main(int argc, char** argv)
 {
-	vector<vector3d> boards;
+	vector<RawBoard> boards;
 	AlgorithmLoader dllMngr;
 	string dirPath;
 	auto error = false;
@@ -90,7 +90,7 @@ int main(int argc, char** argv)
 	if (error)
 	{
 		return -1;
-	}*/
+	}
 	initBoards3D(boardFiles, boards);
 	dllMngr.loadLibs(dllFiles);
 
