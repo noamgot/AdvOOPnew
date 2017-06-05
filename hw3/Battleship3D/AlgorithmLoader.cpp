@@ -45,7 +45,7 @@ void AlgorithmLoader::exportAlgos(std::vector<GetAlgoFuncType>& algos)
 	}
 }
 
-int AlgorithmLoader::size() const
+size_t AlgorithmLoader::size() const
 {
 	return libs.size();
 }

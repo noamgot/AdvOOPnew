@@ -20,7 +20,7 @@ public:
 	void loadLibs(const std::vector<std::string> dlls);
 	void exportAlgos(std::vector<GetAlgoFuncType>& algos);
 	IBattleshipGameAlgo* loadAlgo(int n);
-	int size() const;
+	size_t size() const;
 
 private:
 	int loadDLL(const std::string path);

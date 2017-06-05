@@ -13,7 +13,7 @@ typedef struct _PlayerAttributes
 {
 	bool hasMoves;
 	int score;
-	int shipsCount;
+	size_t shipsCount;
 	std::vector<Ship> shipList;
 	bool won;
 }PlayerAttributes;
