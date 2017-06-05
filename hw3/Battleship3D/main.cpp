@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 	{
 		return -1;
 	}
-	if (!isValidPath(dirPath))
+	if (!CommonUtilities::isValidPath(dirPath))
 	{
 		cout << "Wrong Path: " << dirPath << endl;
 		return -1;
@@ -61,10 +61,10 @@ int main(int argc, char** argv)
 	std::shared_ptr<Logger> pLogger = std::make_shared<Logger>(dirPath);
 
 	vector<string> dirFiles, boardFiles, dllFiles, playerNames;
-	if (getDirectoryFileList(dirPath, dirFiles) < 0)
+	if (CommonUtilities::getDirectoryFileList(dirPath, dirFiles) < 0)
 	{
-		char errMsg[BUF_SIZE];
-		if(strerror_s(errMsg, BUF_SIZE, errno))
+		char errMsg[CommonUtilities::BUF_SIZE];
+		if(strerror_s(errMsg, CommonUtilities::BUF_SIZE, errno))
 		{
 			pLogger->writeToLog("Error: strerro_s failed", true, Logger::eLogType::LOG_ERROR);
 		}
@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 		return -1;
 	}
 	filterDirFiles(dirFiles, boardFiles, dllFiles, playerNames, dirPath);
-	/*if (boardFiles.size() == 0)
+	if (boardFiles.size() == 0)
 	{
 		pLogger->writeToLog("No board files (*.sboard) looking in path: " + dirPath, true, Logger::eLogType::LOG_ERROR);
 		error = true;
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
 	{
 		pLogger->writeToLog("Missing algorithm (dll) files looking in path: " + dirPath + " (needs at least two)", true, Logger::eLogType::LOG_ERROR);
 		error = true;
-	}*/
+	}
 	if (error)
 	{
 		return -1;
@@ -95,8 +95,7 @@ int main(int argc, char** argv)
 
 	vector<MyBoardData> gameBoards(2);
 	vector<GetAlgoFuncType> players(playerNames.size());
-	//playerNames = { "Jordy-Jordalish", "Ben-El Tavorush", "Stat-Boy (Oy-oy-oy)" };
-	// here we assume we have the valid boards and players
+	// here we know that we have valid boards and players
 	pLogger->writeToLog("Number of legal players: " + to_string(players.size()), true);
 	pLogger->writeToLog("Number of legal boards: " + to_string(gameBoards.size()), true);
 	CompetitionManager tournamentMngr(gameBoards, players, playerNames, pLogger, numThreads);

@@ -58,20 +58,12 @@ void CompetitionManager::reporterMethod()
 
 void CompetitionManager::runGames(int id)
 {
-/*	{
-		std::lock_guard<std::mutex> mlock(_coutMutex);
-		std::cout << "thread " << std::this_thread::get_id() << " is running!" << std::endl;
-	}*/
 	_pLogger->writeToLog("Worker thread no. " + to_string(id) + " has started running");
 	while (true)
 	{
 		// Get Game object from safe queue
 		auto game = _gamesQueue.pop();
-/*		{
-			std::lock_guard<std::mutex> mlock(_coutMutex);
-			std::cout << "thread " << std::this_thread::get_id() << " got the following game:" << std::endl;
-			std::cout << "board: " << game._boardID << ", A: " << game._idA  << ", B: " << game._idB << std::endl;
-		}*/
+
 		// If the game is "poisoned" it means that the competition is over 
 		// and this thread should terminate
 		_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got the following game: _boardID=" + to_string(game._boardID) + ", A=" + to_string(game._idA) + ", B: " + to_string(game._idB));
@@ -144,13 +136,13 @@ void CompetitionManager::printTableEntry(size_t generalWidth, size_t playerNameW
 	cout << endl;
 }
 
-CompetitionManager::CompetitionManager(std::vector<MyBoardData>& gameBoards, std::vector<GetAlgoFuncType>& players, 
+CompetitionManager::CompetitionManager(std::vector<MyBoardData>& boards, std::vector<GetAlgoFuncType>& players, 
 						std::vector<std::string>& playersNames, std::shared_ptr<Logger> pLogger, size_t numThreads)
-	: _numThreads(numThreads), _numBoards(gameBoards.size()), _numPlayers(players.size()), 
+	: _numThreads(numThreads), _numBoards(boards.size()), _numPlayers(players.size()), 
 	_numRounds(2 * _numBoards * (_numPlayers - 1)),	_resultsTable(_numPlayers, _numRounds), 
 	_roundsCnt(_numPlayers,0), _pLogger(pLogger)
 {
-	swap(_boards, gameBoards);
+	swap(_boards, boards);
 	swap(_players, players);
 	swap(_playersNames, playersNames);
 	auto numGames = calcNumGames();

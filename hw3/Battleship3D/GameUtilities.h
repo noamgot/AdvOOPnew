@@ -59,7 +59,7 @@ namespace GameUtilities
 	void initBoards3D(const std::vector<std::string>& boardPaths, std::vector<MyBoardData>& boards);
 
 	/* parses the dimension line (first line in .sboard file) into rows, columns and depth */
-	int getDims(const std::string line, int& rows, int& cols, int& depth);
+	int getDims(const string& line, int& rows, int& cols, int& depth);
 
 	/* checks if the ship's shape starting at board[i][j][k] is valid */
 	int checkShape3D(MyBoardData& board, const int size, int i, int j, int k);

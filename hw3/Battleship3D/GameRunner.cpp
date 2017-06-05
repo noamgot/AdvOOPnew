@@ -3,11 +3,12 @@
 
 
 GameRunner::GameRunner(const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, const MyBoardData& boardData, std::shared_ptr<Logger> pLogger)
+	:_playerA(getAlgoA()), _playerB(getAlgoB()), _pLogger(pLogger)
 {
-	_playerA = unique_ptr<IBattleshipGameAlgo>(getAlgoA());
-	_playerB = unique_ptr<IBattleshipGameAlgo>(getAlgoB());
+	//_playerA = unique_ptr<IBattleshipGameAlgo>(getAlgoA());
+	//_playerB = unique_ptr<IBattleshipGameAlgo>(getAlgoB());
 	_boardData = boardData;
-	_pLogger = pLogger;
+	//_pLogger = pLogger;
 }
 
 
@@ -64,6 +65,7 @@ int GameRunner::runGame()
 
 void GameRunner::initIndividualBoards(MyBoardData& boardA, MyBoardData& boardB) const
 {
+	//todo - start loops from 1 ?
 	for (auto i = 0; i < _boardData.rows(); ++i)
 	{
 		for (auto j = 0; j < _boardData.cols(); ++j)

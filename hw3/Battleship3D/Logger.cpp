@@ -1,6 +1,7 @@
 ﻿#include "Logger.h"
 #include <iostream>
 #include <ctime>
+#include <mutex>
 
 #define MAX_TIME_BUF_SIZE 64
 

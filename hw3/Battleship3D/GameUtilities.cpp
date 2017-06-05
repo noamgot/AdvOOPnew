@@ -11,8 +11,10 @@
 #include <stdlib.h>
 #include <Windows.h>
 #include "CompetitionManager.h"
+#include "MyBoardData.h"
 
 using namespace std;
+using namespace CommonUtilities;
 
 namespace GameUtilities
 {
@@ -208,6 +210,7 @@ namespace GameUtilities
 			ifstream boardFile(boardPath);
 			if (!boardFile.is_open())
 			{
+				//todo - LOG
 				cout << "Error: opening board file failed" << endl;
 				continue;
 			}
@@ -217,10 +220,12 @@ namespace GameUtilities
 			getline(boardFile, line);
 			if (boardFile.eof() || boardFile.fail())
 			{
+				//todo - LOG
 				continue;
 			}
 			if (getDims(line, rows, cols, depth) <= 0)
 			{
+				//todo - LOG
 				continue;
 			}
 
@@ -231,6 +236,7 @@ namespace GameUtilities
 			getline(boardFile, line);
 			if (!boardFile.eof() && !line.empty())
 			{
+				//todo - LOG
 				continue;
 			}
 			getline(boardFile, line);
@@ -278,7 +284,7 @@ namespace GameUtilities
 		}
 	}
 
-	int GameUtilities::getDims(const string line, int& rows, int& cols, int& depth)
+	int GameUtilities::getDims(const string& line, int& rows, int& cols, int& depth)
 	{
 		int j = 0;
 		for (int i = 0; i <= 2; i++)
@@ -312,6 +318,7 @@ namespace GameUtilities
 
 	int GameUtilities::checkShape3D(MyBoardData& board, const int size, int i, int j, int k)
 	{
+		//todo @ben - code duplication + LOG...
 		auto rows = board.rows();
 		auto cols = board.cols();
 		auto depth = board.depth();
@@ -368,10 +375,12 @@ namespace GameUtilities
 	void GameUtilities::registerShip(MyBoardData& board, const int size, int i, int j, int k, int iDir, int jDir, int kDir)
 	{
 		eShipType type = charToShipType(board[i][j][k]);
-		int playernum = isupper(board[i][j][k]) == 0 ? 1 : 0;
+		int playernum = isupper(board[i][j][k]) ? 0 : 1;
 		map<Coordinate, bool> shipMap;
 		for (int l = 0; l < size; l++)
-		{			
+		{		
+			//todo @ben - best way to do it:
+			// shipMap[Coordinate(i+1,j+1,k+1)] = true;
 			shipMap.insert(make_pair(Coordinate(i + 1, j + 1, k + 1), true));
 			k += kDir;
 			i += iDir;
@@ -383,6 +392,8 @@ namespace GameUtilities
 	//todo - add prints to logger
 	int GameUtilities::checkBoard3D(MyBoardData& board)
 	{
+		//todo - write errors to LOG
+
 		//auto rows = board.size();
 		//auto cols = board[0].size();
 		//auto depth = board[0][0].size();
@@ -401,7 +412,7 @@ namespace GameUtilities
 			{
 				for (auto j = 0; j < cols; j++)
 				{
-					if (board[i][j][k] != ' ')
+					if (board[i][j][k] != WATER)
 					{
 						isShipA = shipsA[board[i][j][k]] != 0;       // 1 if its a ship, otherwise 0
 						isShipB = shipsB[board[i][j][k]] != 0;
@@ -433,7 +444,7 @@ namespace GameUtilities
 								i != 0 && board[i - 1][j][k] != board[i][j][k] && board[i - 1][j][k] != ' ' ||
 								j != 0 && board[i][j - 1][k] != board[i][j][k] && board[i][j - 1][k] != ' ')
 							{
-								adjCheck = 1;
+								adjCheck = 1; // todo @ben - never used
 								return -1;
 							}
 						}
