@@ -1,8 +1,9 @@
 ﻿#include "GameRunner.h"
 
+using namespace std;
 
 
-GameRunner::GameRunner(const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, const MyBoardData& boardData, std::shared_ptr<Logger> pLogger)
+GameRunner::GameRunner(const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, const MyBoardData& boardData, shared_ptr<Logger> pLogger)
 	:_playerA(getAlgoA()), _playerB(getAlgoB()), _pLogger(pLogger)
 {
 	//_playerA = unique_ptr<IBattleshipGameAlgo>(getAlgoA());
@@ -21,9 +22,9 @@ int GameRunner::runGame()
 
 
 	auto attackerNum = 0, defenderNum = 1; // index 0 = A, index 1 = B
-	std::unique_ptr<IBattleshipGameAlgo> pPlayers[] = { std::move(_playerA) , std::move(_playerB) };
+	unique_ptr<IBattleshipGameAlgo> pPlayers[] = { move(_playerA) , move(_playerB) };
 
-	//TODO is there a better way to do this?
+	//TODO is there a better way to do this? YES - a function...
 	// Initializing the player auxillary data structs
 	_playerAttributes[PLAYER_A].shipList = _boardData.getShipList(PLAYER_A);
 	_playerAttributes[PLAYER_A].shipsCount = _playerAttributes[PLAYER_A].shipList.size();
@@ -44,7 +45,7 @@ int GameRunner::runGame()
 		// Skip if current player is out of moves.
 		if (!_playerAttributes[attackerNum].hasMoves)
 		{
-			GameRunner::changeAttacker(attackerNum, defenderNum);
+			changeAttacker(attackerNum, defenderNum);
 			continue;
 		}
 
@@ -53,7 +54,7 @@ int GameRunner::runGame()
 		{
 			// Player returned a dumb move or refuses to play like a big cry baby (or maybe it has a bug)
 			// we switch player and continue - even if the move is invalid (i.e we ignore invalid moves)
-			GameRunner::changeAttacker(attackerNum, defenderNum);
+			changeAttacker(attackerNum, defenderNum);
 			continue;
 
 		}

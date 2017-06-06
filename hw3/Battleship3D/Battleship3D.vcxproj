@@ -148,7 +148,6 @@
   <ItemGroup>
     <ClCompile Include="CompetitionManager.cpp" />
     <ClCompile Include="AlgorithmLoader.cpp" />
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="GameRunner.cpp" />
     <ClCompile Include="GameResultsTable.cpp" />

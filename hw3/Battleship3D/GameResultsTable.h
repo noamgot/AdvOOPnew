@@ -9,7 +9,7 @@ class GameResultsTable
 {
 public:
 	GameResultsTable() = default;
-	GameResultsTable(size_t numPlayers, size_t numRounds) : _numPlayers(numPlayers), _table(numRounds){}
+	GameResultsTable(size_t numPlayers, size_t numRounds) : _table(numRounds), _numPlayers(numPlayers){}
 	
 
 	// block copy & move ctors and assignments
@@ -24,7 +24,7 @@ public:
 	void notifyEndGame() { _cv.notify_one(); }
 
 private:
-	std::vector<std::vector<PlayerGameResults>> _table;
+	CommonUtilities::vector2D<PlayerGameResults> _table;
 	std::mutex _mutex;
 	std::condition_variable _cv;
 	size_t _numPlayers;
