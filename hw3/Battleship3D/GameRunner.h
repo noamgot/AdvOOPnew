@@ -7,6 +7,7 @@
 
 #define PLAYER_A 0
 #define PLAYER_B 1
+#define PLAYER_COUNT 2
 // a struct for the game manager - to hold information about the players
 typedef struct _PlayerAttributes
 {
@@ -14,24 +15,24 @@ typedef struct _PlayerAttributes
 	int score;
 	size_t shipsCount;
 	std::vector<Ship> shipList;
-	bool won;
+	int won;
 }PlayerAttributes;
 
 class GameRunner
 {
 public:
 	GameRunner() = delete;
-	explicit GameRunner(const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, const MyBoardData& boardData, std::shared_ptr<Logger> pLogger);
-	int runGame();
+	explicit GameRunner(const Game& game, const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, const MyBoardData& boardData, std::shared_ptr<Logger> pLogger);
+	vector<PlayerGameResults> runGame();
 
 	void initIndividualBoards(MyBoardData& boardA, MyBoardData& boardB) const;
 
 	PlayerGameResults get_grA() const {	return _grA;}
 	PlayerGameResults get_grB() const {	return _grB;}
-	int getAScore() const;
-	int getBScore() const;
-	bool didAWin() const;
-	bool didBWin() const;
+	//int getAScore() const;
+	//int getBScore() const;
+	//bool didAWin() const;
+	//bool didBWin() const;
 
 private:
 	std::unique_ptr<IBattleshipGameAlgo> _playerA;
@@ -42,6 +43,7 @@ private:
 	PlayerGameResults _grA;
 	PlayerGameResults _grB;
 	std::shared_ptr<Logger> _pLogger;
+	Game _game;
 
 	/* helper functions called inside playThe Game */
 	void handleMove(const MyBoardData& board, Coordinate& move, int &attackerNum, int &defenderNum, std::unique_ptr<IBattleshipGameAlgo>& A,

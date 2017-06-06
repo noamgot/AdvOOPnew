@@ -6,6 +6,7 @@
 
 typedef IBattleshipGameAlgo *(*GetAlgoFuncType)();
 
+
 class AlgorithmLoader
 {
 public:

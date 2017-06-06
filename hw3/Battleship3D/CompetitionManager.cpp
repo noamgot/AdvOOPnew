@@ -77,27 +77,24 @@ void CompetitionManager::runGames(int id)
 			return; 			
 		}
 		// Start the game
-		GameRunner gameRunner(_players[game._idA], _players[game._idB], _boards[game._boardID], _pLogger);
-		gameRunner.runGame();
+		GameRunner gameRunner(game, _players[game._idA], _players[game._idB], _boards[game._boardID], _pLogger);
+		vector<PlayerGameResults> pgr = gameRunner.runGame();
 		int roundA, roundB;
 		{
 			lock_guard<mutex> mlock(_mutex);
 			roundA = _roundsCnt[game._idA]++;
 			roundB = _roundsCnt[game._idB]++;
-/*			std::lock_guard<std::mutex> mlock2(_coutMutex);
+/*			std::lock_guard<std::mutex> mlock2(_coutMute x);
 			std::cout << "thread " << std::this_thread::get_id() << " got round count:" << std::endl;
 			std::cout << "A: " << roundA+1 << ", B: " << roundB+1 << std::endl;*/
 		}
 
 		// Retrieve the game results
-		auto AWon = gameRunner.didAWin() ? 1 : 0;
-		auto BWon = gameRunner.didBWin() ? 1 : 0;
-		auto scoreA = gameRunner.getAScore();
-		auto scoreB = gameRunner.getBScore();
+
 		
 		// Insert game results to the results table.
-		_resultsTable.updateTable(roundA, PlayerGameResults(game._idA, AWon, 1 - AWon, scoreA, scoreB, AWon * 100));
-		_resultsTable.updateTable(roundB, PlayerGameResults(game._idB, BWon, 1 - BWon, scoreA, scoreB, BWon * 100));
+		_resultsTable.updateTable(roundA, pgr[PLAYER_A]);
+		_resultsTable.updateTable(roundB, pgr[PLAYER_B]);
 
 
 	}

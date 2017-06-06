@@ -1,44 +1,37 @@
 ﻿#include "GameRunner.h"
+#include <iso646.h>
 
 using namespace std;
 
-
-GameRunner::GameRunner(const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, const MyBoardData& boardData, shared_ptr<Logger> pLogger)
-	:_playerA(getAlgoA()), _playerB(getAlgoB()), _pLogger(pLogger)
+GameRunner::GameRunner(const Game& game, const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, const MyBoardData& boardData, std::shared_ptr<Logger> pLogger)
+	:_game(game), _playerA(getAlgoA()), _playerB(getAlgoB()), _pLogger(pLogger)
 {
-
+	
 	initPlayersAttributes(boardData, PLAYER_A);
 	initPlayersAttributes(boardData, PLAYER_B);
 	_boardData = boardData;
+	_pLogger->writeToLog("Initialized game: boardID = " + to_string(game._boardID) + ", A=" + to_string(game._idA) + ", B: " + to_string(game._idB));
 }
 
 
-int GameRunner::runGame()
+vector<PlayerGameResults> GameRunner::runGame()
 {
 	// Copy board to personal boards
-	MyBoardData boardA(_boardData.rows(), _boardData.cols(), _boardData.depth());
-	MyBoardData boardB(_boardData.rows(), _boardData.cols(), _boardData.depth());
-	initIndividualBoards(boardA, boardB);
+	vector<MyBoardData> mbd(2);
+	mbd[0] = MyBoardData(_boardData.rows(), _boardData.cols(), _boardData.depth());
+	mbd[1] = MyBoardData(_boardData.rows(), _boardData.cols(), _boardData.depth());
+	int counter = 0;
+	initIndividualBoards(mbd[PLAYER_A], mbd[PLAYER_B]);
+
 
 
 	auto attackerNum = 0, defenderNum = 1; // index 0 = A, index 1 = B
-	unique_ptr<IBattleshipGameAlgo> pPlayers[] = { move(_playerA) , move(_playerB) };
-
-	//TODO is there a better way to do this? YES - a function...
-	// Initializing the player auxillary data structs
-
-	//_playerAttributes[PLAYER_A].shipList = _boardData.getShipList(PLAYER_A);
-	//_playerAttributes[PLAYER_A].shipsCount = _playerAttributes[PLAYER_A].shipList.size();
-	//_playerAttributes[PLAYER_A].score = 0;
-	//_playerAttributes[PLAYER_A].hasMoves = true;
-	//_playerAttributes[PLAYER_A].won = false;
-
-	//_playerAttributes[PLAYER_B].shipList = _boardData.getShipList(PLAYER_B);
-	//_playerAttributes[PLAYER_B].shipsCount = _playerAttributes[PLAYER_B].shipList.size();
-	//_playerAttributes[PLAYER_B].score = 0;
-	//_playerAttributes[PLAYER_B].hasMoves = true;
-	//_playerAttributes[PLAYER_B].won = false;
-
+	std::unique_ptr<IBattleshipGameAlgo> pPlayers[] = { std::move(_playerA) , std::move(_playerB) };
+	for (auto player_id = 0; player_id < PLAYER_COUNT; player_id++)
+	{
+		pPlayers[player_id]->setPlayer(player_id);
+		pPlayers[player_id]->setBoard(mbd[player_id]);
+	}
 	//The game goes on until one of the players has no more ships or both ran out of moves.
 	while (_playerAttributes[0].shipsCount > 0 && _playerAttributes[1].shipsCount > 0 &&
 		(_playerAttributes[0].hasMoves || _playerAttributes[1].hasMoves))
@@ -50,19 +43,24 @@ int GameRunner::runGame()
 			continue;
 		}
 
+
 		auto currentMove = pPlayers[attackerNum]->attack();
 		if (!CommonUtilities::isLegalMove(currentMove, _boardData.rows(), _boardData.cols(), _boardData.depth()))
 		{
 			// Player returned a dumb move or refuses to play like a big cry baby (or maybe it has a bug)
 			// we switch player and continue - even if the move is invalid (i.e we ignore invalid moves)
-			changeAttacker(attackerNum, defenderNum);
+			_playerAttributes[attackerNum].hasMoves = !(currentMove.row == -1 && currentMove.col == -1 && currentMove.depth == -1);
+			GameRunner::changeAttacker(attackerNum, defenderNum);
 			continue;
 
 		}
 		handleMove(_boardData, currentMove, attackerNum, defenderNum, pPlayers[PLAYER_A], pPlayers[PLAYER_B], _playerAttributes);
 	}
-
-	return EXIT_SUCCESS;
+	_pLogger->writeToLog("Finished game: boardID = " + to_string(_game._boardID) + ", A=" + to_string(_game._idA) + ", B: " + to_string(_game._idB));
+	vector<PlayerGameResults> pgr(2);
+	pgr[PLAYER_A] = PlayerGameResults(_game._idA, _playerAttributes[PLAYER_A].won, 1 - _playerAttributes[PLAYER_A].won, _playerAttributes[PLAYER_A].score, _playerAttributes[PLAYER_B].score, 100 * _playerAttributes[PLAYER_A].won);
+	pgr[PLAYER_B] = PlayerGameResults(_game._idA, _playerAttributes[PLAYER_B].won, 1 - _playerAttributes[PLAYER_B].won, _playerAttributes[PLAYER_B].score, _playerAttributes[PLAYER_B].score, 100 * _playerAttributes[PLAYER_B].won);
+	return pgr;
 }
 
 void GameRunner::initIndividualBoards(MyBoardData& boardA, MyBoardData& boardB) const
@@ -100,25 +98,25 @@ void GameRunner::initIndividualBoards(MyBoardData& boardA, MyBoardData& boardB) 
 	
 }
 
-int GameRunner::getAScore() const
-{
-	return _playerAttributes[PLAYER_A].score;
-}
-
-int GameRunner::getBScore() const
-{
-	return _playerAttributes[PLAYER_B].score;
-}
-
-bool GameRunner::didAWin() const
-{
-	return _playerAttributes[PLAYER_A].won;
-}
-
-bool GameRunner::didBWin() const
-{
-	return _playerAttributes[PLAYER_B].won;
-}
+//int GameRunner::getAScore() const
+//{
+//	return _playerAttributes[PLAYER_A].score;
+//}
+//
+//int GameRunner::getBScore() const
+//{
+//	return _playerAttributes[PLAYER_B].score;
+//}
+//
+//bool GameRunner::didAWin() const
+//{
+//	return _playerAttributes[PLAYER_A].won;
+//}
+//
+//bool GameRunner::didBWin() const
+//{
+//	return _playerAttributes[PLAYER_B].won;
+//}
 void GameRunner::handleMove(const MyBoardData& board, Coordinate& move, int &attackerNum, int &defenderNum, unique_ptr<IBattleshipGameAlgo>& A,
 	unique_ptr<IBattleshipGameAlgo>& B, PlayerAttributes playerAttributesArr[])
 {
