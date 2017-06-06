@@ -93,13 +93,13 @@ int main(int argc, char** argv)
 	algoLoader.loadLibs(dllFiles);
 	algoLoader.exportAlgos(algos);
 
-
-	vector<MyBoardData> gameBoards(2);
-	vector<GetAlgoFuncType> players(playerNames.size());
+	//TODO - exit if no valid players/board?
+	//vector<MyBoardData> gameBoards(2);
+	//vector<GetAlgoFuncType> players(playerNames.size());
 	// here we know that we have valid boards and players
-	pLogger->writeToLog("Number of legal players: " + to_string(players.size()), true);
-	pLogger->writeToLog("Number of legal boards: " + to_string(gameBoards.size()), true);
-	CompetitionManager tournamentMngr(gameBoards, players, playerNames, pLogger, numThreads);
+	pLogger->writeToLog("Number of legal players: " + to_string(algos.size()), true);
+	pLogger->writeToLog("Number of legal boards: " + to_string(boards.size()), true);
+	CompetitionManager tournamentMngr(boards, algos, playerNames, pLogger, numThreads);
 	tournamentMngr.runCompetition();
 	pLogger->writeToLog("", false, Logger::eLogType::LOG_END);
 	return EXIT_SUCCESS;
