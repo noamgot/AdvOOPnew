@@ -6,10 +6,10 @@ using namespace std;
 GameRunner::GameRunner(const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, const MyBoardData& boardData, shared_ptr<Logger> pLogger)
 	:_playerA(getAlgoA()), _playerB(getAlgoB()), _pLogger(pLogger)
 {
-	//_playerA = unique_ptr<IBattleshipGameAlgo>(getAlgoA());
-	//_playerB = unique_ptr<IBattleshipGameAlgo>(getAlgoB());
+
+	initPlayersAttributes(boardData, PLAYER_A);
+	initPlayersAttributes(boardData, PLAYER_B);
 	_boardData = boardData;
-	//_pLogger = pLogger;
 }
 
 
@@ -26,17 +26,18 @@ int GameRunner::runGame()
 
 	//TODO is there a better way to do this? YES - a function...
 	// Initializing the player auxillary data structs
-	_playerAttributes[PLAYER_A].shipList = _boardData.getShipList(PLAYER_A);
-	_playerAttributes[PLAYER_A].shipsCount = _playerAttributes[PLAYER_A].shipList.size();
-	_playerAttributes[PLAYER_A].score = 0;
-	_playerAttributes[PLAYER_A].hasMoves = true;
-	_playerAttributes[PLAYER_A].won = false;
 
-	_playerAttributes[PLAYER_B].shipList = _boardData.getShipList(PLAYER_B);
-	_playerAttributes[PLAYER_B].shipsCount = _playerAttributes[PLAYER_B].shipList.size();
-	_playerAttributes[PLAYER_B].score = 0;
-	_playerAttributes[PLAYER_B].hasMoves = true;
-	_playerAttributes[PLAYER_B].won = false;
+	//_playerAttributes[PLAYER_A].shipList = _boardData.getShipList(PLAYER_A);
+	//_playerAttributes[PLAYER_A].shipsCount = _playerAttributes[PLAYER_A].shipList.size();
+	//_playerAttributes[PLAYER_A].score = 0;
+	//_playerAttributes[PLAYER_A].hasMoves = true;
+	//_playerAttributes[PLAYER_A].won = false;
+
+	//_playerAttributes[PLAYER_B].shipList = _boardData.getShipList(PLAYER_B);
+	//_playerAttributes[PLAYER_B].shipsCount = _playerAttributes[PLAYER_B].shipList.size();
+	//_playerAttributes[PLAYER_B].score = 0;
+	//_playerAttributes[PLAYER_B].hasMoves = true;
+	//_playerAttributes[PLAYER_B].won = false;
 
 	//The game goes on until one of the players has no more ships or both ran out of moves.
 	while (_playerAttributes[0].shipsCount > 0 && _playerAttributes[1].shipsCount > 0 &&
@@ -212,12 +213,12 @@ bool GameRunner::registerHit(PlayerAttributes& playerAttributes, Coordinate coor
 	return validAttack;
 }
 
-void GameRunner::initPlayersAttributes(PlayerAttributes& playerAttributes, const MyBoardData& board, const int player_id)
+void GameRunner::initPlayersAttributes(const MyBoardData& board, const int player_id)
 {
-	playerAttributes.hasMoves = true;
-	playerAttributes.score = 0;
-	playerAttributes.shipsCount = board.getShipCount();
-	playerAttributes.won = false;
-	playerAttributes.shipList = board.getShipList(player_id);
+	_playerAttributes[player_id].hasMoves = true;
+	_playerAttributes[player_id].score = 0;
+	_playerAttributes[player_id].shipsCount = board.getShipCount();
+	_playerAttributes[player_id].won = false;
+	_playerAttributes[player_id].shipList = board.getShipList(player_id);
 
 }

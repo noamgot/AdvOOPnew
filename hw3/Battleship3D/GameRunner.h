@@ -60,5 +60,5 @@ private:
 
 
 	/* initializes the given PlayerAttribute struct, according to the given board*/
-	void initPlayersAttributes(PlayerAttributes& playerAttributes, const MyBoardData& board, const int player_id);
+	void initPlayersAttributes(const MyBoardData& board, const int player_id);
 };
