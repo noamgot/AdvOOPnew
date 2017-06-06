@@ -24,7 +24,7 @@ Logger::~Logger()
 {
 	if (_logFile.is_open())
 	{
-		_logFile << std::endl << std::endl;
+		_logFile << std::endl;
 
 		// Report number of errors and warnings
 		_logFile << _numWarnings << " warnings" << std::endl;

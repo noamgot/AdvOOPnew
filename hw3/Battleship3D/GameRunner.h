@@ -54,9 +54,13 @@ private:
 	bool registerHit(PlayerAttributes& playerAttributes, Coordinate coords, eShipType shipType, AttackResult& res);
 
 	/* returns the amount of points according to the given ship type (by char) */
-	int calculateSinkScore(char c);
+	static int calculateSinkScore(char c);
 
-	void changeAttacker(int& attackerNum, int& defenderNum);
+	static void changeAttacker(int& attackerNum, int& defenderNum)
+	{
+		attackerNum ^= 1;
+		defenderNum ^= 1;
+	}
 
 
 	/* initializes the given PlayerAttribute struct, according to the given board*/

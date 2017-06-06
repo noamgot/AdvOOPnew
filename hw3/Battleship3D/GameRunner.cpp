@@ -182,12 +182,7 @@ int GameRunner::calculateSinkScore(char c)
 	}
 }
 
-void GameRunner::changeAttacker(int& attackerNum, int& defenderNum)
-{
-	// switch attacker and defender
-	attackerNum ^= 1;
-	defenderNum ^= 1;
-}
+
 
 bool GameRunner::registerHit(PlayerAttributes& playerAttributes, Coordinate coords, eShipType shipType, AttackResult& res)
 {

@@ -1,53 +1,53 @@
 ﻿#include "AlgorithmLoader.h"
+#include "InitUtilities.h"
+
+using namespace std;
 
 AlgorithmLoader::~AlgorithmLoader()
 {
 	for (auto itr = libs.begin(); itr != libs.end(); ++itr)
 	{
-		FreeLibrary(std::get<1>(*itr));
+		FreeLibrary(get<1>(*itr));
 	}
 }
 
-int AlgorithmLoader::loadDLL(const std::string path)
+
+void AlgorithmLoader::loadLibs(const vector<string>& dlls, vector<GetAlgoFuncType>& players, vector<string>& playerNames, const string& dirPath)
 {
-	HINSTANCE hLib = LoadLibraryA(path.c_str());
-	if (!hLib)
+	for (auto fileName : dlls)
 	{
-		std::cout << "Error: cannot load dll: " << path << std::endl;
-		return -1;
-	}
+		auto dllFullPath = dirPath + "\\" + fileName;
+		HINSTANCE hLib = LoadLibraryA(dllFullPath.c_str());
+		if (!hLib)
+		{
+			_pLogger->writeToLog("Cannot load dll: " + dllFullPath + " (LoadLibraryA failed)", false, Logger::eLogType::LOG_WARNING);
+			return;
+		}
 
-	GetAlgoFuncType getAlgoFunc = reinterpret_cast<GetAlgoFuncType>(GetProcAddress(hLib, "GetAlgorithm"));
-	if (!getAlgoFunc)
-	{
-		std::cout << "Error: cannot load dll: " << path << std::endl;
-		return -1;
-	}
+		GetAlgoFuncType getAlgoFunc = reinterpret_cast<GetAlgoFuncType>(GetProcAddress(hLib, "GetAlgorithm"));
+		if (!getAlgoFunc)
+		{
+			_pLogger->writeToLog("Cannot load dll: " + dllFullPath + " (GetProcAddress failed)", false, Logger::eLogType::LOG_WARNING);
+			return;
+		}
 
-	libs.push_back(make_tuple(path, hLib, getAlgoFunc));
-
-	return 1;
-}
-
-void AlgorithmLoader::loadLibs(const std::vector<std::string> dlls)
-{
-	for (std::string path : dlls)
-	{
-		loadDLL(path);
-	}
-}
-
-void AlgorithmLoader::exportAlgos(std::vector<GetAlgoFuncType>& algos)
-{
-	for (int i = 0; i < libs.size(); i++)
-	{
-		algos.push_back(std::get<2>(libs[i]));
+		libs.push_back(make_tuple(dllFullPath, hLib, getAlgoFunc));
+		// success! keep algo function and player name:
+		_pLogger->writeToLog("Succeeded loading dll: " + dllFullPath);
+		players.push_back(getAlgoFunc);
+		playerNames.push_back(removeSuffix(fileName));
 	}
 }
 
-size_t AlgorithmLoader::size() const
+
+string AlgorithmLoader::removeSuffix(const string& filename)
 {
-	return libs.size();
+	auto lastdot = filename.find_last_of(".");
+	if (lastdot == string::npos)
+	{
+		return filename;
+	}
+	return filename.substr(0, lastdot);
 }
 
 IBattleshipGameAlgo* AlgorithmLoader::loadAlgo(int n)
@@ -56,6 +56,6 @@ IBattleshipGameAlgo* AlgorithmLoader::loadAlgo(int n)
 	{
 		return nullptr;
 	}
-	return std::get<2>(libs[n])();
+	return get<2>(libs[n])();
 }
 

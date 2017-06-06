@@ -152,6 +152,7 @@
     <ClCompile Include="GameRunner.cpp" />
     <ClCompile Include="GameResultsTable.cpp" />
     <ClCompile Include="CommonUtilities.cpp" />
+    <ClCompile Include="InitUtilities.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyBoardData.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="GameResultsTable.h" />
     <ClInclude Include="CommonUtilities.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
+    <ClInclude Include="InitUtilities.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="MyBoardData.h" />
     <ClInclude Include="PlayerGameResults.h" />
