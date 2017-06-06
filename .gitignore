@@ -242,3 +242,5 @@ ModelManifest.xml
 .fake/
 /Battleship/Battleship/LOG.txt
 /Battleship/Battleship/SmartBoard.txt
+/hw3/SmartPlayerDLL/SmartPlayerDLL.vcxproj.filters
+/hw3/SmartPlayerDLL/SmartPlayerDLL.vcxproj
