@@ -6,6 +6,7 @@
 
 
 using namespace std;
+using namespace CommonUtilities;
 
 
 string removeSuffix(const string& filename) 
@@ -52,19 +53,19 @@ int main(int argc, char** argv)
 	{
 		return -1;
 	}
-	if (!CommonUtilities::isValidPath(dirPath))
+	if (!isValidPath(dirPath))
 	{
 		cout << "Wrong Path: " << dirPath << endl;
 		return -1;
 	}
 	// intialize logger only after there is a valid path
-	std::shared_ptr<Logger> pLogger = std::make_shared<Logger>(dirPath);
+	shared_ptr<Logger> pLogger = make_shared<Logger>(dirPath);
 
 	vector<string> dirFiles, boardFiles, dllFiles, playerNames;
-	if (CommonUtilities::getDirectoryFileList(dirPath, dirFiles) < 0)
+	if (getDirectoryFileList(dirPath, dirFiles) < 0)
 	{
-		char errMsg[CommonUtilities::BUF_SIZE];
-		if(strerror_s(errMsg, CommonUtilities::BUF_SIZE, errno))
+		char errMsg[BUF_SIZE];
+		if(strerror_s(errMsg, BUF_SIZE, errno))
 		{
 			pLogger->writeToLog("Error: strerro_s failed", true, Logger::eLogType::LOG_ERROR);
 		}

@@ -4,7 +4,6 @@
 #include "MyBoardData.h"
 #include "Logger.h"
 
-using namespace std;
 
 #define PLAYER_A 0
 #define PLAYER_B 1
@@ -36,8 +35,8 @@ public:
 	//bool didBWin() const;
 
 private:
-	unique_ptr<IBattleshipGameAlgo> _playerA;
-	unique_ptr<IBattleshipGameAlgo> _playerB;
+	std::unique_ptr<IBattleshipGameAlgo> _playerA;
+	std::unique_ptr<IBattleshipGameAlgo> _playerB;
 	PlayerAttributes _playerAttributes[2];
 	MyBoardData _boardData;
 
@@ -47,10 +46,10 @@ private:
 	Game _game;
 
 	/* helper functions called inside playThe Game */
-	void handleMove(const MyBoardData& board, Coordinate& move, int &attackerNum, int &defenderNum, unique_ptr<IBattleshipGameAlgo>& A,
-		unique_ptr<IBattleshipGameAlgo>& B, PlayerAttributes playerAttributesArr[]);
-	void handleMiss(Coordinate& move, unique_ptr<IBattleshipGameAlgo>& A, unique_ptr<IBattleshipGameAlgo>& B, int& attackerNum);
-	void handleHitOrSink(Coordinate& move, bool& validAttack, unique_ptr<IBattleshipGameAlgo>& A, unique_ptr<IBattleshipGameAlgo>& B,
+	void handleMove(const MyBoardData& board, Coordinate& move, int &attackerNum, int &defenderNum, std::unique_ptr<IBattleshipGameAlgo>& A,
+		std::unique_ptr<IBattleshipGameAlgo>& B, PlayerAttributes playerAttributesArr[]);
+	void handleMiss(Coordinate& move, std::unique_ptr<IBattleshipGameAlgo>& A, std::unique_ptr<IBattleshipGameAlgo>& B, int& attackerNum);
+	void handleHitOrSink(Coordinate& move, bool& validAttack, std::unique_ptr<IBattleshipGameAlgo>& A, std::unique_ptr<IBattleshipGameAlgo>& B,
 		char hitChar, int attackerNum, PlayerAttributes playerAttributesArr[]);
 
 	/* mark a ship hit to a given player, and keeping the AttackResult in res */

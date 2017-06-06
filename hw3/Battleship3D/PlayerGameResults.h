@@ -3,7 +3,6 @@
 struct PlayerGameResults
 {
 	int ID, wins, losses, ptsFor, ptsAgainst;
-	//std::string name	
 	double percentage;
 
 	PlayerGameResults() : ID(0), wins(0), losses(0), ptsFor(0), ptsAgainst(0), percentage(0) {}

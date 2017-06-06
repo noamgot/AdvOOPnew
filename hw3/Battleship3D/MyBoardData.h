@@ -8,7 +8,7 @@ public:
 	MyBoardData() = default;
 	MyBoardData(int rows, int cols, int depth);
 	MyBoardData(BoardData &board);
-	MyBoardData(CommonUtilities::RawBoard& board);
+	//MyBoardData(CommonUtilities::RawBoard& board);
 	char charAt(Coordinate c) const override { return _board[c.row][c.col][c.depth]; }
 	std::vector<std::vector<char>>& operator[] (int i) { return _board[i]; }
 	void setChar(Coordinate coor, char ch) { _board[coor.row][coor.col][coor.depth] = ch; }

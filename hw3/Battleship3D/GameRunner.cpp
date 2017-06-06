@@ -1,6 +1,7 @@
 ﻿#include "GameRunner.h"
 #include <iso646.h>
 
+using namespace std;
 
 GameRunner::GameRunner(const Game& game, const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, const MyBoardData& boardData, std::shared_ptr<Logger> pLogger)
 	:_game(game), _playerA(getAlgoA()), _playerB(getAlgoB()), _pLogger(pLogger)
@@ -38,7 +39,7 @@ vector<PlayerGameResults> GameRunner::runGame()
 		// Skip if current player is out of moves.
 		if (!_playerAttributes[attackerNum].hasMoves)
 		{
-			GameRunner::changeAttacker(attackerNum, defenderNum);
+			changeAttacker(attackerNum, defenderNum);
 			continue;
 		}
 
