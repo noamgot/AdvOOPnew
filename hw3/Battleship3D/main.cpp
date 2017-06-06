@@ -97,6 +97,21 @@ int main(int argc, char** argv)
 	//vector<MyBoardData> gameBoards(2);
 	//vector<GetAlgoFuncType> players(playerNames.size());
 	// here we know that we have valid boards and players
+
+	//if(boards.size() < 1)
+	//{
+	//	string msg = "No board files(*.sboard) looking in path:";
+	//	msg.append(dirPath);
+	//	pLogger->writeToLog(msg, true, Logger::eLogType::LOG_ERROR);
+	//}
+	//if(algos.size() < 2)
+	//{
+	//	//Wrong path : <path>
+	//	string msg = "No board files(*.sboard) looking in path:";
+	//	msg.append(dirPath);
+	//		//Missing algorithm(dll) files looking in path : <path> (needs at least two)
+	//	
+	//}
 	pLogger->writeToLog("Number of legal players: " + to_string(algos.size()), true);
 	pLogger->writeToLog("Number of legal boards: " + to_string(boards.size()), true);
 	CompetitionManager tournamentMngr(boards, algos, playerNames, pLogger, numThreads);

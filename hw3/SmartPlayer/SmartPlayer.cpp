@@ -354,8 +354,8 @@ void SmartPlayer::setPlayer(int player)
 }
 
 
+
 IBattleshipGameAlgo* SmartPlayer::GetAlgorithm()
 {
-	SmartPlayer* ptr =  new SmartPlayer();
-	return ptr;
+	return new SmartPlayer();
 }

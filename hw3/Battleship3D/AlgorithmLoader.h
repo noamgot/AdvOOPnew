@@ -5,6 +5,7 @@
 
 typedef IBattleshipGameAlgo *(*GetAlgoFuncType)();
 
+
 class AlgorithmLoader
 {
 	//data members

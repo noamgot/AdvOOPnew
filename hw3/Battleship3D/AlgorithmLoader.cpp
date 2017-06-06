@@ -8,11 +8,15 @@ AlgorithmLoader::~AlgorithmLoader()
 	}
 }
 
+
+
+
 int AlgorithmLoader::loadDLL(const std::string path)
 {
 	HINSTANCE hLib = LoadLibraryA(path.c_str());
 	if (!hLib)
 	{
+		//todo - LOG
 		std::cout << "Error: cannot load dll: " << path << std::endl;
 		return -1;
 	}
@@ -20,6 +24,7 @@ int AlgorithmLoader::loadDLL(const std::string path)
 	GetAlgoFuncType getAlgoFunc = reinterpret_cast<GetAlgoFuncType>(GetProcAddress(hLib, "GetAlgorithm"));
 	if (!getAlgoFunc)
 	{
+		//todo - LOG
 		std::cout << "Error: cannot load dll: " << path << std::endl;
 		return -1;
 	}
