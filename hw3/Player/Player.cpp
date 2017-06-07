@@ -1,9 +1,9 @@
-#include "SmartPlayer.h"
+#include "Player.h"
 
 using namespace std;
 
 
-bool SmartPlayer::isNearChar(int row, int col, int depth, eSign s, Direction* dir)
+bool Player::isNearChar(int row, int col, int depth, eSign s, Direction* dir)
 {
 	if(dir == nullptr)
 	{
@@ -26,7 +26,7 @@ bool SmartPlayer::isNearChar(int row, int col, int depth, eSign s, Direction* di
 	return false;
 }
 
-bool SmartPlayer::replaceChar(int row, int col, int depth, char old_char, char new_char, bool reverse)
+bool Player::replaceChar(int row, int col, int depth, char old_char, char new_char, bool reverse)
 {
 	auto pr = verifyChar(row, col, depth,  old_char);
 	if (pr.second != reverse)
@@ -37,7 +37,7 @@ bool SmartPlayer::replaceChar(int row, int col, int depth, char old_char, char n
 	return false;
 }
 
-void SmartPlayer::addTargetLoop(int row, int col, int depth, int rowMod, int colMod, int depthMod, deque<Coordinate>& attackQueue, Direction dir, Direction orientation, Direction positiveDirection, Direction negativeDirection)
+void Player::addTargetLoop(int row, int col, int depth, int rowMod, int colMod, int depthMod, deque<Coordinate>& attackQueue, Direction dir, Direction orientation, Direction positiveDirection, Direction negativeDirection)
 {
 	auto maxDist = 4;
 	auto foundPos = false, foundNeg = false;
@@ -66,7 +66,7 @@ void SmartPlayer::addTargetLoop(int row, int col, int depth, int rowMod, int col
 	}
 }
 
-void SmartPlayer::addTarget(int row, int col, int depth, deque<Coordinate>& attackQueue, Direction dir)
+void Player::addTarget(int row, int col, int depth, deque<Coordinate>& attackQueue, Direction dir)
 {
 	//auto maxDist = 4;
 	//auto foundUp = false, foundDown = false, foundLeft = false, foundRight = false;
@@ -81,7 +81,7 @@ void SmartPlayer::addTarget(int row, int col, int depth, deque<Coordinate>& atta
 	}
 }
 
-pair<bool, bool> SmartPlayer::verifyChar(int row, int col, int depth, char c)
+pair<bool, bool> Player::verifyChar(int row, int col, int depth, char c)
 {
 	Coordinate cord(row, col, depth);
 	if (isPointValid(cord))
@@ -91,7 +91,7 @@ pair<bool, bool> SmartPlayer::verifyChar(int row, int col, int depth, char c)
 	return make_pair(false, false);
 }
 
-void SmartPlayer::reLabelTheBoard()
+void Player::reLabelTheBoard()
 {
 	for (auto row = 1; row <= _Rows; row++)
 	{
@@ -114,7 +114,7 @@ void SmartPlayer::reLabelTheBoard()
 	}
 }
 
-void SmartPlayer::setBoard(const BoardData &board)
+void Player::setBoard(const BoardData &board)
 {
 	// Copy the board
 	for (auto row = 1; row <= _Rows; row++)
@@ -147,7 +147,7 @@ void SmartPlayer::setBoard(const BoardData &board)
 	}
 }
 
-bool SmartPlayer::queueInit()
+bool Player::queueInit()
 {
 	vector<Coordinate> valid_moves;
 	for (auto row = 1; row <= _Rows; row++)
@@ -174,7 +174,7 @@ bool SmartPlayer::queueInit()
 	return true;
 }
 
-Coordinate SmartPlayer::attackFromPriorityQuque(deque<Coordinate>& priorityQueue)
+Coordinate Player::attackFromPriorityQuque(deque<Coordinate>& priorityQueue)
 {
 	auto& move = priorityQueue.front();
 	while (_Board.charAt(move) != UNKNOWN)
@@ -192,7 +192,7 @@ Coordinate SmartPlayer::attackFromPriorityQuque(deque<Coordinate>& priorityQueue
 	return move;	
 }
 
-Coordinate SmartPlayer::attack()
+Coordinate Player::attack()
 {
 	if (_HighPriorityQueue.size() > 0)
 	{
@@ -213,7 +213,7 @@ Coordinate SmartPlayer::attack()
 	return Coordinate(-1, -1, -1);
 }
 
-void SmartPlayer::analyzeAttackResult()
+void Player::analyzeAttackResult()
 {
 	auto dir = NONE;
 	for (auto row = 1; row <= _Rows; row++)
@@ -241,7 +241,7 @@ void SmartPlayer::analyzeAttackResult()
 	}
 }
 
-void SmartPlayer::sinkShip(int row, int col, int depth, Direction dir)
+void Player::sinkShip(int row, int col, int depth, Direction dir)
 {
 	//If the ship is horizonal we keep the row constant and move along the columns.
 	//If the ship is not horizonal (vertical) we keep the col constant and move along the rows.
@@ -262,7 +262,7 @@ void SmartPlayer::sinkShip(int row, int col, int depth, Direction dir)
 	}
 }
 
-void SmartPlayer::sinkShip(int row, int col, int depth)
+void Player::sinkShip(int row, int col, int depth)
 {
 	if (!findDirection(row, col, depth, false))
 	{
@@ -270,7 +270,7 @@ void SmartPlayer::sinkShip(int row, int col, int depth)
 	}
 }
 
-void SmartPlayer::outlineLoop(int row, int col, int depth, int rowMod, int colMod, int depthMod, bool reverse)
+void Player::outlineLoop(int row, int col, int depth, int rowMod, int colMod, int depthMod, bool reverse)
 {
 	auto i = 0;
 	for (; verifyChar(row + (reverse ? -1 : 1) * i * rowMod, col + (reverse ? -1 : 1) * i * colMod, depth + (reverse ? -1 : 1) * i * depthMod, SANK).second && i < SHIP_MAX_LENGTH; i++)
@@ -281,7 +281,7 @@ void SmartPlayer::outlineLoop(int row, int col, int depth, int rowMod, int colMo
 	replaceChar(row + (reverse ? -1 : 1) * i * rowMod, col + (reverse ? -1 : 1) * i * colMod, depth + (reverse ? -1 : 1) * i * depthMod, UNKNOWN, EMPTY);
 }
 
-bool SmartPlayer::findDirection(int row, int col, int depth, bool outline)
+bool Player::findDirection(int row, int col, int depth, bool outline)
 {
 	auto label = outline ? SANK : DESTROYED;
 	if (verifyChar(row, col + 1, depth, label).second || verifyChar(row, col - 1, depth, label).second)
@@ -303,7 +303,7 @@ bool SmartPlayer::findDirection(int row, int col, int depth, bool outline)
 	return true;
 }
 
-void SmartPlayer::outlineSunkenEnemyShips(int row, int col, int depth, Direction dir)
+void Player::outlineSunkenEnemyShips(int row, int col, int depth, Direction dir)
 { 
 	if (dir == HORIZONAL)
 	{
@@ -322,7 +322,7 @@ void SmartPlayer::outlineSunkenEnemyShips(int row, int col, int depth, Direction
 	}
 }
 
-void SmartPlayer::outlineSunkenEnemyShips(int row, int col, int depth)
+void Player::outlineSunkenEnemyShips(int row, int col, int depth)
 {
 	if (!findDirection(row, col, depth, true))
 	{
@@ -335,7 +335,7 @@ void SmartPlayer::outlineSunkenEnemyShips(int row, int col, int depth)
 	}
 }
 
-void SmartPlayer::notifyOnAttackResult(int player, Coordinate move, AttackResult result)
+void Player::notifyOnAttackResult(int player, Coordinate move, AttackResult result)
 {
 	if (!CommonUtilities::isLegalMove(move, _Rows, _Cols, _Depth)) // ignore invalid moves
 	{
@@ -360,7 +360,7 @@ void SmartPlayer::notifyOnAttackResult(int player, Coordinate move, AttackResult
 	}	
 }
 
-void SmartPlayer::setPlayer(int player)
+void Player::setPlayer(int player)
 {
 	_PlayerNum = player;
 }
@@ -369,5 +369,5 @@ void SmartPlayer::setPlayer(int player)
 
 IBattleshipGameAlgo* GetAlgorithm()
 {
-	return new SmartPlayer;
+	return new Player;
 }

@@ -149,14 +149,14 @@
     <ClCompile Include="CommonUtilities.cpp" />
     <ClCompile Include="MyBoardData.cpp" />
     <ClCompile Include="Ship.cpp" />
-    <ClCompile Include="SmartPlayer.cpp" />
+    <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonUtilities.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
     <ClInclude Include="MyBoardData.h" />
     <ClInclude Include="Ship.h" />
-    <ClInclude Include="SmartPlayer.h" />
+    <ClInclude Include="Player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

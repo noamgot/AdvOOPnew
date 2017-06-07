@@ -29,7 +29,7 @@ enum eSign : char
 	UNKNOWN = ' '
 };
 
-class SmartPlayer : public IBattleshipGameAlgo
+class Player : public IBattleshipGameAlgo
 {
 protected:
 	static const int NUMBER_OF_DIRECTIONS = 6;
@@ -53,12 +53,12 @@ protected:
 	std::deque<Coordinate> _MovesQueue;
 
 	//Returns whether the coordinates are valid - in the inner representation (0 - COL/ROW SIZE -1)
-	bool SmartPlayer::isPointValid(int row, int col, int depth) const
+	bool Player::isPointValid(int row, int col, int depth) const
 	{
 		return CommonUtilities::isLegalMove(row + 1, col + 1, depth + 1, _Rows, _Cols, _Depth);
 	}
 	//Returns whether the coordinates are valid - in the inner representation (0 - COL/ROW SIZE -1) (overload)
-	bool SmartPlayer::isPointValid(Coordinate point) const
+	bool Player::isPointValid(Coordinate point) const
 	{
 		return CommonUtilities::isLegalMove(point, _Rows, _Cols, _Depth);
 	}
@@ -123,7 +123,7 @@ protected:
 	void sinkShip(int row, int col, int depth, Direction dir);
 
 	// The main loop of outlineSunkenEnemyShips (born from code duplication).
-	void SmartPlayer::outlineLoop(int row, int col, int depth, int rowMod, int colMod, int depthMod, bool reverse);
+	void Player::outlineLoop(int row, int col, int depth, int rowMod, int colMod, int depthMod, bool reverse);
 
 	// The function pokes the coordinates adjacent to the (row,col) it is given and depening
 	// On the value of outline decides it to call outlineSunkenEnemyShips(row, col , dir)  or sinkShip(row, col ,dir)
@@ -135,8 +135,8 @@ protected:
 	
 
 public:
-	SmartPlayer() : _Rows(-1), _Cols(-1), _Depth(-1), _PlayerNum(-1), _ShipsCount(-1) {}
-	~SmartPlayer(){}
+	Player() : _Rows(-1), _Cols(-1), _Depth(-1), _PlayerNum(-1), _ShipsCount(-1) {}
+	~Player(){}
 	void setBoard(const BoardData& board) override; // called once to notify player about his board // called once to notify player on his boardd
 	void notifyOnAttackResult(int player, Coordinate move, AttackResult result) override; // notify on last move result
 	void setPlayer(int player) override;
