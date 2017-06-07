@@ -15,7 +15,6 @@ public:
 		LOG_ERROR,
 		LOG_WARNING,
 		LOG_INFO,
-		LOG_END
 	};
 
 
@@ -29,13 +28,7 @@ public:
 
 	void writeToLog(const std::string msg, bool writeToConsole = false, const eLogType logType = eLogType::LOG_INFO);
 	//todo move to private
-	// Overload << operator using log type
-	friend Logger &operator << (Logger &logger, const eLogType logType);
-	friend Logger &operator << (Logger &logger, const std::string text) 
-	{
-		logger._logFile << text.c_str() << std::endl;
-		return logger;
-	}
+	
 
 private:
 	std::ofstream _logFile;
@@ -45,5 +38,13 @@ private:
 
 
 	static std::string getCurrentTime();
+
+	// Overload << operator using log type
+	friend Logger &operator << (Logger &logger, const eLogType logType);
+	friend Logger &operator << (Logger &logger, const std::string text)
+	{
+		logger._logFile << text.c_str() << std::endl;
+		return logger;
+	}
 
 };

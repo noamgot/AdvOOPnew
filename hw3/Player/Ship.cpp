@@ -11,15 +11,15 @@ bool Ship::handleHit(Coordinate coords, AttackResult& res)
 
 	auto initialTileStatus = this->_coordinates[coords];
 	res = AttackResult::Hit;
-	if(initialTileStatus) // if the hit tile was "alive"
+	if (initialTileStatus) // if the hit tile was "alive"
 	{
 		// update ship coordinates and size
 		this->_coordinates[coords] = false;
 		this->_size--;
 		if (this->_size == 0) //  ship is sunk - report "sink" 
 		{
-			res = AttackResult::Sink; 
+			res = AttackResult::Sink;
 		}
-	}	
+	}
 	return initialTileStatus;
 }

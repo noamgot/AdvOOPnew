@@ -7,18 +7,16 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
-#include "Game.h"
 
 template <class T>
 class SafeQueue
 {
 public:
 	SafeQueue() = default;
+
 	// block copy & move ctors and assignments
 	SafeQueue(const SafeQueue& other) = delete;
 	SafeQueue& operator=(const SafeQueue& other) = delete;
-	SafeQueue(SafeQueue&& other) noexcept = delete;
-	SafeQueue& operator=(SafeQueue&& other) noexcept = delete;
 
 	/* returns the first item of the queue and deletes it*/
 	T pop();

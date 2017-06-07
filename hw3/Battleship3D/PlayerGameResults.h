@@ -3,7 +3,6 @@
 struct PlayerGameResults
 {
 	int ID, wins, losses, ptsFor, ptsAgainst;
-	//std::string name	
 	double percentage;
 
 	PlayerGameResults() : ID(0), wins(0), losses(0), ptsFor(0), ptsAgainst(0), percentage(0) {}
@@ -12,7 +11,18 @@ struct PlayerGameResults
 	explicit PlayerGameResults(int ID_) : ID(ID_) {}
 
 	bool operator > (const PlayerGameResults& other) const	{ return this->percentage > other.percentage; }
-	PlayerGameResults& operator+=(const PlayerGameResults& rhs);
+	
+	PlayerGameResults& operator+=(const PlayerGameResults& rhs)
+	{
+		this->wins += rhs.wins;
+		this->losses += rhs.losses;
+		this->ptsFor += rhs.ptsFor;
+		this->ptsAgainst += rhs.ptsAgainst;
+
+		// the "true" case happens only if the player alwayes tied..
+		this->percentage = (0 == wins + losses) ? 0 : 100.0 * wins / (wins + losses);
+		return *this;
+	}
 	
 
 };

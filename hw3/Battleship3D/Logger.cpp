@@ -24,7 +24,8 @@ Logger::~Logger()
 {
 	if (_logFile.is_open())
 	{
-		_logFile << std::endl << std::endl;
+		_logFile << getCurrentTime().c_str();
+		_logFile << " [END]: GAME HAS ENDED. EXITING...\n" << std::endl;
 
 		// Report number of errors and warnings
 		_logFile << _numWarnings << " warnings" << std::endl;
@@ -66,9 +67,6 @@ Logger& operator<<(Logger& logger, const Logger::eLogType logType)
 		case Logger::eLogType::LOG_WARNING:
 			logger._logFile << "[!WARNING!]: ";
 			logger._numWarnings++;
-			break;
-		case Logger::eLogType::LOG_END:
-			logger._logFile << "[END]: GAME HAS ENDED. EXITING...";
 			break;
 		default:
 			logger._logFile << "[INFO]: ";
