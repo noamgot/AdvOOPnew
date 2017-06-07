@@ -32,12 +32,12 @@ void GameRunner::processGameResults()
 	_grB = PlayerGameResults(_game._idB, 0, 0, _playerAttributes[PLAYER_B].score, _playerAttributes[PLAYER_A].score, 0);
 	if (_playerAttributes[PLAYER_A].shipsCount <= 0)
 	{
-		_grB.wins = 1;
+		_grB.wins = _grA.losses = 1;
 		_grB.percentage = 100;
 	}
 	else if (_playerAttributes[PLAYER_B].shipsCount <= 0)
 	{
-		_grA.wins = 1;
+		_grA.wins = _grB.losses = 1;
 		_grA.percentage = 100;
 	}
 	_pLogger->writeToLog("Finished game: boardID = " + to_string(_game._boardID) + ", A=" + to_string(_game._idA) + ", B: " + to_string(_game._idB) +
