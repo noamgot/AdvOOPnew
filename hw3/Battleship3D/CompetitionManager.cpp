@@ -61,6 +61,10 @@ void CompetitionManager::runGames(int id)
 		// and this thread should terminate
 		if(game._boardID == -1) // "poisoned" game
 		{
+/*			{
+				std::lock_guard<std::mutex> mlock(_coutMutex);
+				std::cout << "thread " << std::this_thread::get_id() << " got a poisoned game! exiting..." << std::endl;				
+			}*/
 			_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got a poisoned game. Returning...");
 			return; 			
 		}

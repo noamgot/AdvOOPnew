@@ -6,8 +6,8 @@ class MyBoardData : public BoardData
 {
 public:
 	MyBoardData() = default;
-	MyBoardData::MyBoardData(int rows, int cols, int depth) 
-	: _board(rows, std::vector<std::vector<char>>(cols, std::vector<char>(depth))), _ships(2, std::vector<Ship>())
+	MyBoardData::MyBoardData(int rows, int cols, int depth)
+		: _board(rows, std::vector<std::vector<char>>(cols, std::vector<char>(depth))), _ships(2, std::vector<Ship>())
 	{
 		_rows = rows;
 		_cols = cols;
@@ -17,10 +17,10 @@ public:
 	//MyBoardData(CommonUtilities::RawBoard& board);
 
 	// if a player gives an invalid char - we return the WATER char (and that's his problem...
-	char charAt(Coordinate c) const override 
+	char charAt(Coordinate c) const override
 	{
 		return  CommonUtilities::isLegalMove(c, _rows, _cols, _depth) ?
-			_board[c.row - 1][c.col - 1][c.depth - 1] : CommonUtilities::WATER; 
+			_board[c.row - 1][c.col - 1][c.depth - 1] : CommonUtilities::WATER;
 	}
 	void setChar(Coordinate coor, char ch)
 	{
