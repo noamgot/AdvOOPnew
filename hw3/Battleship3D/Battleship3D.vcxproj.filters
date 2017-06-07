@@ -21,7 +21,13 @@
     <ClCompile Include="Ship.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MyBoardData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="GameResultsTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerGameResults.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CompetitionManager.cpp">

@@ -436,7 +436,7 @@ namespace InitUtilities
 
 	void registerShip(MyBoardData& board, const int size, int i, int j, int k, int iDir, int jDir, int kDir)
 	{
-		auto type = charToShipType(board[i][j][k]);
+		eShipType type = charToShipType(board[i][j][k]);
 		int playernum = isupper(board[i][j][k]) ? 0 : 1;
 		map<Coordinate, bool> shipMap;
 		for (int l = 0; l < size; l++)
