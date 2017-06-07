@@ -1,18 +1,14 @@
 ﻿#include "GameRunner.h"
-#include <iso646.h>
 
 using namespace std;
 
-GameRunner::GameRunner(const Game& game, const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, const MyBoardData& boardData, std::shared_ptr<Logger> pLogger)
-	:_game(game), _playerA(getAlgoA()), _playerB(getAlgoB()), _pLogger(pLogger)
+GameRunner::GameRunner(const CommonUtilities::Game& game, const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, const MyBoardData& boardData, const MyBoardData& boardA, const MyBoardData& boardB, Logger* pLogger)
+	:_playerA(getAlgoA()), _playerB(getAlgoB()), _boardData(boardData), _boardA(boardA), _boardB(boardB), _pLogger(pLogger), _game(game)
 {
-	
 	initPlayersAttributes(boardData, PLAYER_A);
 	initPlayersAttributes(boardData, PLAYER_B);
-	_boardData = boardData;
 	_pLogger->writeToLog("Initialized game: boardID = " + to_string(game._boardID) + ", A=" + to_string(game._idA) + ", B: " + to_string(game._idB));
 }
-
 
 vector<PlayerGameResults> GameRunner::runGame()
 {
@@ -20,13 +16,14 @@ vector<PlayerGameResults> GameRunner::runGame()
 	vector<MyBoardData> mbd(2);
 	mbd[0] = MyBoardData(_boardData.rows(), _boardData.cols(), _boardData.depth());
 	mbd[1] = MyBoardData(_boardData.rows(), _boardData.cols(), _boardData.depth());
-	int counter = 0;
-	initIndividualBoards(mbd[PLAYER_A], mbd[PLAYER_B]);
 
+	//initIndividualBoards(mbd[PLAYER_A], mbd[PLAYER_B]);
 
+	//todo - something is WRONG here...
 
+	//todo - make attacker and defender data members
 	auto attackerNum = 0, defenderNum = 1; // index 0 = A, index 1 = B
-	std::unique_ptr<IBattleshipGameAlgo> pPlayers[] = { std::move(_playerA) , std::move(_playerB) };
+	IBattleshipGameAlgo *pPlayers[] = { _playerA.get() , _playerB.get() };
 	for (auto player_id = 0; player_id < PLAYER_COUNT; player_id++)
 	{
 		pPlayers[player_id]->setPlayer(player_id);
@@ -63,41 +60,6 @@ vector<PlayerGameResults> GameRunner::runGame()
 	return pgr;
 }
 
-void GameRunner::initIndividualBoards(MyBoardData& boardA, MyBoardData& boardB) const
-{
-	//todo - start loops from 1 ?
-	for (auto i = 0; i < _boardData.rows(); ++i)
-	{
-		for (auto j = 0; j < _boardData.cols(); ++j)
-		{
-			for (auto k = 0; k < _boardData.depth(); k++)
-			{
-				Coordinate coor(i, j, k);
-				auto c = _boardData.charAt(coor);
-				if (isalpha(c)) //part of a ship
-				{
-					if (isupper(c)) // a ship of A
-					{
-						boardA.setChar(coor, c);
-						boardB.setChar(coor, CommonUtilities::WATER);
-					}
-					else // a ship of B
-					{
-						boardA.setChar(coor, CommonUtilities::WATER);
-						boardB.setChar(coor, c);
-					}
-				}
-				else // a space - update both boards
-				{
-					boardA.setChar(coor, CommonUtilities::WATER);
-					boardB.setChar(coor, CommonUtilities::WATER);
-				}
-			}
-		}
-	}
-	
-}
-
 //int GameRunner::getAScore() const
 //{
 //	return _playerAttributes[PLAYER_A].score;
@@ -117,21 +79,19 @@ void GameRunner::initIndividualBoards(MyBoardData& boardA, MyBoardData& boardB) 
 //{
 //	return _playerAttributes[PLAYER_B].won;
 //}
-void GameRunner::handleMove(const MyBoardData& board, Coordinate& move, int &attackerNum, int &defenderNum, unique_ptr<IBattleshipGameAlgo>& A,
-	unique_ptr<IBattleshipGameAlgo>& B, PlayerAttributes playerAttributesArr[])
+void GameRunner::handleMove(const MyBoardData& board, Coordinate& move, int &attackerNum, int &defenderNum, IBattleshipGameAlgo* A,
+							IBattleshipGameAlgo* B, PlayerAttributes playerAttributesArr[])
 {
 	bool validAttack;
-	// Remember moves are from 1 to ROW/COL SIZE while the board is from 0 to ROW/COL SIZE -1
-	// hence we need to give a (-1) offset to the move coordinates
 	auto hitChar = board.charAt(move);
 	if (hitChar == CommonUtilities::WATER)
 	{
 		// Miss
-		handleMiss(move, A, B, attackerNum);
+		handleMiss(move, attackerNum);
 	}
 	else // Hit xor Sink xor double hit xor hit a sunken ship
 	{
-		handleHitOrSink(move, validAttack, A, B, hitChar, attackerNum, playerAttributesArr);
+		handleHitOrSink(move, validAttack, hitChar, attackerNum, playerAttributesArr);
 		// in case where there was a "real" hit (i.e a "living" tile got a hit) and it wasn't a self it, the attacker gets another turn
 		if (validAttack && !(isupper(hitChar) ^ attackerNum))
 		{
@@ -142,20 +102,20 @@ void GameRunner::handleMove(const MyBoardData& board, Coordinate& move, int &att
 	changeAttacker(attackerNum, defenderNum);
 }
 
-void GameRunner::handleMiss(Coordinate& move, unique_ptr<IBattleshipGameAlgo>& A, unique_ptr<IBattleshipGameAlgo>& B, int& attackerNum)
+void GameRunner::handleMiss(Coordinate& move, int attackerNum) const
 {
-	A->notifyOnAttackResult(attackerNum, move, AttackResult::Miss);
-	B->notifyOnAttackResult(attackerNum, move, AttackResult::Miss);
+	_playerA->notifyOnAttackResult(attackerNum, move, AttackResult::Miss);
+	_playerB->notifyOnAttackResult(attackerNum, move, AttackResult::Miss);
 }
 
-void GameRunner::handleHitOrSink(Coordinate& move, bool& validAttack, unique_ptr<IBattleshipGameAlgo>& A, unique_ptr<IBattleshipGameAlgo>& B,
-	char hitChar, int attackerNum, PlayerAttributes playerAttributesArr[])
+void GameRunner::handleHitOrSink(Coordinate& move, bool& validAttack,
+								 char hitChar, int attackerNum, PlayerAttributes playerAttributesArr[])
 {
 	AttackResult attackResult;
 	validAttack = registerHit(playerAttributesArr[(isupper(hitChar) ? 0 : 1)], move, CommonUtilities::charToShipType(hitChar), attackResult);
 	//notify players on attack results
-	A->notifyOnAttackResult(attackerNum, move, attackResult);
-	B->notifyOnAttackResult(attackerNum, move, attackResult);
+	_playerA->notifyOnAttackResult(attackerNum, move, attackResult);
+	_playerB->notifyOnAttackResult(attackerNum, move, attackResult);
 	if (attackResult == AttackResult::Sink)
 	{
 		// if hitChar is an UPPERCASE char - than A was hit and B gets the points (and vice versa)

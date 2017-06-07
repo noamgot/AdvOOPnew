@@ -4,13 +4,14 @@
 
 
 using namespace std;
+using namespace CommonUtilities;
 // todo - delete all commented debug prints
 
-void CompetitionManager::printCurrentResults(vector<PlayerGameResults>& cumulativeResults) //const
+void CompetitionManager::printCurrentResults(vector<PlayerGameResults>& cumulativeResults, int roundNum) //const
 {
 	static const auto generalWidth = 8;
 	static const auto playerNameWidth = maxStringLength(_playersNames) + 6;
-	
+	cout << "					***   ROUND " << roundNum << " RESULTS   ***" << endl;
 	printElement("#", generalWidth);
 	printElement("Team Name", playerNameWidth);
 	printElement("Wins", generalWidth);
@@ -28,10 +29,6 @@ void CompetitionManager::printCurrentResults(vector<PlayerGameResults>& cumulati
 
 void CompetitionManager::reporterMethod()
 {
-/*	{
-		std::lock_guard<std::mutex> mlock(_coutMutex);
-		std::cout << "HELLO from reporter method!!!" << std::endl;
-	}*/
 	_pLogger->writeToLog("Reporter thread has started running");
 	vector<PlayerGameResults> cumulativeResults(_numPlayers);
 	vector<PlayerGameResults> sortedCumulativeResults(_numPlayers);
@@ -42,17 +39,13 @@ void CompetitionManager::reporterMethod()
 
 	for (auto i = 0; i < _numRounds; i++)
 	{
-/*		{
-			std::lock_guard<std::mutex> mlock(_coutMutex);
-			std::cout << "reporter waiting for round " << i+1 << std::endl;
-		}*/
 		_pLogger->writeToLog("Reporter is waiting for round " + to_string(i+1) + " results");
 		updateCumulativeResults(cumulativeResults, i); // update round i results
 		_pLogger->writeToLog("Reporter got round " + to_string(i + 1) + " results");
 		// copy and sort cumulative results in descending order (by percentage)
 		sortedCumulativeResults = cumulativeResults;
 		sort(sortedCumulativeResults.begin(), sortedCumulativeResults.end(), greater<PlayerGameResults>());
-		printCurrentResults(sortedCumulativeResults);
+		printCurrentResults(sortedCumulativeResults, i+1);
 	}
 }
 
@@ -77,7 +70,8 @@ void CompetitionManager::runGames(int id)
 			return; 			
 		}
 		// Start the game
-		GameRunner gameRunner(game, _players[game._idA], _players[game._idB], _boards[game._boardID], _pLogger);
+		GameRunner gameRunner(game, _players[game._idA], _players[game._idB], _boards[game._boardID],
+								_boardsA[game._boardID], _boardsB[game._boardID],  _pLogger);
 		vector<PlayerGameResults> pgr = gameRunner.runGame();
 		int roundA, roundB;
 		{
@@ -133,23 +127,24 @@ void CompetitionManager::printTableEntry(size_t generalWidth, size_t playerNameW
 	cout << endl;
 }
 
-CompetitionManager::CompetitionManager(std::vector<MyBoardData>& boards, std::vector<GetAlgoFuncType>& players, 
-						std::vector<std::string>& playersNames, std::shared_ptr<Logger> pLogger, size_t numThreads)
-	: _numThreads(numThreads), _numBoards(boards.size()), _numPlayers(players.size()), 
-	_numRounds(2 * _numBoards * (_numPlayers - 1)),	_resultsTable(_numPlayers, _numRounds), 
-	_roundsCnt(_numPlayers,0), _pLogger(pLogger)
+
+CompetitionManager::CompetitionManager(vector<MyBoardData>& boards, vector<MyBoardData>& boardsA, vector<MyBoardData>& boardsB, vector<GetAlgoFuncType>& players, vector<string>& playersNames, Logger* pLogger, size_t numThreads)
+	: _numThreads(numThreads), _numBoards(boards.size()), _numPlayers(players.size()),
+	_numRounds(2 * _numBoards * (_numPlayers - 1)), _resultsTable(_numPlayers, _numRounds),
+	_roundsCnt(_numPlayers, 0), _pLogger(pLogger)
 {
 	swap(_boards, boards);
+	swap(_boardsA, boardsA);
+	swap(_boardsB, boardsB);
 	swap(_players, players);
 	swap(_playersNames, playersNames);
 	auto numGames = calcNumGames();
-	if(_numThreads > numGames)
+	if (_numThreads > numGames)
 	{
 		_numThreads = numGames;
 	}
 	_threadsVector.resize(_numThreads);
 }
-
 
 void CompetitionManager::runCompetition()
 {

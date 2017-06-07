@@ -107,7 +107,7 @@ namespace InitUtilities
 			dwAttrib & FILE_ATTRIBUTE_DIRECTORY;
 	}
 
-	int getDirectoryFileList(const string dirPath, vector<string>& fileListVector, shared_ptr<Logger> pLogger)
+	int getDirectoryFileList(const string dirPath, vector<string>& fileListVector, Logger* pLogger)
 	{
 		pLogger->writeToLog("Getting directory file list");
 		fileListVector.clear();
@@ -161,7 +161,7 @@ namespace InitUtilities
 		return pos != string::npos && pos == line.length() - suffix.length();
 	}
 
-	int checkMinBoardsAndPlayersCount(size_t boardsCnt, size_t playersCnt, const string& dirPath, bool filteredLists, shared_ptr<Logger> pLogger)
+	int checkMinBoardsAndPlayersCount(size_t boardsCnt, size_t playersCnt, const string& dirPath, bool filteredLists, Logger* pLogger)
 	{
 		auto error = false;
 		string msg;
@@ -175,7 +175,7 @@ namespace InitUtilities
 			{
 				msg = "No board files (*.sboard) looking in path: " + dirPath;
 			}
-			pLogger->writeToLog(msg , !filteredLists, Logger::eLogType::LOG_ERROR);
+			pLogger->writeToLog(msg , true, Logger::eLogType::LOG_ERROR);
 			error = true;
 		}
 		if (playersCnt < 2)
@@ -188,7 +188,7 @@ namespace InitUtilities
 			{
 				msg = "Missing algorithm (dll) files looking in path: " + dirPath + " (needs at least two)";
 			}
-			pLogger->writeToLog(msg, !filteredLists, Logger::eLogType::LOG_ERROR);
+			pLogger->writeToLog(msg, true, Logger::eLogType::LOG_ERROR);
 			error = true;
 		}
 		if (error)
@@ -449,5 +449,46 @@ namespace InitUtilities
 			j += jDir;
 		}
 		board.addShip(playernum, Ship(size, type, shipMap));
+	}
+
+	void initIndividualBoards(const vector<MyBoardData>& boards, vector<MyBoardData>& boardsA, vector<MyBoardData>& boardsB)
+	{
+		// we know that boardsA.size() == boardsB.size() == boards.size() - no need to check
+		for (auto b = 0; b < boards.size(); b++)
+		{
+			// set dimensions for the individual boards
+			boardsA[b] = MyBoardData(boards[b].rows(), boards[b].cols(), boards[b].depth());
+			boardsB[b] = MyBoardData(boards[b].rows(), boards[b].cols(), boards[b].depth());
+			for (auto i = 1; i <= boards[b].rows(); ++i)
+			{
+				for (auto j = 1; j <= boards[b].cols(); ++j)
+				{
+					for (auto k = 1; k <= boards[b].depth(); k++)
+					{
+						Coordinate coor(i, j, k);
+						auto c = boards[b].charAt(coor);
+						if (isalpha(c)) //part of a ship
+						{
+							if (isupper(c)) // a ship of A
+							{
+								boardsA[b].setChar(coor, c);
+								boardsB[b].setChar(coor, WATER);
+							}
+							else // a ship of B
+							{
+								boardsA[b].setChar(coor, WATER);
+								boardsB[b].setChar(coor, c);
+							}
+						}
+						else // a space - update both boards
+						{
+							boardsA[b].setChar(coor, WATER);
+							boardsB[b].setChar(coor, WATER);
+						}
+					}
+				}
+			}
+		}
+		
 	}
 }

@@ -11,7 +11,7 @@ class AlgorithmLoader
 {
 public:
 	AlgorithmLoader() = delete;
-	AlgorithmLoader(std::shared_ptr<Logger> pLogger) : _pLogger(pLogger){}
+	AlgorithmLoader(Logger *pLogger) : _pLogger(pLogger){}
 	~AlgorithmLoader();
 	// blocking copy ctor & assignment operator (rule of three)
 	AlgorithmLoader(const AlgorithmLoader& dllMngr) = delete;
@@ -25,7 +25,7 @@ public:
 private:
 	//data members
 	std::vector<std::tuple<std::string, HINSTANCE, GetAlgoFuncType>> libs;
-	std::shared_ptr<Logger> _pLogger;
+	Logger *_pLogger;
 
 	/* removes the suffix (what comes after the dot) from filename - for getting player names from dll file names*/
 	static std::string removeSuffix(const std::string& filename);

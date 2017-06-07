@@ -21,13 +21,11 @@
   <ItemGroup>
     <ClInclude Include="CommonUtilities.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
-    <ClInclude Include="MyBoardData.h" />
     <ClInclude Include="Ship.h" />
     <ClInclude Include="SmartPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonUtilities.cpp" />
-    <ClCompile Include="MyBoardData.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="SmartPlayer.cpp" />
   </ItemGroup>

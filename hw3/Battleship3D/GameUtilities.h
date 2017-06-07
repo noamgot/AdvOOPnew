@@ -1,11 +1,12 @@
 ﻿#pragma once
 #include "CommonUtilities.h"
-#include "Game.h"
 #include "GameResultsTable.h"
 #include "PlayerGameResults.h"
 #include "AlgorithmLoader.h"
 #include "MyBoardData.h"
 
+
+// todo - consider deleting this namespace (unused)
 
 namespace GameUtilities
 {

@@ -71,9 +71,6 @@
     <ClInclude Include="PlayerGameResults.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CompetitionManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>

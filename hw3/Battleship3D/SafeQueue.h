@@ -7,7 +7,6 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
-#include "Game.h"
 
 template <class T>
 class SafeQueue

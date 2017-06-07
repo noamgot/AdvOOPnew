@@ -11,8 +11,8 @@ public:
 
 	static constexpr size_t DEFAULT_NUM_THREADS = 4;
 
-	CompetitionManager(std::vector<MyBoardData>& gameBoards, std::vector<GetAlgoFuncType>& players,
-		std::vector<std::string>& playersNames, std::shared_ptr<Logger> pLogger, size_t numThreads);
+	CompetitionManager(std::vector<MyBoardData>& boards, std::vector<MyBoardData>& boardsA, std::vector<MyBoardData>& boardsB,
+						std::vector<GetAlgoFuncType>& players, std::vector<std::string>& playersNames, Logger *pLogger, size_t numThreads);
 	void runCompetition();
 
 private:
@@ -23,17 +23,19 @@ private:
 	size_t _numPlayers;
 	size_t _numRounds;
 	std::vector<std::thread> _threadsVector;
-	SafeQueue<Game> _gamesQueue;	
+	SafeQueue<CommonUtilities::Game> _gamesQueue;	
 	GameResultsTable _resultsTable;
 	std::vector<std::string> _playersNames;
 	std::vector<MyBoardData> _boards;
+	std::vector<MyBoardData> _boardsA;
+	std::vector<MyBoardData> _boardsB;
 	std::vector<GetAlgoFuncType> _players;
 	std::vector<int> _roundsCnt;
 	std::mutex _mutex /*, _coutMutex*/ ;
-	std::shared_ptr<Logger> _pLogger;
+	Logger *_pLogger;
 
 
-	void printCurrentResults(std::vector<PlayerGameResults>& cumulativeResults)/*const*/;
+	void printCurrentResults(std::vector<PlayerGameResults>& cumulativeResults, int roundNum)/*const*/;
 	void reporterMethod();
 	void runGames(int id); // threads function
 

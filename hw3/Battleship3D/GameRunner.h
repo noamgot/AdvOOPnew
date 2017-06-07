@@ -22,11 +22,10 @@ class GameRunner
 {
 public:
 	GameRunner() = delete;
-	explicit GameRunner(const Game& game, const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, const MyBoardData& boardData, std::shared_ptr<Logger> pLogger);
-	vector<PlayerGameResults> runGame();
-
-	void initIndividualBoards(MyBoardData& boardA, MyBoardData& boardB) const;
-
+	explicit GameRunner(const CommonUtilities::Game& game, const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, 
+			const MyBoardData& boardData, const MyBoardData& boardA, const MyBoardData& boardB, Logger  *pLogger);
+	
+	std::vector<PlayerGameResults> runGame();
 	PlayerGameResults get_grA() const {	return _grA;}
 	PlayerGameResults get_grB() const {	return _grB;}
 	//int getAScore() const;
@@ -39,18 +38,20 @@ private:
 	std::unique_ptr<IBattleshipGameAlgo> _playerB;
 	PlayerAttributes _playerAttributes[2];
 	MyBoardData _boardData;
+	MyBoardData _boardA;
+	MyBoardData _boardB;
 
 	PlayerGameResults _grA;
 	PlayerGameResults _grB;
-	std::shared_ptr<Logger> _pLogger;
-	Game _game;
+	Logger *_pLogger;
+	CommonUtilities::Game _game;
 
 	/* helper functions called inside playThe Game */
-	void handleMove(const MyBoardData& board, Coordinate& move, int &attackerNum, int &defenderNum, std::unique_ptr<IBattleshipGameAlgo>& A,
-		std::unique_ptr<IBattleshipGameAlgo>& B, PlayerAttributes playerAttributesArr[]);
-	void handleMiss(Coordinate& move, std::unique_ptr<IBattleshipGameAlgo>& A, std::unique_ptr<IBattleshipGameAlgo>& B, int& attackerNum);
-	void handleHitOrSink(Coordinate& move, bool& validAttack, std::unique_ptr<IBattleshipGameAlgo>& A, std::unique_ptr<IBattleshipGameAlgo>& B,
-		char hitChar, int attackerNum, PlayerAttributes playerAttributesArr[]);
+	void handleMove(const MyBoardData& board, Coordinate& move, int &attackerNum, int &defenderNum, IBattleshipGameAlgo* A,
+	                IBattleshipGameAlgo* B, PlayerAttributes playerAttributesArr[]);
+	void handleMiss(Coordinate& move, int attackerNum) const;
+	void handleHitOrSink(Coordinate& move, bool& validAttack,
+	                     char hitChar, int attackerNum, PlayerAttributes playerAttributesArr[]);
 
 	/* mark a ship hit to a given player, and keeping the AttackResult in res */
 	bool registerHit(PlayerAttributes& playerAttributes, Coordinate coords, eShipType shipType, AttackResult& res);

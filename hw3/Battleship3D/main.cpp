@@ -23,31 +23,32 @@ int main(int argc, char** argv)
 	}
 	
 	// intialize logger only after there is a valid path
-	shared_ptr<Logger> pLogger = make_shared<Logger>(dirPath);
+	// we will pass a raw pointer to whoever needs logging, but eventually it will be destructed only here!!!
+	unique_ptr<Logger> pLogger = make_unique<Logger>(dirPath);
 
-	if (getDirectoryFileList(dirPath, dirFiles, pLogger) < 0)
+	if (getDirectoryFileList(dirPath, dirFiles, pLogger.get()) < 0)
 	{
 		return EXIT_FAILURE;
 	}
 	filterDirFiles(dirFiles, boardFiles, dllFiles, dirPath);
-	if (checkMinBoardsAndPlayersCount(boardFiles.size(), dllFiles.size(), dirPath, false, pLogger) < 0)
+	if (checkMinBoardsAndPlayersCount(boardFiles.size(), dllFiles.size(), dirPath, false, pLogger.get()) < 0)
 	{
 		return EXIT_FAILURE;
 	}
 	initBoards3D(boardFiles, boards);
-	AlgorithmLoader algoLoader(pLogger);
+	AlgorithmLoader algoLoader(pLogger.get());
 	algoLoader.loadLibs(dllFiles, players, playerNames, dirPath);
 
-	//TODO - exit if no valid players/board?
 	// here we know that we have valid boards and players
 	pLogger->writeToLog("Number of legal players: " + to_string(players.size()), true);
 	pLogger->writeToLog("Number of legal boards: " + to_string(boards.size()), true);
-	if (checkMinBoardsAndPlayersCount(boards.size(), players.size(), dirPath, true, pLogger) < 0)
+	if (checkMinBoardsAndPlayersCount(boards.size(), players.size(), dirPath, true, pLogger.get()) < 0)
 	{
 		return EXIT_FAILURE;
 	}
-	CompetitionManager tournamentMngr(boards, players, playerNames, pLogger, numThreads);
+	vector<MyBoardData> boardsA(boards.size()), boardsB(boards.size());
+	initIndividualBoards(boards, boardsA, boardsB);
+	CompetitionManager tournamentMngr(boards, boardsA ,boardsB, players, playerNames, pLogger.get(), numThreads);
 	tournamentMngr.runCompetition();
-	pLogger->writeToLog("", false, Logger::eLogType::LOG_END);
 	return EXIT_SUCCESS;
 }
