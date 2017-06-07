@@ -1,82 +1,63 @@
 ﻿#include "GameRunner.h"
 
 using namespace std;
-using namespace CommonUtilities;
 
-GameRunner::GameRunner(const Game& game, const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, 
-					const MyBoardData& boardData, const MyBoardData& boardA, const MyBoardData& boardB, Logger* pLogger)
-	:_playerA(getAlgoA()), _playerB(getAlgoB()), _boardData(boardData), _boardA(boardA), _boardB(boardB), _pLogger(pLogger), _game(game),
-	 _attackerNum(0), _defenderNum(1)
+GameRunner::GameRunner(const CommonUtilities::Game& game, const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, const MyBoardData& boardData, const MyBoardData& boardA, const MyBoardData& boardB, Logger* pLogger)
+	:_playerA(getAlgoA()), _playerB(getAlgoB()), _boardData(boardData), _boardA(boardA), _boardB(boardB), _pLogger(pLogger), _game(game)
 {
 	initPlayersAttributes(boardData, PLAYER_A);
 	initPlayersAttributes(boardData, PLAYER_B);
 	_pLogger->writeToLog("Initialized game: boardID = " + to_string(game._boardID) + ", A=" + to_string(game._idA) + ", B: " + to_string(game._idB));
 }
 
-string GameRunner::winnerConclusionStr() const
+vector<PlayerGameResults> GameRunner::runGame()
 {
-	if (_grA.wins)
-	{
-		return "Player A won";
-	}
-	if (_grB.wins)
-	{
-		return "Player B won";
-	}
-	return "Tie";
-}
+	// Copy board to personal boards
+	vector<MyBoardData> mbd(2);
+	mbd[0] = MyBoardData(_boardData.rows(), _boardData.cols(), _boardData.depth());
+	mbd[1] = MyBoardData(_boardData.rows(), _boardData.cols(), _boardData.depth());
 
-void GameRunner::processGameResults()
-{
-	_grA = PlayerGameResults(_game._idA, 0, 0, _playerAttributes[PLAYER_A].score, _playerAttributes[PLAYER_B].score, 0);
-	_grB = PlayerGameResults(_game._idB, 0, 0, _playerAttributes[PLAYER_B].score, _playerAttributes[PLAYER_A].score, 0);
-	if (_playerAttributes[PLAYER_A].shipsCount <= 0)
-	{
-		_grB.wins = 1;
-		_grB.percentage = 100;
-	}
-	else if (_playerAttributes[PLAYER_B].shipsCount <= 0)
-	{
-		_grA.wins = 1;
-		_grA.percentage = 100;
-	}
-	_pLogger->writeToLog("Finished game: boardID = " + to_string(_game._boardID) + ", A=" + to_string(_game._idA) + ", B: " + to_string(_game._idB) +
-		" - Results: A-" + to_string(_grA.ptsFor) + ", B-" + to_string(_grB.ptsFor) + " - " + winnerConclusionStr());
-}
+	//initIndividualBoards(mbd[PLAYER_A], mbd[PLAYER_B]);
 
-void GameRunner::runGame()
-{
-	//todo - notify unbalanced boards
+	//todo - something is WRONG here...
 
+	//todo - make attacker and defender data members
+	auto attackerNum = 0, defenderNum = 1; // index 0 = A, index 1 = B
 	IBattleshipGameAlgo *pPlayers[] = { _playerA.get() , _playerB.get() };
-	initPlayer(_playerA.get(), PLAYER_A, _boardA);
-	initPlayer(_playerB.get(), PLAYER_B, _boardB);
-
+	for (auto player_id = 0; player_id < PLAYER_COUNT; player_id++)
+	{
+		pPlayers[player_id]->setPlayer(player_id);
+		pPlayers[player_id]->setBoard(mbd[player_id]);
+	}
 	//The game goes on until one of the players has no more ships or both ran out of moves.
 	while (_playerAttributes[0].shipsCount > 0 && _playerAttributes[1].shipsCount > 0 &&
 		(_playerAttributes[0].hasMoves || _playerAttributes[1].hasMoves))
 	{
 		// Skip if current player is out of moves.
-		if (!_playerAttributes[_attackerNum].hasMoves)
+		if (!_playerAttributes[attackerNum].hasMoves)
 		{
-			changeAttacker();
+			changeAttacker(attackerNum, defenderNum);
 			continue;
 		}
 
 
-		auto currentMove = pPlayers[_attackerNum]->attack();
-		if (!isLegalMove(currentMove, _boardData.rows(), _boardData.cols(), _boardData.depth()))
+		auto currentMove = pPlayers[attackerNum]->attack();
+		if (!CommonUtilities::isLegalMove(currentMove, _boardData.rows(), _boardData.cols(), _boardData.depth()))
 		{
 			// Player returned a dumb move or refuses to play like a big cry baby (or maybe it has a bug)
 			// we switch player and continue - even if the move is invalid (i.e we ignore invalid moves)
-			_playerAttributes[_attackerNum].hasMoves = !(currentMove.row == -1 && currentMove.col == -1 && currentMove.depth == -1);
-			changeAttacker();
+			_playerAttributes[attackerNum].hasMoves = !(currentMove.row == -1 && currentMove.col == -1 && currentMove.depth == -1);
+			GameRunner::changeAttacker(attackerNum, defenderNum);
 			continue;
 
 		}
-		handleMove(currentMove);
+		handleMove(_boardData, currentMove, attackerNum, defenderNum, pPlayers[PLAYER_A], pPlayers[PLAYER_B], _playerAttributes);
 	}
-	processGameResults();
+	_pLogger->writeToLog("Finished game: boardID = " + to_string(_game._boardID) + ", A=" + to_string(_game._idA) + ", B: " + to_string(_game._idB));
+	vector<PlayerGameResults> pgr(2);
+	pgr[PLAYER_A] = PlayerGameResults(_game._idA, _playerAttributes[PLAYER_A].won, 1 - _playerAttributes[PLAYER_A].won, _playerAttributes[PLAYER_A].score, _playerAttributes[PLAYER_B].score, 100 * _playerAttributes[PLAYER_A].won);
+	pgr[PLAYER_B] = PlayerGameResults(_game._idA, _playerAttributes[PLAYER_B].won, 1 - _playerAttributes[PLAYER_B].won, _playerAttributes[PLAYER_B].score, _playerAttributes[PLAYER_B].score, 100 * _playerAttributes[PLAYER_B].won);
+	return pgr;
 }
 
 //int GameRunner::getAScore() const
@@ -98,45 +79,47 @@ void GameRunner::runGame()
 //{
 //	return _playerAttributes[PLAYER_B].won;
 //}
-void GameRunner::handleMove(Coordinate& move)
+void GameRunner::handleMove(const MyBoardData& board, Coordinate& move, int &attackerNum, int &defenderNum, IBattleshipGameAlgo* A,
+							IBattleshipGameAlgo* B, PlayerAttributes playerAttributesArr[])
 {
 	bool validAttack;
-	auto hitChar = _boardData.charAt(move);
-	if (hitChar == WATER)
+	auto hitChar = board.charAt(move);
+	if (hitChar == CommonUtilities::WATER)
 	{
 		// Miss
-		handleMiss(move);
+		handleMiss(move, attackerNum);
 	}
 	else // Hit xor Sink xor double hit xor hit a sunken ship
 	{
-		handleHitOrSink(move, validAttack, hitChar);
+		handleHitOrSink(move, validAttack, hitChar, attackerNum, playerAttributesArr);
 		// in case where there was a "real" hit (i.e a "living" tile got a hit) and it wasn't a self it, the attacker gets another turn
-		if (validAttack && !(isupper(hitChar) ^ _attackerNum))
+		if (validAttack && !(isupper(hitChar) ^ attackerNum))
 		{
 			return;
 		}
 	}
-
-	changeAttacker();
+	//Change player
+	changeAttacker(attackerNum, defenderNum);
 }
 
-void GameRunner::handleMiss(Coordinate& move) const
+void GameRunner::handleMiss(Coordinate& move, int attackerNum) const
 {
-	_playerA->notifyOnAttackResult(_attackerNum, move, AttackResult::Miss);
-	_playerB->notifyOnAttackResult(_attackerNum, move, AttackResult::Miss);
+	_playerA->notifyOnAttackResult(attackerNum, move, AttackResult::Miss);
+	_playerB->notifyOnAttackResult(attackerNum, move, AttackResult::Miss);
 }
 
-void GameRunner::handleHitOrSink(Coordinate& move, bool& validAttack, char hitChar)
+void GameRunner::handleHitOrSink(Coordinate& move, bool& validAttack,
+								 char hitChar, int attackerNum, PlayerAttributes playerAttributesArr[])
 {
 	AttackResult attackResult;
-	validAttack = registerHit(isupper(hitChar) ? 0 : 1, move, charToShipType(hitChar), attackResult);
+	validAttack = registerHit(playerAttributesArr[(isupper(hitChar) ? 0 : 1)], move, CommonUtilities::charToShipType(hitChar), attackResult);
 	//notify players on attack results
-	_playerA->notifyOnAttackResult(_attackerNum, move, attackResult);
-	_playerB->notifyOnAttackResult(_attackerNum, move, attackResult);
+	_playerA->notifyOnAttackResult(attackerNum, move, attackResult);
+	_playerB->notifyOnAttackResult(attackerNum, move, attackResult);
 	if (attackResult == AttackResult::Sink)
 	{
 		// if hitChar is an UPPERCASE char - than A was hit and B gets the points (and vice versa)
-		_playerAttributes[(isupper(hitChar) ? 1 : 0)].score += calculateSinkScore(hitChar);
+		playerAttributesArr[(isupper(hitChar) ? 1 : 0)].score += calculateSinkScore(hitChar);
 	}
 }
 
@@ -144,36 +127,37 @@ int GameRunner::calculateSinkScore(char c)
 {
 	switch (toupper(c))
 	{
-	case BOAT:
-		return Ship::eShipScore::BOAT_SCORE;
-	case MISSLE_SHIP:
-		return Ship::eShipScore::MISSLE_SHIP_SCORE;
-	case SUBMARINE:
-		return Ship::eShipScore::SUBMARINE_SCORE;
-	case DESTROYER:
-		return Ship::eShipScore::DESTROYER_SCORE;
+	case CommonUtilities::BOAT:
+		return BOAT_SCORE;
+	case CommonUtilities::MISSLE_SHIP:
+		return MISSLE_SHIP_SCORE;
+	case CommonUtilities::SUBMARINE:
+		return SUBMARINE_SCORE;
+	case CommonUtilities::DESTROYER:
+		return DESTROYER_SCORE;
 	default:
-		return -10000; // for debug
+		return -1000; // for debug
 	}
 }
 
 
 
-bool GameRunner::registerHit(int hitPlayer, Coordinate coords, Ship::eShipType shipType, AttackResult& res)
+bool GameRunner::registerHit(PlayerAttributes& playerAttributes, Coordinate coords, eShipType shipType, AttackResult& res)
 {
+	auto i = 0;
 	auto validAttack = false;
-	for (auto i = 0 ; i < _playerAttributes[hitPlayer].shipList.size(); i++)
+	for (; i < playerAttributes.shipList.size(); i++)
 	{
-		if (_playerAttributes[hitPlayer].shipList[i].getType() == shipType)
+		if (playerAttributes.shipList[i].getType() == shipType)
 		{
 			//Make sure this coordinate belongs to this ship
-			auto coordinates = _playerAttributes[hitPlayer].shipList[i].getCoordinates();
-			if (coordinates.count(coords) == 1)
+			if (playerAttributes.shipList[i].getCoordinates().count(coords) == 1)
 			{
-				validAttack = _playerAttributes[hitPlayer].shipList[i].handleHit(coords, res);
+				validAttack = playerAttributes.shipList[i].handleHit(coords, res);
 				if (res == AttackResult::Sink)
 				{
-					_playerAttributes[hitPlayer].shipsCount--;
+					playerAttributes.shipsCount--;
+
 				}
 				break;
 			}
@@ -187,6 +171,7 @@ void GameRunner::initPlayersAttributes(const MyBoardData& board, const int playe
 	_playerAttributes[player_id].hasMoves = true;
 	_playerAttributes[player_id].score = 0;
 	_playerAttributes[player_id].shipsCount = board.getShipCount();
+	_playerAttributes[player_id].won = false;
 	_playerAttributes[player_id].shipList = board.getShipList(player_id);
 
 }

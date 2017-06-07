@@ -29,13 +29,39 @@ void AlgorithmLoader::loadLibs(const vector<string>& dlls, vector<GetAlgoFuncTyp
 		GetAlgoFuncType getAlgoFunc = reinterpret_cast<GetAlgoFuncType>(GetProcAddress(hLib, "GetAlgorithm"));
 		if (!getAlgoFunc)
 		{
+			LPTSTR errorText = NULL;
+			FormatMessage(
+				// use system message tables to retrieve error text
+				FORMAT_MESSAGE_FROM_SYSTEM
+				// allocate buffer on local heap for error text
+				| FORMAT_MESSAGE_ALLOCATE_BUFFER
+				// Important! will fail otherwise, since we're not 
+				// (and CANNOT) pass insertion parameters
+				| FORMAT_MESSAGE_IGNORE_INSERTS,
+				NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
+				GetLastError(),
+				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+				(LPTSTR)&errorText,  // output 
+				0, // minimum size for output buffer
+				NULL);
+			if (NULL != errorText)
+			{
+				// ... do something with the string `errorText` - log it, display it to the user, etc.
+
+				// release memory allocated by FormatMessage()
+				wstring ws(errorText);
+				_pLogger->writeToLog(string(ws.begin(), ws.end()) , false, Logger::eLogType::LOG_ERROR);
+				LocalFree(errorText);
+				errorText = NULL;
+			}
+
 			_pLogger->writeToLog("Cannot load dll: " + dllFullPath + " (GetProcAddress failed)", false, Logger::eLogType::LOG_WARNING);
 			continue;
 		}
 
 		libs.push_back(make_tuple(dllFullPath, hLib, getAlgoFunc));
 		// success! keep algo function and player name:
-		_pLogger->writeToLog("Succeeded loading dll!");
+		_pLogger->writeToLog("Succeeded loading dll: " + dllFullPath);
 		players.push_back(getAlgoFunc);
 		playerNames.push_back(removeSuffix(fileName));
 	}

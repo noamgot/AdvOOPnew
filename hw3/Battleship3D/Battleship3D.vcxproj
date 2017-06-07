@@ -157,6 +157,8 @@
     <ClCompile Include="InitUtilities.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyBoardData.cpp" />
+    <ClCompile Include="PlayerGameResults.cpp" />
     <ClCompile Include="Ship.cpp" />
   </ItemGroup>
   <ItemGroup>

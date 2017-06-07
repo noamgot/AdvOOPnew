@@ -43,7 +43,7 @@ namespace CommonUtilities
 	};
 
 	/* translate a given character to the corresponding ship type */
-	Ship::eShipType charToShipType(char c);
+	eShipType charToShipType(char c);
 
 
 	/*returns true iff the move is legal*/

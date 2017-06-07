@@ -10,7 +10,6 @@
 #include <mutex>
 #include "Ship.h"
 
-
 namespace CommonUtilities
 {
 	template <typename T>
@@ -43,17 +42,17 @@ namespace CommonUtilities
 	};
 
 	/* translate a given character to the corresponding ship type */
-	Ship::eShipType charToShipType(char c);
+	eShipType charToShipType(char c);
 
 
 	/*returns true iff the move is legal*/
-	inline bool isLegalMove(int row, int col, int depth, int numOfRows, int numOfCols, int depthSize)
+	inline bool isLegalMove(int row, int col, int depth,  int numOfRows, int numOfCols, int depthSize)
 	{
 		return !(row < 1 || row > numOfRows || col < 1 || col > numOfCols || depth > depthSize || depth < 1);
 	}
 
 	inline bool isLegalMove(Coordinate move, int numOfRows, int numOfCols, int depthSize)
 	{
-		return isLegalMove(move.row, move.col, move.depth, numOfRows, numOfCols, depthSize);
+		return isLegalMove(move.row, move.col, move.depth, numOfRows ,numOfCols, depthSize);
 	}
 }
