@@ -36,31 +36,31 @@ protected:
 	static const int SHIP_MAX_LENGTH = 4;
 
 	// A set for the coordinates of the player's ships
-	std::set<Coordinate>  mMyCoords;			
+	std::set<Coordinate>  _MyCoords;			
 
 	// A set for keeping track of where enemy attacks land.
-	std::set<Coordinate>  mEnemyAttackCoords;
+	std::set<Coordinate>  _EnemyAttackCoords;
 
 	// A queue for high priority (follow up) attacks
-	std::deque<Coordinate> mHighPriorityQueue;
+	std::deque<Coordinate> _HighPriorityQueue;
 
-	int mRows;
-	int mCols;
-	int mDepth;
-	int mPlayerNum;
-	int mShipsCount; // number of living ships - starting from DEFAULT_SHIPS_COUNT
-	MyBoardData mBoard;
-	std::deque<Coordinate> mMovesQueue;
+	int _Rows;
+	int _Cols;
+	int _Depth;
+	int _PlayerNum;
+	int _ShipsCount; // number of living ships - starting from DEFAULT_SHIPS_COUNT
+	MyBoardData _Board;
+	std::deque<Coordinate> _MovesQueue;
 
 	//Returns whether the coordinates are valid - in the inner representation (0 - COL/ROW SIZE -1)
 	bool SmartPlayer::isPointValid(int row, int col, int depth) const
 	{
-		return CommonUtilities::isLegalMove(row + 1, col + 1, depth + 1, mRows, mCols, mDepth);
+		return CommonUtilities::isLegalMove(row + 1, col + 1, depth + 1, _Rows, _Cols, _Depth);
 	}
 	//Returns whether the coordinates are valid - in the inner representation (0 - COL/ROW SIZE -1) (overload)
 	bool SmartPlayer::isPointValid(Coordinate point) const
 	{
-		return CommonUtilities::isLegalMove(point, mRows, mCols, mDepth);
+		return CommonUtilities::isLegalMove(point, _Rows, _Cols, _Depth);
 	}
 
 	//Replaces the old_char with new_char and we return true. if the square did not hold old_char nothing happens and we return false.
@@ -130,11 +130,12 @@ protected:
 	// where dir = HORIZONAL or VERTICAL depending on the results of the poking 
 	bool findDirection(int row, int col, int depth, bool outline);
 
-	bool init();
+	// Perform initialization for the moves queue
+	bool queueInit();
 	
 
 public:
-	SmartPlayer() : mRows(-1), mCols(-1), mDepth(-1), mPlayerNum(-1), mShipsCount(-1) {}
+	SmartPlayer() : _Rows(-1), _Cols(-1), _Depth(-1), _PlayerNum(-1), _ShipsCount(-1) {}
 	~SmartPlayer(){}
 	void setBoard(const BoardData& board) override; // called once to notify player about his board // called once to notify player on his boardd
 	void notifyOnAttackResult(int player, Coordinate move, AttackResult result) override; // notify on last move result

@@ -31,7 +31,7 @@ bool SmartPlayer::replaceChar(int row, int col, int depth, char old_char, char n
 	auto pr = verifyChar(row, col, depth,  old_char);
 	if (pr.second != reverse)
 	{
-		mBoard.setChar(Coordinate(row, col, depth), new_char);
+		_Board.setChar(Coordinate(row, col, depth), new_char);
 		return true;
 	}
 	return false;
@@ -71,7 +71,7 @@ void SmartPlayer::addTarget(int row, int col, int depth, deque<Coordinate>& atta
 	//auto maxDist = 4;
 	//auto foundUp = false, foundDown = false, foundLeft = false, foundRight = false;
 	// This means we are just adding a regular target (have no additional info)
-	if (dir == NONE && verifyChar(row, col, depth, UNKNOWN).second) { attackQueue.push_front(Coordinate(row + 1, col + 1, depth + 1)); }
+	if (dir == NONE && verifyChar(row, col, depth, UNKNOWN).second) { attackQueue.push_front(Coordinate(row, col, depth)); }
 
 	else // In this case we have some additional information
 	{
@@ -86,28 +86,28 @@ pair<bool, bool> SmartPlayer::verifyChar(int row, int col, int depth, char c)
 	Coordinate cord(row, col, depth);
 	if (isPointValid(cord))
 	{
-		return make_pair(true, mBoard.charAt(cord) == c);
+		return make_pair(true, _Board.charAt(cord) == c);
 	}
 	return make_pair(false, false);
 }
 
 void SmartPlayer::reLabelTheBoard()
 {
-	for (auto row = 0; row < mRows; row++)
+	for (auto row = 1; row <= _Rows; row++)
 	{
-		for (auto col = 0; col < mCols; col++)
+		for (auto col = 1; col <= _Cols; col++)
 		{
-			for (auto depth = 0; depth < mDepth; ++depth)
+			for (auto depth = 1; depth <= _Depth; depth++)
 			{
 				Coordinate cord(row, col, depth);
-				if (mBoard.charAt(cord) != CommonUtilities::eShipChar::WATER)
+				if (_Board.charAt(cord) != CommonUtilities::eShipChar::WATER)
 				{
-					mBoard.setChar(cord, SHIP);
-					mMyCoords.insert(cord);
+					_Board.setChar(cord, SHIP);
+					_MyCoords.insert(cord);
 				}
 				else
 				{
-					mBoard.setChar(cord, UNKNOWN);
+					_Board.setChar(cord, UNKNOWN);
 				}
 			}
 		}
@@ -116,37 +116,50 @@ void SmartPlayer::reLabelTheBoard()
 
 void SmartPlayer::setBoard(const BoardData &board)
 {
+	// Copy the board
+	for (auto row = 1; row <= _Rows; row++)
+	{
+		for (auto col = 1; col <= _Cols; col++)
+		{
+			for (auto depth = 1; depth <= _Depth; depth++)
+			{
+				auto coord = Coordinate(row, col, depth);
+				_Board.setChar(coord, board.charAt(coord));
+			}
+		}
+	}
+	
 	reLabelTheBoard();
 
-	for(auto row = 0; row < mRows; row++)
+	for(auto row = 1; row <= _Rows; ++row)
 	{
-		for(auto col = 0; col < mCols; col++)
+		for(auto col = 1; col <= _Cols; ++col)
 		{
-			for (auto depth = 0; depth < mDepth; ++depth)
+			for (auto depth = 1; depth <= _Depth; depth++)
 			{
 				if (isNearChar(row, col, depth, SHIP))
 				{
+					
 					replaceChar(row, col, depth, UNKNOWN, EMPTY);
 				}
 			}
 		}
 	}
-	// TODO - Add ship counting
 }
 
-bool SmartPlayer::init()
+bool SmartPlayer::queueInit()
 {
 	vector<Coordinate> valid_moves;
-	for (auto row = 0; row < mRows; row++)
+	for (auto row = 1; row <= _Rows; row++)
 	{
-		for (auto col = 0; col < mCols; col++)
+		for (auto col = 1; col <= _Cols; col++)
 		{
-			for (auto depth = 0; depth < mDepth; depth++)
+			for (auto depth = 1; depth <= _Depth; depth++)
 			{
 				Coordinate cord(row, col, depth);
-				if (mBoard.charAt(cord) == UNKNOWN)
+				if (_Board.charAt(cord) == UNKNOWN)
 				{
-					valid_moves.push_back(Coordinate(row + 1, col + 1, depth + 1));
+					valid_moves.push_back(Coordinate(row, col, depth));
 				}
 			}
 		}
@@ -156,7 +169,7 @@ bool SmartPlayer::init()
 	random_shuffle(begin(valid_moves), end(valid_moves));
 	for (auto move : valid_moves)
 	{
-		mMovesQueue.push_back(move);
+		_MovesQueue.push_back(move);
 	}
 	return true;
 }
@@ -164,7 +177,7 @@ bool SmartPlayer::init()
 Coordinate SmartPlayer::attackFromPriorityQuque(deque<Coordinate>& priorityQueue)
 {
 	auto& move = priorityQueue.front();
-	while (mBoard.charAt(Coordinate(move.row, move.col, move.depth)) != UNKNOWN)
+	while (_Board.charAt(move) != UNKNOWN)
 	{
 		if (priorityQueue.size() > 0)
 		{
@@ -181,17 +194,17 @@ Coordinate SmartPlayer::attackFromPriorityQuque(deque<Coordinate>& priorityQueue
 
 Coordinate SmartPlayer::attack()
 {
-	if (mHighPriorityQueue.size() > 0)
+	if (_HighPriorityQueue.size() > 0)
 	{
-		auto move = attackFromPriorityQuque(mHighPriorityQueue);
+		auto move = attackFromPriorityQuque(_HighPriorityQueue);
 		if(isPointValid(move))
 		{
 			return move;
 		}
 	}
-	if (mMovesQueue.size() > 0)
+	if (_MovesQueue.size() > 0)
 	{
-		auto move = attackFromPriorityQuque(mMovesQueue);
+		auto move = attackFromPriorityQuque(_MovesQueue);
 		if (isPointValid(move))
 		{
 			return move;
@@ -203,24 +216,24 @@ Coordinate SmartPlayer::attack()
 void SmartPlayer::analyzeAttackResult()
 {
 	auto dir = NONE;
-	for (auto row = 0; row < mRows; row++)
+	for (auto row = 1; row <= _Rows; row++)
 	{
-		for (auto col = 0; col < mCols; col++)
+		for (auto col = 1; col <= _Cols; col++)
 		{
-			for (auto depth = 0; depth < mDepth; ++depth)
+			for (auto depth = 1; depth <= _Depth; depth++)
 			{
 				Coordinate cord(row, col, depth);
-				if (mBoard.charAt(cord) == DESTROYED)
+				if (_Board.charAt(cord) == DESTROYED)
 				{
-					if (isNearChar(row, col, depth, DESTROYED, &dir)) { addTarget(row, col, depth, mHighPriorityQueue, dir); }
+					if (isNearChar(row, col, depth, DESTROYED, &dir)) { addTarget(row, col, depth, _HighPriorityQueue, dir); }
 					else
 					{
-						if (isPointValid(row, col - 1, depth)) { addTarget(row, col - 1, depth, mHighPriorityQueue); }
-						if (isPointValid(row - 1, col, depth)) { addTarget(row - 1, col, depth, mHighPriorityQueue); }
-						if (isPointValid(row, col + 1, depth)) { addTarget(row, col + 1, depth, mHighPriorityQueue); }
-						if (isPointValid(row + 1, col, depth)) { addTarget(row + 1, col, depth, mHighPriorityQueue); }
-						if (isPointValid(row, col, depth + 1)) { addTarget(row, col, depth + 1, mHighPriorityQueue); }
-						if (isPointValid(row, col, depth - 1)) { addTarget(row, col, depth - 1, mHighPriorityQueue); }
+						if (isPointValid(row, col - 1, depth)) { addTarget(row, col - 1, depth, _HighPriorityQueue); }
+						if (isPointValid(row - 1, col, depth)) { addTarget(row - 1, col, depth, _HighPriorityQueue); }
+						if (isPointValid(row, col + 1, depth)) { addTarget(row, col + 1, depth, _HighPriorityQueue); }
+						if (isPointValid(row + 1, col, depth)) { addTarget(row + 1, col, depth, _HighPriorityQueue); }
+						if (isPointValid(row, col, depth + 1)) { addTarget(row, col, depth + 1, _HighPriorityQueue); }
+						if (isPointValid(row, col, depth - 1)) { addTarget(row, col, depth - 1, _HighPriorityQueue); }
 					}
 				}
 			}
@@ -324,33 +337,32 @@ void SmartPlayer::outlineSunkenEnemyShips(int row, int col, int depth)
 
 void SmartPlayer::notifyOnAttackResult(int player, Coordinate move, AttackResult result)
 {
-	if (!CommonUtilities::isLegalMove(move, mRows, mCols, mDepth)) // ignore invalid moves
+	if (!CommonUtilities::isLegalMove(move, _Rows, _Cols, _Depth)) // ignore invalid moves
 	{
 		return;
 	}
-	auto myRow = move.row - 1, myCol = move.col - 1, myDep = move.depth - 1;
-	if (result != AttackResult::Miss && verifyChar(myRow, myCol, myDep, UNKNOWN).second)
+	if (result != AttackResult::Miss && verifyChar(move.row, move.col, move.depth, UNKNOWN).second)
 	{
-		replaceChar(myRow, myCol, myDep, UNKNOWN, DESTROYED);
+		replaceChar(move.row, move.col, move.depth, UNKNOWN, DESTROYED);
 		if (result == AttackResult::Hit)
 		{
 			analyzeAttackResult();
 		}
 		else 
 		{
-			sinkShip(myRow, myCol, myDep);
-			outlineSunkenEnemyShips(myRow, myCol, myDep);
+			sinkShip(move.row, move.col, move.depth);
+			outlineSunkenEnemyShips(move.row, move.col, move.depth);
 		}
 	}
 	else
 	{
-		replaceChar(myRow, myCol, myDep, UNKNOWN, EMPTY);
+		replaceChar(move.row, move.col, move.depth, UNKNOWN, EMPTY);
 	}	
 }
 
 void SmartPlayer::setPlayer(int player)
 {
-	mPlayerNum = player;
+	_PlayerNum = player;
 }
 
 
