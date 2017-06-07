@@ -24,15 +24,6 @@
     <ClCompile Include="GameResultsTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SmartPlayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerGameResults.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CompetitionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -51,7 +42,7 @@
     <ClCompile Include="CommonUtilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MyBoardData.cpp">
+    <ClCompile Include="InitUtilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,19 +53,16 @@
     <ClInclude Include="Ship.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MyBoardData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="SafeQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameResultsTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SmartPlayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerGameResults.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CompetitionManager.h">
@@ -95,7 +83,7 @@
     <ClInclude Include="CommonUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MyBoardData.h">
+    <ClInclude Include="InitUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

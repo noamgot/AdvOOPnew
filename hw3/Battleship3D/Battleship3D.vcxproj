@@ -103,6 +103,8 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,33 +150,29 @@
   <ItemGroup>
     <ClCompile Include="CompetitionManager.cpp" />
     <ClCompile Include="AlgorithmLoader.cpp" />
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="GameRunner.cpp" />
     <ClCompile Include="GameResultsTable.cpp" />
     <ClCompile Include="CommonUtilities.cpp" />
+    <ClCompile Include="InitUtilities.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MyBoardData.cpp" />
-    <ClCompile Include="PlayerGameResults.cpp" />
     <ClCompile Include="Ship.cpp" />
-    <ClCompile Include="SmartPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CompetitionManager.h" />
     <ClInclude Include="AlgorithmLoader.h" />
-    <ClInclude Include="Game.h" />
     <ClInclude Include="GameUtilities.h" />
     <ClInclude Include="GameRunner.h" />
     <ClInclude Include="GameResultsTable.h" />
     <ClInclude Include="CommonUtilities.h" />
     <ClInclude Include="IBattleshipGameAlgo.h" />
+    <ClInclude Include="InitUtilities.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="MyBoardData.h" />
     <ClInclude Include="PlayerGameResults.h" />
     <ClInclude Include="SafeQueue.h" />
     <ClInclude Include="Ship.h" />
-    <ClInclude Include="SmartPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\AdvancedProgramming_Ex3.pdf" />
