@@ -147,7 +147,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CommonUtilities.cpp" />
-    <ClCompile Include="MyBoardData.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="Player.cpp" />
   </ItemGroup>

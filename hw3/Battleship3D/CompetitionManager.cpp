@@ -59,7 +59,6 @@ void CompetitionManager::runGames(int id)
 
 		// If the game is "poisoned" it means that the competition is over 
 		// and this thread should terminate
-		_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got the following game: _boardID=" + to_string(game._boardID) + ", A=" + to_string(game._idA) + ", B: " + to_string(game._idB));
 		if(game._boardID == -1) // "poisoned" game
 		{
 /*			{
@@ -69,28 +68,24 @@ void CompetitionManager::runGames(int id)
 			_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got a poisoned game. Returning...");
 			return; 			
 		}
+
+		_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got the following game: _boardID=" + to_string(game._boardID) + ", A=" + to_string(game._idA) + ", B: " + to_string(game._idB));
 		// Start the game
 		GameRunner gameRunner(game, _players[game._idA], _players[game._idB], _boards[game._boardID],
 								_boardsA[game._boardID], _boardsB[game._boardID],  _pLogger);
-		vector<PlayerGameResults> pgr = gameRunner.runGame();
+		gameRunner.runGame();
+		
+		// get the round count of the players
 		int roundA, roundB;
 		{
 			lock_guard<mutex> mlock(_mutex);
 			roundA = _roundsCnt[game._idA]++;
 			roundB = _roundsCnt[game._idB]++;
-/*			std::lock_guard<std::mutex> mlock2(_coutMute x);
-			std::cout << "thread " << std::this_thread::get_id() << " got round count:" << std::endl;
-			std::cout << "A: " << roundA+1 << ", B: " << roundB+1 << std::endl;*/
 		}
-
-		// Retrieve the game results
-
-		
+	
 		// Insert game results to the results table.
-		_resultsTable.updateTable(roundA, pgr[PLAYER_A]);
-		_resultsTable.updateTable(roundB, pgr[PLAYER_B]);
-
-
+		_resultsTable.updateTable(roundA, gameRunner.get_grA());
+		_resultsTable.updateTable(roundB, gameRunner.get_grA());
 	}
 	
 }
