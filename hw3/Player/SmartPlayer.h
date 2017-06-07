@@ -29,7 +29,7 @@ enum eSign : char
 	UNKNOWN = ' '
 };
 
-class SmartPlayer : IBattleshipGameAlgo
+class SmartPlayer : public IBattleshipGameAlgo
 {
 protected:
 	static const int NUMBER_OF_DIRECTIONS = 6;
@@ -140,5 +140,5 @@ public:
 	void notifyOnAttackResult(int player, Coordinate move, AttackResult result) override; // notify on last move result
 	void setPlayer(int player) override;
 	Coordinate attack() override; // ask player for his move
-	static IBattleshipGameAlgo* GetAlgorithm();
+
 };

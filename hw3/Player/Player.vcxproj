@@ -18,21 +18,10 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CommonUtilities.h" />
-    <ClInclude Include="IBattleshipGameAlgo.h" />
-    <ClInclude Include="Ship.h" />
-    <ClInclude Include="SmartPlayer.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="CommonUtilities.cpp" />
-    <ClCompile Include="Ship.cpp" />
-    <ClCompile Include="SmartPlayer.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{4DE10CFB-9447-4590-9028-708C4B665E1F}</ProjectGuid>
+    <ProjectGuid>{797FA0B4-ACA9-42AA-A247-6C79BEC75220}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>SmartPlayer</RootNamespace>
+    <RootNamespace>Player</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -98,7 +87,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SMARTPLAYER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PLAYER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -112,10 +101,8 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;SMARTPLAYER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;PLAYER_EXPORTS;ALGO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <UndefinePreprocessorDefinitions>
-      </UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -130,7 +117,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SMARTPLAYER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PLAYER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -148,7 +135,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;SMARTPLAYER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;PLAYER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -158,6 +145,19 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="CommonUtilities.cpp" />
+    <ClCompile Include="MyBoardData.cpp" />
+    <ClCompile Include="Ship.cpp" />
+    <ClCompile Include="SmartPlayer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CommonUtilities.h" />
+    <ClInclude Include="IBattleshipGameAlgo.h" />
+    <ClInclude Include="MyBoardData.h" />
+    <ClInclude Include="Ship.h" />
+    <ClInclude Include="SmartPlayer.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

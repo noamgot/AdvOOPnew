@@ -10,7 +10,6 @@
 #include <mutex>
 #include "Ship.h"
 
-
 namespace CommonUtilities
 {
 	template <typename T>

@@ -15,28 +15,34 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SmartPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonUtilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MyBoardData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ship.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SmartPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="CommonUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IBattleshipGameAlgo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MyBoardData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Ship.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SmartPlayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="CommonUtilities.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Ship.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SmartPlayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

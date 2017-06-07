@@ -182,7 +182,7 @@ namespace InitUtilities
 		{
 			if (filteredLists)
 			{
-				msg = "Not enough algorithms loaded - succeeded loading only " + playersCnt;
+				msg = "Not enough algorithms loaded";
 			}
 			else
 			{

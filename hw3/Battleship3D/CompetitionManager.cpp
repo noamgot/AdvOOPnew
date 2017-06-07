@@ -11,7 +11,7 @@ void CompetitionManager::printCurrentResults(vector<PlayerGameResults>& cumulati
 {
 	static const auto generalWidth = 8;
 	static const auto playerNameWidth = maxStringLength(_playersNames) + 6;
-	cout << "					***   ROUND " << roundNum << " RESULTS   ***" << endl;
+	cout << "\n***   ROUND " << roundNum << " RESULTS   ***" << endl;
 	printElement("#", generalWidth);
 	printElement("Team Name", playerNameWidth);
 	printElement("Wins", generalWidth);
