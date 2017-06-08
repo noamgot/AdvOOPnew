@@ -28,6 +28,7 @@ public:
 	}
 
 	CommonUtilities::vector2D<char>& operator[] (int i) { return _board[i]; }
+
 	void copyBoard(CommonUtilities::vector3D<char> board) { _board = board; }
 	void addShip(int player_id, const Ship& ship) { _ships[player_id].push_back(ship); }
 	std::vector<Ship> getShipList(const int player_id) const { return _ships[player_id]; }

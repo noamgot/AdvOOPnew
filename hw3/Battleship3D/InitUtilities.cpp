@@ -199,17 +199,18 @@ namespace InitUtilities
 		return 0;
 	}
 
-	void initBoards3D(const vector<string>& boardPaths, vector<MyBoardData>& boards)
+	void initBoards3D(const vector<string>& boardPaths, vector<MyBoardData>& boards, shared_ptr<Logger> pLogger)
 	{
+		pLogger->writeToLog("Processing boards...");
 		for (string boardPath : boardPaths)
 		{
+			pLogger->writeToLog("Starting to process board in path: " + boardPath);
 			auto rows = 0, cols = 0, depth = 0;
 			string line;
 			ifstream boardFile(boardPath);
 			if (!boardFile.is_open())
 			{
-				//todo - LOG
-				cout << "Error: opening board file failed" << endl;
+				pLogger->writeToLog("Opening board file failed", false, Logger::eLogType::LOG_WARNING);
 				continue;
 			}
 			set<char> charSet{ WATER, BOAT,MISSLE_SHIP, SUBMARINE, DESTROYER, char(tolower(BOAT)),
@@ -218,23 +219,22 @@ namespace InitUtilities
 			getline(boardFile, line);
 			if (boardFile.eof() || boardFile.fail())
 			{
-				//todo - LOG
+				pLogger->writeToLog("Failed to read from file, or reached EOF", false, Logger::eLogType::LOG_WARNING);
 				continue;
 			}
 			if (getDims(line, rows, cols, depth) <= 0)
 			{
-				//todo - LOG
+				pLogger->writeToLog("Invalid dimensions line", false, Logger::eLogType::LOG_WARNING);
 				continue;
 			}
 
-			//vector3D<char> board(rows, std::vector<std::vector<char>>(cols, std::vector<char>(depth)));
 			MyBoardData board(rows, cols, depth);
 
 			// if first line after dimensions is not empty - bad format
 			getline(boardFile, line);
 			if (!boardFile.eof() && !line.empty())
 			{
-				//todo - LOG
+				pLogger->writeToLog("Non-empty line after dimensions line - bad board format", false, Logger::eLogType::LOG_WARNING);
 				continue;
 			}
 			getline(boardFile, line);
@@ -272,9 +272,8 @@ namespace InitUtilities
 					}
 				}
 			}
-
 			boardFile.close();
-			if (checkBoard3D(board) < 0)
+			if (checkBoard3D(board, pLogger) < 0)
 			{
 				continue;
 			}
@@ -284,8 +283,8 @@ namespace InitUtilities
 
 	int getDims(const string& line, int& rows, int& cols, int& depth)
 	{
-		int j = 0;
-		for (int i = 0; i <= 2; i++)
+		auto j = 0;
+		for (auto i = 0; i <= 2; i++)
 		{
 			string buff = "";
 			while (j < line.size() && tolower(line[j]) != 'x')
@@ -314,13 +313,9 @@ namespace InitUtilities
 		return rows*cols*depth;
 	}
 
-	int checkBoard3D(MyBoardData& board)
+	int checkBoard3D(MyBoardData& board, std::shared_ptr<Logger> pLogger)
 	{
 		//todo - write errors to LOG
-
-		//auto rows = board.size();
-		//auto cols = board[0].size();
-		//auto depth = board[0][0].size();
 		auto rows = board.rows();
 		auto cols = board.cols();
 		auto depth = board.depth();
@@ -490,6 +485,75 @@ namespace InitUtilities
 				}
 			}
 		}
+		
+	}
+
+	int printBoardErrors(std::bitset<4>& errShipsA, std::bitset<4>& errShipsB, int shipCountA, int shipCountB, int adjCheck)
+	{
+		auto ret = 0;
+		// Print possible errors
+		printWrongSizeOrShapeError(errShipsA, ret, "A");
+		printWrongSizeOrShapeError(errShipsB, ret, "B");
+		printBadShipsCountError(shipCountA, shipCountB);
+		if (adjCheck)
+		{
+			cout << "Adjacent Ships on Board" << endl;
+			ret = -1;
+		}
+		return ret;
+	}
+
+	void printWrongSizeOrShapeError(std::bitset<4>& errShips, int& ret, const std::string player)
+	{
+		char shipMap[4] = { BOAT,MISSLE_SHIP,SUBMARINE,DESTROYER };
+		if (player == "B")
+		{
+			for (auto& c : shipMap)
+			{
+				c = tolower(c);
+			}
+		}
+		for (auto i = 0; i < 4; i++)
+		{
+			if (errShips[i])
+			{
+				cout << "Wrong size or shape for ship " << shipMap[i] << " for player " << player << endl;
+				ret = -1;
+			}
+		}
+	}
+
+	void printBadShipsCountError(int shipCountA, int shipCountB)
+	{
+		if (shipCountA != shipCountB)
+		{
+			//todo - LOG an unfair board
+		}
+	}
+
+	Ship handleShipDiscovery(int iOrig, int jOrig, int numOfRows, int numOfCols, const char** board)
+	{
+		auto i = iOrig;
+		auto j = jOrig;
+		auto size = 0;
+		map<pair<int, int>, bool> coordinates;
+		auto c = board[i][j];
+		// we will iterate only downwards or rightwards
+		do
+		{
+			// remember that we save the coordinates from in the form of 1 to ROW/COL SIZE (and not starting from 0)
+			// hence we give a +1 offset
+			coordinates[make_pair(i + 1, j + 1)] = true;
+			size++;
+		} while (++i < numOfRows && board[i][j] == c); // checking downwards
+		i = iOrig;
+		while (++j < numOfCols && board[i][j] == c) // checking rightwards
+		{
+			coordinates[make_pair(i + 1, j + 1)] = true;
+			size++;
+		}
+		//return Ship(size, charToShipType(c), coordinates);
+		return Ship(); // todo - change!!!!!! just for tests...
 		
 	}
 }
