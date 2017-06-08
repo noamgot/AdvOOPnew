@@ -10,7 +10,7 @@ class GameRunner
 public:
 	GameRunner() = delete;
 	GameRunner(const CommonUtilities::Game& game, const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, 
-			const MyBoardData& boardData, const MyBoardData& boardA, const MyBoardData& boardB, Logger  *pLogger);
+			const MyBoardData& boardData, const MyBoardData& boardA, const MyBoardData& boardB, std::shared_ptr<Logger> pLogger);
 
 	// block copy operations
 	GameRunner(const GameRunner& other) = delete;
@@ -23,11 +23,15 @@ public:
 
 private:
 	// data members
+	static const int PLAYER_A = 0;
+	static const int PLAYER_B = 1;
+
 	std::unique_ptr<IBattleshipGameAlgo> _playerA;
 	std::unique_ptr<IBattleshipGameAlgo> _playerB;
 	MyBoardData _boardData;
 	MyBoardData _boardA;
 	MyBoardData _boardB;
+
 	// a struct for the game manager - to hold information about the players
 	struct PlayerAttributes
 	{
@@ -36,21 +40,18 @@ private:
 		size_t shipsCount;
 		std::vector<Ship> shipList;
 	} _playerAttributes[2];
+
 	PlayerGameResults _grA;
 	PlayerGameResults _grB;
-	Logger *_pLogger;
+	std::shared_ptr<Logger> _pLogger;
 	CommonUtilities::Game _game;
 	int _attackerNum;
 	int _defenderNum;
-
-	static const int PLAYER_A = 0;
-	static const int PLAYER_B = 1;	
-
+	
 	/* helper functions called inside playThe Game */
 	void handleMove(Coordinate& move);
 	void handleMiss(Coordinate& move) const;
-	void handleHitOrSink(Coordinate& move, bool& validAttack,
-	                     char hitChar);
+	void handleHitOrSink(Coordinate& move, bool& validAttack, char hitChar);
 
 	/* mark a ship hit to a given player, and keeping the AttackResult in res */
 	bool registerHit(int hitPlayer, Coordinate coords, Ship::eShipType shipType, AttackResult& res);
@@ -58,6 +59,7 @@ private:
 	/* returns the amount of points according to the given ship type (by char) */
 	static int calculateSinkScore(char c);
 
+	/* changing attacker and defender indices */
 	void changeAttacker()
 	{
 		_attackerNum ^= 1;
@@ -68,6 +70,7 @@ private:
 	/* initializes the given PlayerAttribute struct, according to the given board*/
 	void initPlayersAttributes(const MyBoardData& board, const int player_id);
 
+	/* sets the given player index and board */
 	static void initPlayer(IBattleshipGameAlgo* pPlayer, int playerNum, const BoardData& board)
 	{
 		pPlayer->setPlayer(playerNum);

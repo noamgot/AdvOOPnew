@@ -52,12 +52,3 @@ string AlgorithmLoader::removeSuffix(const string& filename)
 	return filename.substr(0, lastdot);
 }
 
-IBattleshipGameAlgo* AlgorithmLoader::loadAlgo(int n)
-{
-	if (n < 0 || n > libs.size()-1)
-	{
-		return nullptr;
-	}
-	return get<2>(libs[n])();
-}
-

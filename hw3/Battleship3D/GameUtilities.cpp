@@ -61,29 +61,6 @@ namespace GameUtilities
 			//todo - LOG an unfair board
 		}
 	}
-
-	
-	/*
-	void GameUtilities::initPlayerShipsList(const char** board, int numOfRows, int numOfCols, PlayerAttributes& playerAttributes)
-	{
-		for (auto i = 0; i < numOfRows; ++i)
-		{
-			for (auto j = 0; j < numOfCols; ++j)
-			{
-				auto c = board[i][j];
-				if (c != WATER)
-				{
-					if (i > 0 && board[i - 1][j] == c || j > 0 && board[i][j - 1] == c) // already encountered this ship
-					{
-						continue;
-					}
-					auto ship = handleShipDiscovery(i, j, numOfRows, numOfCols, board);
-					playerAttributes.shipList.push_back(ship);
-				}
-			}
-		}
-	}
-*/
 	
 	Ship GameUtilities::handleShipDiscovery(int iOrig, int jOrig, int numOfRows, int numOfCols, const char** board)
 	{

@@ -19,7 +19,7 @@ namespace InitUtilities
 
 	/* fills the fileListVector with a list of the directory contents.
 	* returns 0 on success and -1 on failure */
-	int getDirectoryFileList(const std::string dirPath, std::vector<std::string>& fileListVector, Logger* pLogger);
+	int getDirectoryFileList(const std::string dirPath, std::vector<std::string>& fileListVector, std::shared_ptr<Logger> pLogger);
 
 	/* filters the dirFiles vector (which contatins a list of the directory files) and stores the board files, dllFiles
 	 * (in a full path form) and player names (derived from the dll file names) in the corresponding vectors.	 */
@@ -32,7 +32,8 @@ namespace InitUtilities
 	/* checks a minimal requirements for boards count (boardsCnt >= 1) and players count (playersCnt >= 2)
 	 * returns 0 if those requirements are met and -1 otherwise	 
 	 * the "filteredLists" flag is for distinguishing between the printed errors	 */
-	int checkMinBoardsAndPlayersCount(size_t boardsCnt, size_t playersCnt, const std::string& dirPath, bool filteredLists, Logger* pLogger);
+	int checkMinBoardsAndPlayersCount(size_t boardsCnt, size_t playersCnt, const std::string& dirPath, 
+										bool filteredLists, std::shared_ptr<Logger> pLogger);
 
 	/* given a vector of paths to sboard files, loads only the valid ones into vector<MyBoardData> boards */
 	void initBoards3D(const std::vector<std::string>& boardPaths, std::vector<MyBoardData>& boards);

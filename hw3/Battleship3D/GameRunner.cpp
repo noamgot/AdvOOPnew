@@ -4,7 +4,7 @@ using namespace std;
 using namespace CommonUtilities;
 
 GameRunner::GameRunner(const Game& game, const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, 
-					const MyBoardData& boardData, const MyBoardData& boardA, const MyBoardData& boardB, Logger* pLogger)
+					const MyBoardData& boardData, const MyBoardData& boardA, const MyBoardData& boardB, shared_ptr<Logger> pLogger)
 	:_playerA(getAlgoA()), _playerB(getAlgoB()), _boardData(boardData), _boardA(boardA), _boardB(boardB), _pLogger(pLogger), _game(game),
 	 _attackerNum(0), _defenderNum(1)
 {

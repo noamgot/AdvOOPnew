@@ -107,7 +107,7 @@ namespace InitUtilities
 			dwAttrib & FILE_ATTRIBUTE_DIRECTORY;
 	}
 
-	int getDirectoryFileList(const string dirPath, vector<string>& fileListVector, Logger* pLogger)
+	int getDirectoryFileList(const string dirPath, vector<string>& fileListVector, shared_ptr<Logger> pLogger)
 	{
 		pLogger->writeToLog("Getting directory file list");
 		fileListVector.clear();
@@ -161,7 +161,8 @@ namespace InitUtilities
 		return pos != string::npos && pos == line.length() - suffix.length();
 	}
 
-	int checkMinBoardsAndPlayersCount(size_t boardsCnt, size_t playersCnt, const string& dirPath, bool filteredLists, Logger* pLogger)
+	int checkMinBoardsAndPlayersCount(size_t boardsCnt, size_t playersCnt, const string& dirPath, 
+		bool filteredLists, shared_ptr<Logger> pLogger)
 	{
 		auto error = false;
 		string msg;
@@ -182,7 +183,7 @@ namespace InitUtilities
 		{
 			if (filteredLists)
 			{
-				msg = "Not enough algorithms loaded";
+				msg = "Not enough valid algorithms (loaded " + to_string(playersCnt) + ")";
 			}
 			else
 			{
