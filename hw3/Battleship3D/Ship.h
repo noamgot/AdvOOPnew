@@ -50,7 +50,12 @@ public:
 
 	/*Update the ship's after it gets a hit. return true if a real hit occurs
 	 * (i.e a "living" ship tile is hit) */
-	bool handleHit(Coordinate coords, AttackResult& res);	
+	bool handleHit(Coordinate coords, AttackResult& res);
+	
+	bool operator < (const Ship& other) const
+	{
+		return (this->_size < other._size);
+	}
 
 private:
 	int _size;

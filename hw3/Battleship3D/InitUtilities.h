@@ -56,15 +56,16 @@ namespace InitUtilities
 	/* init all the individual boards for players A and B*/
 	void initIndividualBoards(const std::vector<MyBoardData>& boards, std::vector<MyBoardData>& boardA, std::vector<MyBoardData>& boardB);
 
-
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 
 	//todo - might not need those - delete if needed
 	/* prints the various error encountered on the board (if any)*/
-	int printBoardErrors(std::bitset<4>& errShipsA, std::bitset<4>& errShipsB, int shipCountA, int shipCountB, int adjCheck);
+	int logBoardErrors(std::bitset<4>& errShipsA, std::bitset<4>& errShipsB, int shipCountA, int shipCountB, int adjCheck, const MyBoardData& board, std::shared_ptr<Logger> pLogger);
 
 	/* helper functions for printBoardErrors */
-	void printWrongSizeOrShapeError(std::bitset<4>& errShips, int& ret, const std::string player);
-	void printBadShipsCountError(int shipCountA, int shipCountB);
+	void logWrongSizeOrShapeError(std::bitset<4>& errShips, int& ret, const std::string player, std::shared_ptr<Logger> pLogger);
+	void logBadShipsCountError(int shipCountA, int shipCountB, const MyBoardData& board, std::shared_ptr<Logger> pLogger);
 
 	/* a helper function to the initPlayerShipsList method */
 	Ship handleShipDiscovery(int iOrig, int jOrig, int numOfRows, int numOfCols, const char** board);

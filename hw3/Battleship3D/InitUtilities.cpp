@@ -4,6 +4,11 @@
 #include <string>
 #include <Windows.h>
 #include <set>
+#include <bitset>
+#include <bitset>
+#include <bitset>
+#include <bitset>
+#include <algorithm>
 
 using namespace std;
 using namespace CommonUtilities;
@@ -277,6 +282,7 @@ namespace InitUtilities
 			{
 				continue;
 			}
+			pLogger->writeToLog("Success!");
 			boards.push_back(board);
 		}
 	}
@@ -313,7 +319,7 @@ namespace InitUtilities
 		return rows*cols*depth;
 	}
 
-	int checkBoard3D(MyBoardData& board, std::shared_ptr<Logger> pLogger)
+	int checkBoard3D(MyBoardData& board, shared_ptr<Logger> pLogger)
 	{
 		//todo - write errors to LOG
 		auto rows = board.rows();
@@ -347,16 +353,19 @@ namespace InitUtilities
 								{
 									if (isShipA)
 									{
-										errShipsA[shipsA[board[i][j][k]] - 1] = 1;
+										errShipsA[shipsA[board[i][j][k]] - 1] = true;
 									}
 									if (isShipB)
 									{
-										errShipsB[shipsB[board[i][j][k]] - 1] = 1;
+										errShipsB[shipsB[board[i][j][k]] - 1] = true;
 									}
-									return -1;
+									//return -1;
 								}
-								shipCountA += isShipA;
-								shipCountB += isShipB;
+								else
+								{
+									shipCountA += isShipA;
+									shipCountB += isShipB;
+								}
 							}
 							// Check if any adjacent ships exist
 							if (k != 0 && board[i][j][k - 1] != board[i][j][k] && board[i][j][k - 1] != ' ' ||
@@ -364,19 +373,19 @@ namespace InitUtilities
 								j != 0 && board[i][j - 1][k] != board[i][j][k] && board[i][j - 1][k] != ' ')
 							{
 								adjCheck = 1; // todo @ben - never used
-								return -1;
+								//return -1;
 							}
 						}
 					}
 				}
 			}
 		}
-		return 1;
+		return logBoardErrors(errShipsA, errShipsB, shipCountA, shipCountB, adjCheck, board, pLogger);
 	}
 
 	int checkShape3D(MyBoardData& board, const int size, int i, int j, int k)
 	{
-		//todo @ben - code duplication + LOG...
+		//todo @ben - code duplication
 		auto rows = board.rows();
 		auto cols = board.cols();
 		auto depth = board.depth();
@@ -437,9 +446,8 @@ namespace InitUtilities
 		map<Coordinate, bool> shipMap;
 		for (int l = 0; l < size; l++)
 		{
-			//todo @ben - best way to do it:
-			// shipMap[Coordinate(i+1,j+1,k+1)] = true;
-			shipMap.insert(make_pair(Coordinate(i + 1, j + 1, k + 1), true));
+			shipMap[Coordinate(i+1,j+1,k+1)] = true;
+			//shipMap.insert(make_pair(Coordinate(i + 1, j + 1, k + 1), true));
 			k += kDir;
 			i += iDir;
 			j += jDir;
@@ -488,22 +496,22 @@ namespace InitUtilities
 		
 	}
 
-	int printBoardErrors(std::bitset<4>& errShipsA, std::bitset<4>& errShipsB, int shipCountA, int shipCountB, int adjCheck)
+	int logBoardErrors(bitset<4>& errShipsA, bitset<4>& errShipsB, int shipCountA, int shipCountB, int adjCheck, const MyBoardData& board, shared_ptr<Logger> pLogger)
 	{
 		auto ret = 0;
 		// Print possible errors
-		printWrongSizeOrShapeError(errShipsA, ret, "A");
-		printWrongSizeOrShapeError(errShipsB, ret, "B");
-		printBadShipsCountError(shipCountA, shipCountB);
+		logWrongSizeOrShapeError(errShipsA, ret, "A", pLogger);
+		logWrongSizeOrShapeError(errShipsB, ret, "B", pLogger);
+		logBadShipsCountError(shipCountA, shipCountB, board, pLogger);
 		if (adjCheck)
 		{
-			cout << "Adjacent Ships on Board" << endl;
+			pLogger->writeToLog("Adjacent Ships on Board", false, Logger::eLogType::LOG_WARNING);
 			ret = -1;
 		}
 		return ret;
 	}
 
-	void printWrongSizeOrShapeError(std::bitset<4>& errShips, int& ret, const std::string player)
+	void logWrongSizeOrShapeError(bitset<4>& errShips, int& ret, const string player, shared_ptr<Logger> pLogger)
 	{
 		char shipMap[4] = { BOAT,MISSLE_SHIP,SUBMARINE,DESTROYER };
 		if (player == "B")
@@ -517,17 +525,34 @@ namespace InitUtilities
 		{
 			if (errShips[i])
 			{
-				cout << "Wrong size or shape for ship " << shipMap[i] << " for player " << player << endl;
+				pLogger->writeToLog((static_cast<string>("Wrong size or shape for ship ") += shipMap[i]) + " for player " + player,
+									false, Logger::eLogType::LOG_WARNING);
 				ret = -1;
 			}
 		}
 	}
 
-	void printBadShipsCountError(int shipCountA, int shipCountB)
+	void logBadShipsCountError(int shipCountA, int shipCountB, const MyBoardData& board, shared_ptr<Logger> pLogger)
 	{
 		if (shipCountA != shipCountB)
 		{
-			//todo - LOG an unfair board
+			pLogger->writeToLog("Ships number is not equal for both players: A has " + to_string(shipCountA) + 
+								", B has " + to_string(shipCountB), false, Logger::eLogType::LOG_WARNING);
+		}
+		else
+		{
+			vector<Ship> shipsA = board.getShipList(0);
+			vector<Ship> shipsB = board.getShipList(1);
+			sort(shipsA.begin(), shipsA.end());
+			sort(shipsB.begin(), shipsB.end());
+			for (auto i = 0; i < shipCountA; i++)
+			{
+				if (shipsA[i].getType() != shipsB[i].getType())
+				{
+					pLogger->writeToLog("Players have different ship types", false, Logger::eLogType::LOG_WARNING);
+					return;
+				}
+			}
 		}
 	}
 
