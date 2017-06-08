@@ -46,8 +46,6 @@ void GameRunner::processGameResults()
 
 void GameRunner::runGame()
 {
-	//todo - notify unbalanced boards
-
 	IBattleshipGameAlgo *pPlayers[] = { _playerA.get() , _playerB.get() };
 	initPlayer(_playerA.get(), PLAYER_A, _boardA);
 	initPlayer(_playerB.get(), PLAYER_B, _boardB);
