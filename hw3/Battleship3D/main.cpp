@@ -1,6 +1,9 @@
-#include "GameUtilities.h"
-#include <string>
+#include "CommonUtilities.h"
+#include "GameResultsTable.h"
+#include "PlayerGameResults.h"
+#include "AlgorithmLoader.h"
 #include "MyBoardData.h"
+#include <string>
 #include "CompetitionManager.h"
 #include "InitUtilities.h"
 
@@ -35,7 +38,7 @@ int main(int argc, char** argv)
 	{
 		return EXIT_FAILURE;
 	}
-	initBoards3D(boardFiles, boards);
+	initBoards3D(boardFiles, boards, pLogger);
 	AlgorithmLoader algoLoader(pLogger);
 	algoLoader.loadLibs(dllFiles, players, playerNames, dirPath);
 

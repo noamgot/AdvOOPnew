@@ -1,6 +1,10 @@
 ﻿#pragma once
 
-#include "GameUtilities.h"
+#include "CommonUtilities.h"
+#include "GameResultsTable.h"
+#include "PlayerGameResults.h"
+#include "AlgorithmLoader.h"
+#include "MyBoardData.h"
 #include "GameRunner.h"
 #include "SafeQueue.h"
 

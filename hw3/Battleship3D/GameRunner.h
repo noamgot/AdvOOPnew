@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include "IBattleshipGameAlgo.h"
-#include "GameUtilities.h"
+#include "CommonUtilities.h"
+#include "GameResultsTable.h"
+#include "PlayerGameResults.h"
+#include "AlgorithmLoader.h"
 #include "MyBoardData.h"
 #include "Logger.h"
 
