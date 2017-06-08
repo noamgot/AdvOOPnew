@@ -186,7 +186,7 @@ void GameRunner::initPlayersAttributes(const MyBoardData& board, const int playe
 {
 	_playerAttributes[player_id].hasMoves = true;
 	_playerAttributes[player_id].score = 0;
-	_playerAttributes[player_id].shipsCount = board.getShipCount();
+	_playerAttributes[player_id].shipsCount = board.getShipCount(player_id);
 	_playerAttributes[player_id].shipList = board.getShipList(player_id);
 
 }

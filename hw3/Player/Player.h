@@ -43,12 +43,11 @@ protected:
 
 	// A queue for high priority (follow up) attacks
 	std::deque<Coordinate> _HighPriorityQueue;
-
+	
 	int _Rows;
 	int _Cols;
 	int _Depth;
 	int _PlayerNum;
-	int _ShipsCount; // number of living ships - starting from DEFAULT_SHIPS_COUNT
 	MyBoardData _Board;
 	std::deque<Coordinate> _MovesQueue;
 
@@ -135,7 +134,7 @@ protected:
 	
 
 public:
-	Player() : _Rows(-1), _Cols(-1), _Depth(-1), _PlayerNum(-1), _ShipsCount(-1) {}
+	Player() : _Rows(-1), _Cols(-1), _Depth(-1), _PlayerNum(-1) {}
 	~Player(){}
 	void setBoard(const BoardData& board) override; // called once to notify player about his board // called once to notify player on his boardd
 	void notifyOnAttackResult(int player, Coordinate move, AttackResult result) override; // notify on last move result

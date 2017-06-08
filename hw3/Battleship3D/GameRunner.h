@@ -78,6 +78,7 @@ private:
 	{
 		pPlayer->setPlayer(playerNum);
 		pPlayer->setBoard(board);
+		//_playerAttributes[playerNum]->
 	}
 
 	std::string winnerConclusionStr() const;
