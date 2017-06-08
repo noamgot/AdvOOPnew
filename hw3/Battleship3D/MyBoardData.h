@@ -31,7 +31,7 @@ public:
 	void copyBoard(CommonUtilities::vector3D<char> board) { _board = board; }
 	void addShip(int player_id, const Ship& ship) { _ships[player_id].push_back(ship); }
 	std::vector<Ship> getShipList(const int player_id) const { return _ships[player_id]; }
-	size_t getShipCount() const { return _ships.size(); }
+	size_t getShipCount(int player_num) const { return _ships[player_num].size(); }
 private:
 	CommonUtilities::RawBoard _board; // 3D board!
 	CommonUtilities::vector2D<Ship> _ships;
