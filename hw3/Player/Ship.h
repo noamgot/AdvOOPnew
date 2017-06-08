@@ -10,7 +10,7 @@ namespace std
 		bool operator() (const Coordinate& lhs, const Coordinate& rhs) const
 		{
 			return sqrt(pow(double(lhs.row), 2) + pow(double(lhs.col), 2) + pow(double(lhs.depth), 2))
-				< sqrt(pow(double(rhs.row), 2) + pow(double(rhs.col), 2) + pow(double(rhs.depth), 2));
+					< sqrt(pow(double(rhs.row), 2) + pow(double(rhs.col), 2) + pow(double(rhs.depth), 2));
 		}
 	};
 }
@@ -49,8 +49,13 @@ public:
 	int getSize() const { return _size; }
 
 	/*Update the ship's after it gets a hit. return true if a real hit occurs
-	* (i.e a "living" ship tile is hit) */
+	 * (i.e a "living" ship tile is hit) */
 	bool handleHit(Coordinate coords, AttackResult& res);
+	
+	bool operator < (const Ship& other) const
+	{
+		return (this->_size < other._size);
+	}
 
 private:
 	int _size;
@@ -58,5 +63,5 @@ private:
 	std::map<Coordinate, bool> _coordinates;
 	eShipType _type;
 
-
+	
 };

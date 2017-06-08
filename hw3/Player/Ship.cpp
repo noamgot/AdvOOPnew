@@ -18,8 +18,8 @@ bool Ship::handleHit(Coordinate coords, AttackResult& res)
 		this->_size--;
 		if (this->_size == 0) //  ship is sunk - report "sink" 
 		{
-			res = AttackResult::Sink;
+			res = AttackResult::Sink; 
 		}
-	}
+	}	
 	return initialTileStatus;
 }
