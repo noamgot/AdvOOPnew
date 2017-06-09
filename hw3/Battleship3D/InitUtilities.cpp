@@ -166,7 +166,7 @@ namespace InitUtilities
 		return pos != string::npos && pos == line.length() - suffix.length();
 	}
 
-	int checkMinBoardsAndPlayersCount(size_t boardsCnt, size_t playersCnt, const string& dirPath, 
+	int checkMinBoardsAndPlayersCount(size_t boardsCnt, size_t playersCnt, const string& dirPath,
 		bool filteredLists, shared_ptr<Logger> pLogger)
 	{
 		auto error = false;
@@ -181,7 +181,7 @@ namespace InitUtilities
 			{
 				msg = "No board files (*.sboard) looking in path: " + dirPath;
 			}
-			pLogger->writeToLog(msg , true, Logger::eLogType::LOG_ERROR);
+			pLogger->writeToLog(msg, true, Logger::eLogType::LOG_ERROR);
 			error = true;
 		}
 		if (playersCnt < 2)
@@ -290,6 +290,11 @@ namespace InitUtilities
 	int getDims(const string& line, int& rows, int& cols, int& depth)
 	{
 		auto j = 0;
+		// skip preceding white space
+		while (line[j] == ' ' || line[j] == '\t')
+		{
+			j++;
+		}
 		for (auto i = 0; i <= 2; i++)
 		{
 			string buff = "";
@@ -297,6 +302,15 @@ namespace InitUtilities
 			{
 				if (isdigit(line[j]) == 0)
 				{
+					// ignore following white space
+					while (i == 2 && j < line.size() && (line[j] == ' ' || line[j] == '\t'))
+					{
+						j++;
+					}
+					if (j == line.size())
+					{
+						break;
+					}
 					return -1;
 				}
 				buff += line[j];
@@ -321,7 +335,6 @@ namespace InitUtilities
 
 	int checkBoard3D(MyBoardData& board, shared_ptr<Logger> pLogger)
 	{
-		//todo - write errors to LOG
 		auto rows = board.rows();
 		auto cols = board.cols();
 		auto depth = board.depth();
@@ -372,8 +385,7 @@ namespace InitUtilities
 								i != 0 && board[i - 1][j][k] != board[i][j][k] && board[i - 1][j][k] != ' ' ||
 								j != 0 && board[i][j - 1][k] != board[i][j][k] && board[i][j - 1][k] != ' ')
 							{
-								adjCheck = 1; // todo @ben - never used
-								//return -1;
+								adjCheck = 1;
 							}
 						}
 					}
@@ -447,7 +459,6 @@ namespace InitUtilities
 		for (int l = 0; l < size; l++)
 		{
 			shipMap[Coordinate(i+1,j+1,k+1)] = true;
-			//shipMap.insert(make_pair(Coordinate(i + 1, j + 1, k + 1), true));
 			k += kDir;
 			i += iDir;
 			j += jDir;

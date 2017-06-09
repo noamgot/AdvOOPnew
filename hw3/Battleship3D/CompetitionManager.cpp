@@ -30,7 +30,7 @@ void CompetitionManager::printCurrentResults(vector<PlayerGameResults>& cumulati
 {
 	static const auto generalWidth = 8;
 	static const auto playerNameWidth = maxStringLength(_playersNames) + 6;
-	cout << "\n" << centeredStr("$$$   ROUND " + to_string(roundNum) + " RESULTS   $$$", generalWidth * 6 + playerNameWidth) << endl;
+	cout << "\n" << centeredStr("$$$   ROUND " + to_string(roundNum) + " RESULTS   $$$", generalWidth * 6 + playerNameWidth) + "\n";
 	printElement("#", generalWidth);
 	printElement("Team Name", playerNameWidth);
 	printElement("Wins", generalWidth);
@@ -136,7 +136,7 @@ void CompetitionManager::printTableEntry(size_t generalWidth, size_t playerNameW
 	cout << left << setw(generalWidth) << setfill(' ') << fixed << setprecision(2) << gr.percentage;
 	printElement(gr.ptsFor, generalWidth);
 	printElement(gr.ptsAgainst, generalWidth);
-	cout << endl;
+	cout << "\n";
 }
 
 
