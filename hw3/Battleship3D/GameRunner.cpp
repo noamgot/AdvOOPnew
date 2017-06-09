@@ -79,25 +79,6 @@ void GameRunner::runGame()
 	processGameResults();
 }
 
-//int GameRunner::getAScore() const
-//{
-//	return _playerAttributes[PLAYER_A].score;
-//}
-//
-//int GameRunner::getBScore() const
-//{
-//	return _playerAttributes[PLAYER_B].score;
-//}
-//
-//bool GameRunner::didAWin() const
-//{
-//	return _playerAttributes[PLAYER_A].won;
-//}
-//
-//bool GameRunner::didBWin() const
-//{
-//	return _playerAttributes[PLAYER_B].won;
-//}
 void GameRunner::handleMove(Coordinate& move)
 {
 	bool validAttack;
