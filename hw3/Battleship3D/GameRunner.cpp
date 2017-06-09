@@ -86,7 +86,6 @@ void GameRunner::runGame()
 	processGameResults();
 }
 
-
 void GameRunner::handleMove(Coordinate& move)
 {
 	bool validAttack;
