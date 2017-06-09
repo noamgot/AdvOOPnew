@@ -116,6 +116,10 @@ void Player::reLabelTheBoard()
 
 void Player::setBoard(const BoardData &board)
 {
+	_Rows = board.rows();
+	_Cols = board.cols();
+	_Depth = board.depth();
+	_Board = MyBoardData(_Rows, _Cols, _Depth);
 	// Copy the board
 	for (auto row = 1; row <= _Rows; row++)
 	{
@@ -145,6 +149,7 @@ void Player::setBoard(const BoardData &board)
 			}
 		}
 	}
+	queueInit();
 }
 
 bool Player::queueInit()
@@ -364,8 +369,6 @@ void Player::setPlayer(int player)
 {
 	_PlayerNum = player;
 }
-
-
 
 IBattleshipGameAlgo* GetAlgorithm()
 {

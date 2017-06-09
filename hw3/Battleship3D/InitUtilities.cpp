@@ -4,6 +4,11 @@
 #include <string>
 #include <Windows.h>
 #include <set>
+#include <bitset>
+#include <bitset>
+#include <bitset>
+#include <bitset>
+#include <algorithm>
 
 using namespace std;
 using namespace CommonUtilities;
@@ -107,7 +112,7 @@ namespace InitUtilities
 			dwAttrib & FILE_ATTRIBUTE_DIRECTORY;
 	}
 
-	int getDirectoryFileList(const string dirPath, vector<string>& fileListVector, Logger* pLogger)
+	int getDirectoryFileList(const string dirPath, vector<string>& fileListVector, shared_ptr<Logger> pLogger)
 	{
 		pLogger->writeToLog("Getting directory file list");
 		fileListVector.clear();
@@ -161,7 +166,8 @@ namespace InitUtilities
 		return pos != string::npos && pos == line.length() - suffix.length();
 	}
 
-	int checkMinBoardsAndPlayersCount(size_t boardsCnt, size_t playersCnt, const string& dirPath, bool filteredLists, Logger* pLogger)
+	int checkMinBoardsAndPlayersCount(size_t boardsCnt, size_t playersCnt, const string& dirPath,
+		bool filteredLists, shared_ptr<Logger> pLogger)
 	{
 		auto error = false;
 		string msg;
@@ -175,14 +181,14 @@ namespace InitUtilities
 			{
 				msg = "No board files (*.sboard) looking in path: " + dirPath;
 			}
-			pLogger->writeToLog(msg , true, Logger::eLogType::LOG_ERROR);
+			pLogger->writeToLog(msg, true, Logger::eLogType::LOG_ERROR);
 			error = true;
 		}
 		if (playersCnt < 2)
 		{
 			if (filteredLists)
 			{
-				msg = "Not enough algorithms loaded";
+				msg = "Not enough valid algorithms (loaded " + to_string(playersCnt) + ")";
 			}
 			else
 			{
@@ -198,17 +204,18 @@ namespace InitUtilities
 		return 0;
 	}
 
-	void initBoards3D(const vector<string>& boardPaths, vector<MyBoardData>& boards)
+	void initBoards3D(const vector<string>& boardPaths, vector<MyBoardData>& boards, shared_ptr<Logger> pLogger)
 	{
+		pLogger->writeToLog("Processing boards...");
 		for (string boardPath : boardPaths)
 		{
+			pLogger->writeToLog("Starting to process board in path: " + boardPath);
 			auto rows = 0, cols = 0, depth = 0;
 			string line;
 			ifstream boardFile(boardPath);
 			if (!boardFile.is_open())
 			{
-				//todo - LOG
-				cout << "Error: opening board file failed" << endl;
+				pLogger->writeToLog("Opening board file failed", false, Logger::eLogType::LOG_WARNING);
 				continue;
 			}
 			set<char> charSet{ WATER, BOAT,MISSLE_SHIP, SUBMARINE, DESTROYER, char(tolower(BOAT)),
@@ -217,23 +224,22 @@ namespace InitUtilities
 			getline(boardFile, line);
 			if (boardFile.eof() || boardFile.fail())
 			{
-				//todo - LOG
+				pLogger->writeToLog("Failed to read from file, or reached EOF", false, Logger::eLogType::LOG_WARNING);
 				continue;
 			}
 			if (getDims(line, rows, cols, depth) <= 0)
 			{
-				//todo - LOG
+				pLogger->writeToLog("Invalid dimensions line", false, Logger::eLogType::LOG_WARNING);
 				continue;
 			}
 
-			//vector3D<char> board(rows, std::vector<std::vector<char>>(cols, std::vector<char>(depth)));
 			MyBoardData board(rows, cols, depth);
 
 			// if first line after dimensions is not empty - bad format
 			getline(boardFile, line);
 			if (!boardFile.eof() && !line.empty())
 			{
-				//todo - LOG
+				pLogger->writeToLog("Non-empty line after dimensions line - bad board format", false, Logger::eLogType::LOG_WARNING);
 				continue;
 			}
 			getline(boardFile, line);
@@ -271,26 +277,40 @@ namespace InitUtilities
 					}
 				}
 			}
-
 			boardFile.close();
-			if (checkBoard3D(board) < 0)
+			if (checkBoard3D(board, pLogger) < 0)
 			{
 				continue;
 			}
+			pLogger->writeToLog("Success!");
 			boards.push_back(board);
 		}
 	}
 
 	int getDims(const string& line, int& rows, int& cols, int& depth)
 	{
-		int j = 0;
-		for (int i = 0; i <= 2; i++)
+		auto j = 0;
+		// skip preceding white space
+		while (line[j] == ' ' || line[j] == '\t')
+		{
+			j++;
+		}
+		for (auto i = 0; i <= 2; i++)
 		{
 			string buff = "";
 			while (j < line.size() && tolower(line[j]) != 'x')
 			{
 				if (isdigit(line[j]) == 0)
 				{
+					// ignore following white space
+					while (i == 2 && j < line.size() && (line[j] == ' ' || line[j] == '\t'))
+					{
+						j++;
+					}
+					if (j == line.size())
+					{
+						break;
+					}
 					return -1;
 				}
 				buff += line[j];
@@ -313,13 +333,8 @@ namespace InitUtilities
 		return rows*cols*depth;
 	}
 
-	int checkBoard3D(MyBoardData& board)
+	int checkBoard3D(MyBoardData& board, shared_ptr<Logger> pLogger)
 	{
-		//todo - write errors to LOG
-
-		//auto rows = board.size();
-		//auto cols = board[0].size();
-		//auto depth = board[0][0].size();
 		auto rows = board.rows();
 		auto cols = board.cols();
 		auto depth = board.depth();
@@ -351,36 +366,38 @@ namespace InitUtilities
 								{
 									if (isShipA)
 									{
-										errShipsA[shipsA[board[i][j][k]] - 1] = 1;
+										errShipsA[shipsA[board[i][j][k]] - 1] = true;
 									}
 									if (isShipB)
 									{
-										errShipsB[shipsB[board[i][j][k]] - 1] = 1;
+										errShipsB[shipsB[board[i][j][k]] - 1] = true;
 									}
-									return -1;
+									//return -1;
 								}
-								shipCountA += isShipA;
-								shipCountB += isShipB;
+								else
+								{
+									shipCountA += isShipA;
+									shipCountB += isShipB;
+								}
 							}
 							// Check if any adjacent ships exist
 							if (k != 0 && board[i][j][k - 1] != board[i][j][k] && board[i][j][k - 1] != ' ' ||
 								i != 0 && board[i - 1][j][k] != board[i][j][k] && board[i - 1][j][k] != ' ' ||
 								j != 0 && board[i][j - 1][k] != board[i][j][k] && board[i][j - 1][k] != ' ')
 							{
-								adjCheck = 1; // todo @ben - never used
-								return -1;
+								adjCheck = 1;
 							}
 						}
 					}
 				}
 			}
 		}
-		return 1;
+		return logBoardErrors(errShipsA, errShipsB, shipCountA, shipCountB, adjCheck, board, pLogger);
 	}
 
 	int checkShape3D(MyBoardData& board, const int size, int i, int j, int k)
 	{
-		//todo @ben - code duplication + LOG...
+		//todo @ben - code duplication
 		auto rows = board.rows();
 		auto cols = board.cols();
 		auto depth = board.depth();
@@ -436,14 +453,12 @@ namespace InitUtilities
 
 	void registerShip(MyBoardData& board, const int size, int i, int j, int k, int iDir, int jDir, int kDir)
 	{
-		eShipType type = charToShipType(board[i][j][k]);
+		auto type = charToShipType(board[i][j][k]);
 		int playernum = isupper(board[i][j][k]) ? 0 : 1;
 		map<Coordinate, bool> shipMap;
 		for (int l = 0; l < size; l++)
 		{
-			//todo @ben - best way to do it:
-			// shipMap[Coordinate(i+1,j+1,k+1)] = true;
-			shipMap.insert(make_pair(Coordinate(i + 1, j + 1, k + 1), true));
+			shipMap[Coordinate(i+1,j+1,k+1)] = true;
 			k += kDir;
 			i += iDir;
 			j += jDir;
@@ -489,6 +504,92 @@ namespace InitUtilities
 				}
 			}
 		}
+		
+	}
+
+	int logBoardErrors(bitset<4>& errShipsA, bitset<4>& errShipsB, int shipCountA, int shipCountB, int adjCheck, const MyBoardData& board, shared_ptr<Logger> pLogger)
+	{
+		auto ret = 0;
+		// Print possible errors
+		logWrongSizeOrShapeError(errShipsA, ret, "A", pLogger);
+		logWrongSizeOrShapeError(errShipsB, ret, "B", pLogger);
+		logBadShipsCountError(shipCountA, shipCountB, board, pLogger);
+		if (adjCheck)
+		{
+			pLogger->writeToLog("Adjacent Ships on Board", false, Logger::eLogType::LOG_WARNING);
+			ret = -1;
+		}
+		return ret;
+	}
+
+	void logWrongSizeOrShapeError(bitset<4>& errShips, int& ret, const string player, shared_ptr<Logger> pLogger)
+	{
+		char shipMap[4] = { BOAT,MISSLE_SHIP,SUBMARINE,DESTROYER };
+		if (player == "B")
+		{
+			for (auto& c : shipMap)
+			{
+				c = tolower(c);
+			}
+		}
+		for (auto i = 0; i < 4; i++)
+		{
+			if (errShips[i])
+			{
+				pLogger->writeToLog((static_cast<string>("Wrong size or shape for ship ") += shipMap[i]) + " for player " + player,
+									false, Logger::eLogType::LOG_WARNING);
+				ret = -1;
+			}
+		}
+	}
+
+	void logBadShipsCountError(int shipCountA, int shipCountB, const MyBoardData& board, shared_ptr<Logger> pLogger)
+	{
+		if (shipCountA != shipCountB)
+		{
+			pLogger->writeToLog("Ships number is not equal for both players: A has " + to_string(shipCountA) + 
+								", B has " + to_string(shipCountB), false, Logger::eLogType::LOG_WARNING);
+		}
+		else
+		{
+			vector<Ship> shipsA = board.getShipList(0);
+			vector<Ship> shipsB = board.getShipList(1);
+			sort(shipsA.begin(), shipsA.end());
+			sort(shipsB.begin(), shipsB.end());
+			for (auto i = 0; i < shipCountA; i++)
+			{
+				if (shipsA[i].getType() != shipsB[i].getType())
+				{
+					pLogger->writeToLog("Players have different ship types", false, Logger::eLogType::LOG_WARNING);
+					return;
+				}
+			}
+		}
+	}
+
+	Ship handleShipDiscovery(int iOrig, int jOrig, int numOfRows, int numOfCols, const char** board)
+	{
+		auto i = iOrig;
+		auto j = jOrig;
+		auto size = 0;
+		map<pair<int, int>, bool> coordinates;
+		auto c = board[i][j];
+		// we will iterate only downwards or rightwards
+		do
+		{
+			// remember that we save the coordinates from in the form of 1 to ROW/COL SIZE (and not starting from 0)
+			// hence we give a +1 offset
+			coordinates[make_pair(i + 1, j + 1)] = true;
+			size++;
+		} while (++i < numOfRows && board[i][j] == c); // checking downwards
+		i = iOrig;
+		while (++j < numOfCols && board[i][j] == c) // checking rightwards
+		{
+			coordinates[make_pair(i + 1, j + 1)] = true;
+			size++;
+		}
+		//return Ship(size, charToShipType(c), coordinates);
+		return Ship(); // todo - change!!!!!! just for tests...
 		
 	}
 }

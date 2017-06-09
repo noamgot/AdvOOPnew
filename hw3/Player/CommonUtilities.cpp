@@ -7,20 +7,20 @@ using namespace std;
 
 namespace CommonUtilities
 {
-	eShipType CommonUtilities::charToShipType(char c)
+	Ship::eShipType CommonUtilities::charToShipType(char c)
 	{
 		switch (toupper(c))
 		{
 		case BOAT:
-			return eShipType::SHIP_TYPE_B;
+			return Ship::eShipType::SHIP_TYPE_B;
 		case MISSLE_SHIP:
-			return eShipType::SHIP_TYPE_P;
+			return Ship::eShipType::SHIP_TYPE_P;
 		case SUBMARINE:
-			return eShipType::SHIP_TYPE_M;
+			return Ship::eShipType::SHIP_TYPE_M;
 		case DESTROYER:
-			return eShipType::SHIP_TYPE_D;
+			return Ship::eShipType::SHIP_TYPE_D;
 		default:
-			return eShipType::SHIP_TYPE_ERROR;
+			return Ship::eShipType::SHIP_TYPE_ERROR;
 		}
 	}
 

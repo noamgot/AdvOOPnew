@@ -5,13 +5,32 @@
 
 using namespace std;
 using namespace CommonUtilities;
-// todo - delete all commented debug prints
+
+
+void CompetitionManager::produceGames(vector<Game>& games) const
+{
+	for (auto i = 0; i < _numBoards; i++)
+	{
+		for (auto j = 0; j < _numPlayers; j++)
+		{
+			for (auto k = 0; k < _numPlayers; k++)
+			{
+				if (j != k)
+				{
+					games.push_back(Game(i, j, k));
+				}
+			}
+		}
+	}
+	srand(unsigned(time(nullptr)));
+	random_shuffle(games.begin(), games.end());
+}
 
 void CompetitionManager::printCurrentResults(vector<PlayerGameResults>& cumulativeResults, int roundNum) //const
 {
 	static const auto generalWidth = 8;
 	static const auto playerNameWidth = maxStringLength(_playersNames) + 6;
-	cout << "\n***   ROUND " << roundNum << " RESULTS   ***" << endl;
+	cout << "\n" << centeredStr("$$$   ROUND " + to_string(roundNum) + " RESULTS   $$$", generalWidth * 6 + playerNameWidth) + "\n";
 	printElement("#", generalWidth);
 	printElement("Team Name", playerNameWidth);
 	printElement("Wins", generalWidth);
@@ -59,38 +78,31 @@ void CompetitionManager::runGames(int id)
 
 		// If the game is "poisoned" it means that the competition is over 
 		// and this thread should terminate
-		_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got the following game: _boardID=" + to_string(game._boardID) + ", A=" + to_string(game._idA) + ", B: " + to_string(game._idB));
 		if(game._boardID == -1) // "poisoned" game
 		{
-/*			{
-				std::lock_guard<std::mutex> mlock(_coutMutex);
-				std::cout << "thread " << std::this_thread::get_id() << " got a poisoned game! exiting..." << std::endl;				
-			}*/
 			_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got a poisoned game. Returning...");
 			return; 			
 		}
-		// Start the game
+
+		_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got the following game: boardID=" + to_string(game._boardID) + 
+								", A=" + to_string(game._idA) + ", B: " + to_string(game._idB));
+		
 		GameRunner gameRunner(game, _players[game._idA], _players[game._idB], _boards[game._boardID],
 								_boardsA[game._boardID], _boardsB[game._boardID],  _pLogger);
-		vector<PlayerGameResults> pgr = gameRunner.runGame();
+		// Run the game!
+		gameRunner.runGame();
+		
+		// get the round count of the players
 		int roundA, roundB;
 		{
 			lock_guard<mutex> mlock(_mutex);
 			roundA = _roundsCnt[game._idA]++;
 			roundB = _roundsCnt[game._idB]++;
-/*			std::lock_guard<std::mutex> mlock2(_coutMute x);
-			std::cout << "thread " << std::this_thread::get_id() << " got round count:" << std::endl;
-			std::cout << "A: " << roundA+1 << ", B: " << roundB+1 << std::endl;*/
 		}
-
-		// Retrieve the game results
-
-		
+	
 		// Insert game results to the results table.
-		_resultsTable.updateTable(roundA, pgr[PLAYER_A]);
-		_resultsTable.updateTable(roundB, pgr[PLAYER_B]);
-
-
+		_resultsTable.updateTable(roundA, gameRunner.get_grA());
+		_resultsTable.updateTable(roundB, gameRunner.get_grB());
 	}
 	
 }
@@ -124,11 +136,12 @@ void CompetitionManager::printTableEntry(size_t generalWidth, size_t playerNameW
 	cout << left << setw(generalWidth) << setfill(' ') << fixed << setprecision(2) << gr.percentage;
 	printElement(gr.ptsFor, generalWidth);
 	printElement(gr.ptsAgainst, generalWidth);
-	cout << endl;
+	cout << "\n";
 }
 
 
-CompetitionManager::CompetitionManager(vector<MyBoardData>& boards, vector<MyBoardData>& boardsA, vector<MyBoardData>& boardsB, vector<GetAlgoFuncType>& players, vector<string>& playersNames, Logger* pLogger, size_t numThreads)
+CompetitionManager::CompetitionManager(vector<MyBoardData>& boards, vector<MyBoardData>& boardsA, vector<MyBoardData>& boardsB, 
+										vector<GetAlgoFuncType>& players, vector<string>& playersNames, shared_ptr<Logger> pLogger, size_t numThreads)
 	: _numThreads(numThreads), _numBoards(boards.size()), _numPlayers(players.size()),
 	_numRounds(2 * _numBoards * (_numPlayers - 1)), _resultsTable(_numPlayers, _numRounds),
 	_roundsCnt(_numPlayers, 0), _pLogger(pLogger)
@@ -155,22 +168,8 @@ void CompetitionManager::runCompetition()
 		_threadsVector[i] = thread(&CompetitionManager::runGames, this, i+1);
 	}
 	vector<Game> games;
+	produceGames(games);
 	
-	for(auto i = 0; i < _numBoards; i++)
-	{
-		for(auto j = 0; j < _numPlayers; j++)
-		{
-			for(auto k = 0; k < _numPlayers; k++)
-			{
-				if (j != k)
-				{
-					games.push_back(Game(i,j,k));
-				}
-			}			
-		}
-	}
-	srand(unsigned(time(nullptr)));
-	random_shuffle(games.begin(), games.end());
 	// insert games to queue'
 	_pLogger->writeToLog("Inserting games to game queue");
 	for(auto g : games)

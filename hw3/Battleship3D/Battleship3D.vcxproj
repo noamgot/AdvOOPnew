@@ -150,21 +150,17 @@
   <ItemGroup>
     <ClCompile Include="CompetitionManager.cpp" />
     <ClCompile Include="AlgorithmLoader.cpp" />
-    <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="GameRunner.cpp" />
     <ClCompile Include="GameResultsTable.cpp" />
     <ClCompile Include="CommonUtilities.cpp" />
     <ClCompile Include="InitUtilities.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MyBoardData.cpp" />
-    <ClCompile Include="PlayerGameResults.cpp" />
     <ClCompile Include="Ship.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CompetitionManager.h" />
     <ClInclude Include="AlgorithmLoader.h" />
-    <ClInclude Include="GameUtilities.h" />
     <ClInclude Include="GameRunner.h" />
     <ClInclude Include="GameResultsTable.h" />
     <ClInclude Include="CommonUtilities.h" />
