@@ -17,7 +17,9 @@ public:
 	static constexpr size_t DEFAULT_NUM_THREADS = 4;
 
 	CompetitionManager(std::vector<MyBoardData>& boards, std::vector<MyBoardData>& boardsA, std::vector<MyBoardData>& boardsB,
-						std::vector<GetAlgoFuncType>& players, std::vector<std::string>& playersNames, std::shared_ptr<Logger> pLogger, size_t numThreads);
+						std::vector<GetAlgoFuncType>& players, std::vector<std::string>& playersNames, std::vector<std::string>& boardsNames, 
+						std::shared_ptr<Logger> pLogger, size_t numThreads);
+	
 	void runCompetition();
 
 private:
@@ -29,6 +31,7 @@ private:
 	SafeQueue<CommonUtilities::Game> _gamesQueue;	
 	GameResultsTable _resultsTable;
 	std::vector<std::string> _playersNames;
+	std::vector<std::string> _boardsNames;
 	std::vector<MyBoardData> _boards;
 	std::vector<MyBoardData> _boardsA;
 	std::vector<MyBoardData> _boardsB;
@@ -78,5 +81,7 @@ private:
 	{
 		return std::string((width - input.length()) / 2, ' ') + input;
 	}
+
+	void logBoardsAndPlayers() const;
 	
 };

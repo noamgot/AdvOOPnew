@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "IBattleshipGameAlgo.h"
 #include "CommonUtilities.h"
-#include "GameResultsTable.h"
 #include "PlayerGameResults.h"
 #include "AlgorithmLoader.h"
 #include "MyBoardData.h"
@@ -42,6 +41,7 @@ private:
 		int score;
 		size_t shipsCount;
 		std::vector<Ship> shipList;
+		//size_t movesCnt;
 	} _playerAttributes[2];
 
 	PlayerGameResults _grA;
@@ -71,7 +71,7 @@ private:
 
 
 	/* initializes the given PlayerAttribute struct, according to the given board*/
-	void initPlayersAttributes(const MyBoardData& board, const int player_id);
+	void initPlayersAttributes(const int player_id);
 
 	/* sets the given player index and board */
 	static void initPlayer(IBattleshipGameAlgo* pPlayer, int playerNum, const BoardData& board)

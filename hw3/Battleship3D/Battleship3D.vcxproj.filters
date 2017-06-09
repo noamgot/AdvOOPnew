@@ -81,7 +81,4 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\AdvancedProgramming_Ex3.pdf" />
-  </ItemGroup>
 </Project>

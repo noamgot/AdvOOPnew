@@ -85,7 +85,7 @@ void CompetitionManager::runGames(int id)
 		}
 
 		_pLogger->writeToLog("Worker thread no. " + to_string(id) + " got the following game: boardID=" + to_string(game._boardID) + 
-								", A=" + to_string(game._idA) + ", B: " + to_string(game._idB));
+								", A=" + to_string(game._idA) + ", B=" + to_string(game._idB));
 		
 		GameRunner gameRunner(game, _players[game._idA], _players[game._idB], _boards[game._boardID],
 								_boardsA[game._boardID], _boardsB[game._boardID],  _pLogger);
@@ -99,6 +99,8 @@ void CompetitionManager::runGames(int id)
 			roundA = _roundsCnt[game._idA]++;
 			roundB = _roundsCnt[game._idB]++;
 		}
+/*		_pLogger->writeToLog("For game: boardID=" + to_string(game._boardID) + ", A=" + to_string(game._idA) + ", B=" + to_string(game._idB) +
+			" Got rounds count: A-" + to_string(roundA) + ", B-" + to_string(roundB));*/
 	
 		// Insert game results to the results table.
 		_resultsTable.updateTable(roundA, gameRunner.get_grA());
@@ -139,10 +141,30 @@ void CompetitionManager::printTableEntry(size_t generalWidth, size_t playerNameW
 	cout << "\n";
 }
 
+void CompetitionManager::logBoardsAndPlayers() const
+{
+	_pLogger->writeToLog("************************************");
+	_pLogger->writeToLog("*   LET THE COMPETITION BEGIN!!!   *");
+	_pLogger->writeToLog("************************************");
+	_pLogger->writeToLog("\t$$$ BOARDS ID TABLE: $$$");
+	for (auto i = 0; i < _boardsNames.size(); i++)
+	{
+		_pLogger->writeToLog("\t" + to_string(i) + " == " + _boardsNames[i]);
+	}
+	_pLogger->writeToLog("\t$$$ PLAYERS ID TABLE: $$$");
+	for (auto i = 0; i < _playersNames.size(); i++)
+	{
+		_pLogger->writeToLog("\t" + to_string(i) + " == " + _playersNames[i]);
+	}
+	_pLogger->writeToLog("************************************");
+	
+}
 
-CompetitionManager::CompetitionManager(vector<MyBoardData>& boards, vector<MyBoardData>& boardsA, vector<MyBoardData>& boardsB, 
-										vector<GetAlgoFuncType>& players, vector<string>& playersNames, shared_ptr<Logger> pLogger, size_t numThreads)
-	: _numThreads(numThreads), _numBoards(boards.size()), _numPlayers(players.size()),
+
+CompetitionManager::CompetitionManager(vector<MyBoardData>& boards, vector<MyBoardData>& boardsA, vector<MyBoardData>& boardsB,
+						vector<GetAlgoFuncType>& players, vector<string>& playersNames, vector<string>& boardsNames,
+						shared_ptr<Logger> pLogger, size_t numThreads) : 
+	_numThreads(numThreads), _numBoards(boards.size()), _numPlayers(players.size()),
 	_numRounds(2 * _numBoards * (_numPlayers - 1)), _resultsTable(_numPlayers, _numRounds),
 	_roundsCnt(_numPlayers, 0), _pLogger(pLogger)
 {
@@ -151,6 +173,7 @@ CompetitionManager::CompetitionManager(vector<MyBoardData>& boards, vector<MyBoa
 	swap(_boardsB, boardsB);
 	swap(_players, players);
 	swap(_playersNames, playersNames);
+	swap(_boardsNames, boardsNames);
 	auto numGames = calcNumGames();
 	if (_numThreads > numGames)
 	{
@@ -161,6 +184,7 @@ CompetitionManager::CompetitionManager(vector<MyBoardData>& boards, vector<MyBoa
 
 void CompetitionManager::runCompetition()
 {
+	logBoardsAndPlayers();
 	_pLogger->writeToLog("Initializing competition threads");
 	thread reporter(&CompetitionManager::reporterMethod, this);
 	for (auto i = 0; i < _numThreads; i++)

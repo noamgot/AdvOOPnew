@@ -33,12 +33,12 @@ int main(int argc, char** argv)
 	{
 		return EXIT_FAILURE;
 	}
-	filterDirFiles(dirFiles, boardFiles, dllFiles, dirPath);
+	filterDirFiles(dirFiles, boardFiles, dllFiles);
 	if (checkMinBoardsAndPlayersCount(boardFiles.size(), dllFiles.size(), dirPath, false, pLogger) < 0)
 	{
 		return EXIT_FAILURE;
 	}
-	initBoards3D(boardFiles, boards, pLogger);
+	initBoards3D(boardFiles, boards, dirPath, pLogger);
 	AlgorithmLoader algoLoader(pLogger);
 	algoLoader.loadLibs(dllFiles, players, playerNames, dirPath);
 
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 	}
 	vector<MyBoardData> boardsA(boards.size()), boardsB(boards.size());
 	initIndividualBoards(boards, boardsA, boardsB);
-	CompetitionManager tournamentMngr(boards, boardsA ,boardsB, players, playerNames, pLogger, numThreads);
+	CompetitionManager tournamentMngr(boards, boardsA ,boardsB, players, playerNames, boardFiles, pLogger, numThreads);
 	tournamentMngr.runCompetition();
 	return EXIT_SUCCESS;
 }

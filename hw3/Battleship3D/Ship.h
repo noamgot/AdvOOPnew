@@ -3,17 +3,27 @@
 #include <map>
 #include "IBattleshipGameAlgo.h"
 
+
+// overloading std::less for Coordinate - we need to define a well-defined operator <
 namespace std
 {
 	template<> struct less<Coordinate>
 	{
 		bool operator() (const Coordinate& lhs, const Coordinate& rhs) const
 		{
-			return sqrt(pow(double(lhs.row), 2) + pow(double(lhs.col), 2) + pow(double(lhs.depth), 2))
-					< sqrt(pow(double(rhs.row), 2) + pow(double(rhs.col), 2) + pow(double(rhs.depth), 2));
+			if (lhs.row != rhs.row)
+			{
+				return lhs.row < rhs.row;
+			}
+			if (lhs.col != rhs.col)
+			{
+				return lhs.col < rhs.col;
+			}
+			return lhs.depth < rhs.depth;
 		}
 	};
 }
+
 class Ship
 {
 public:
@@ -62,6 +72,4 @@ private:
 	//  a map of coordinates = if _corrdinate[coor] is true it means this coordinate was not hit
 	std::map<Coordinate, bool> _coordinates;
 	eShipType _type;
-
-	
 };

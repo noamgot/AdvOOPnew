@@ -143,14 +143,14 @@ namespace InitUtilities
 		return 0;
 	}
 
-	void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles, vector<string>& dllFiles, const string& dirPath)
+	void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles, vector<string>& dllFiles)
 	{
 		// copy all relevant files to the filteredFileList vector
 		for (auto& file : dirFiles)
 		{
 			if (endsWith(file, BOARD_FILE_SUFFIX))
 			{
-				boardFiles.push_back(dirPath + "\\" + file); // boards are inserted with their full path
+				boardFiles.push_back(file); 
 			}
 			else if (endsWith(file, LIB_FILE_SUFFIX))
 			{
@@ -204,15 +204,16 @@ namespace InitUtilities
 		return 0;
 	}
 
-	void initBoards3D(const vector<string>& boardPaths, vector<MyBoardData>& boards, shared_ptr<Logger> pLogger)
+	void initBoards3D(const vector<string>& boardPaths, vector<MyBoardData>& boards, const std::string& dirPath, shared_ptr<Logger> pLogger)
 	{
 		pLogger->writeToLog("Processing boards...");
-		for (string boardPath : boardPaths)
+		for (auto& boardPath : boardPaths)
 		{
-			pLogger->writeToLog("Starting to process board in path: " + boardPath);
+			auto fullPath = dirPath + "\\" + boardPath;
+			pLogger->writeToLog("Starting to process board in path: " + fullPath);
 			auto rows = 0, cols = 0, depth = 0;
 			string line;
-			ifstream boardFile(boardPath);
+			ifstream boardFile(fullPath);
 			if (!boardFile.is_open())
 			{
 				pLogger->writeToLog("Opening board file failed", false, Logger::eLogType::LOG_WARNING);
