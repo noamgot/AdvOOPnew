@@ -24,9 +24,6 @@ public:
 	PlayerGameResults get_grB() const {	return _grB;}
 
 private:
-	// data members
-	static const int PLAYER_A = 0;
-	static const int PLAYER_B = 1;
 
 	std::unique_ptr<IBattleshipGameAlgo> _playerA;
 	std::unique_ptr<IBattleshipGameAlgo> _playerB;

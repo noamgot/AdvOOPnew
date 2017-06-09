@@ -18,6 +18,7 @@ int main(int argc, char** argv)
 	vector<GetAlgoFuncType> players;
 	vector<string> dirFiles, boardFiles, dllFiles, playerNames;	
 	string dirPath;
+	string configFilePath;
 	int numThreads = CompetitionManager::DEFAULT_NUM_THREADS;
 
 	if (processInputArguments(argc, argv, dirPath, numThreads) < 0)
@@ -33,7 +34,14 @@ int main(int argc, char** argv)
 	{
 		return EXIT_FAILURE;
 	}
-	filterDirFiles(dirFiles, boardFiles, dllFiles);
+
+	filterDirFiles(dirFiles, boardFiles, dllFiles, searchForConfig, configFilePath);
+
+	if(argc > 2 && searchForConfig && !configFilePath.empty())
+	{
+		//TODO - parse config file if there is one
+	}
+
 	if (checkMinBoardsAndPlayersCount(boardFiles.size(), dllFiles.size(), dirPath, false, pLogger) < 0)
 	{
 		return EXIT_FAILURE;

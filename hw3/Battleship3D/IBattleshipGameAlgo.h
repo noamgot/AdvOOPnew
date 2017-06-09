@@ -20,7 +20,6 @@ struct Coordinate
 {
 	int row, col, depth;
 	Coordinate(int row_, int col_, int depth_) : row(row_), col(col_), depth(depth_) {}
-	bool operator== (const Coordinate& other) const { return (this->row == other.row && this->col == other.col && this->depth == other.depth); }
 };
 
 /*This is a wrapper to the Board's Data

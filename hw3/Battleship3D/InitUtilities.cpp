@@ -21,8 +21,10 @@ namespace InitUtilities
 	const string PARAM_THREADS("-threads");
 	const string BOARD_FILE_SUFFIX(".sboard");
 	const string LIB_FILE_SUFFIX(".dll");
+	const string CONFIGURATION_FILE_SUFFIX(".config.txt");
 	const string BAD_STRING("!@#"); // for getDirPath validation
 	const int MAX_PATH_LEN = 1024;
+	
 
 	int processInputArguments(int argc, char** argv, string& dirPath, int& numThreads)
 	{
@@ -30,6 +32,7 @@ namespace InitUtilities
 		auto gotDirPath = false;
 		if (argc >= 2)
 		{
+			searchForConfig = false;
 			// we accept the arguments in any order, 
 			// and we assume that if a folder path is given it is the first argument
 			for (auto i = 1; i < argc; ++i)
@@ -57,6 +60,7 @@ namespace InitUtilities
 		if (!gotDirPath) // directory path not given
 		{
 			dirPath = getDirPath();
+
 		}
 		// convert the given directory path to full path
 		if (convertToFullPath(dirPath) < 0)
@@ -143,8 +147,10 @@ namespace InitUtilities
 		return 0;
 	}
 
-	void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles, vector<string>& dllFiles)
+	void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles, vector<string>& dllFiles, bool searchForConfig, std::string& configFile)
 	{
+		auto foundConfig = false;
+		configFile = "";
 		// copy all relevant files to the filteredFileList vector
 		for (auto& file : dirFiles)
 		{
@@ -155,6 +161,11 @@ namespace InitUtilities
 			else if (endsWith(file, LIB_FILE_SUFFIX))
 			{
 				dllFiles.push_back(file);
+			}
+			else if (searchForConfig && endsWith(file, CONFIGURATION_FILE_SUFFIX) && !foundConfig)
+			{
+				foundConfig = true;
+				configFile = file;
 			}
 
 		}
@@ -283,6 +294,8 @@ namespace InitUtilities
 			{
 				continue;
 			}
+
+			//TODO - is this log for debug purposes?
 			pLogger->writeToLog("Success!");
 			boards.push_back(board);
 		}

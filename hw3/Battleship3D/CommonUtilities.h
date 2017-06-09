@@ -21,6 +21,10 @@ namespace CommonUtilities
 
 	const int BUF_SIZE = 1024;
 
+	// data members
+	static const int PLAYER_A = 0;
+	static const int PLAYER_B = 1;
+
 	struct Game
 	{
 		int _boardID;

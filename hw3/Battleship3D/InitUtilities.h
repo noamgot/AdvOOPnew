@@ -6,6 +6,7 @@
 
 namespace InitUtilities
 {
+	bool searchForConfig = true; //TODO - this is a bit ugly, might wanna try and make it more snazzy
 	/* processing input arguments */
 	int processInputArguments(int argc, char** argv, std::string& dirPath, int& numThreads);
 
@@ -24,7 +25,7 @@ namespace InitUtilities
 	/* filters the dirFiles vector (which contatins a list of the directory files) and stores the board files, dllFiles
 	 * (in a full path form) and player names (derived from the dll file names) in the corresponding vectors.	 */
 	void filterDirFiles(const std::vector<std::string>& dirFiles, std::vector<std::string>& boardFiles,
-	                    std::vector<std::string>& dllFiles);
+	                    std::vector<std::string>& dllFiles, bool searchForConfig, std::string& configFile);
 
 	/* checks if the string "line" ends with the given suffix (return true if it does and false o.w) */
 	bool endsWith(const std::string line, const std::string suffix);
@@ -59,7 +60,7 @@ namespace InitUtilities
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 
-	//todo - might not need those - delete if needed
+	//todo - might not need those - delete if uneeded
 	/* prints the various error encountered on the board (if any)*/
 	int logBoardErrors(std::bitset<4>& errShipsA, std::bitset<4>& errShipsB, int shipCountA, int shipCountB, int adjCheck, const MyBoardData& board, std::shared_ptr<Logger> pLogger);
 
@@ -67,9 +68,10 @@ namespace InitUtilities
 	void logWrongSizeOrShapeError(std::bitset<4>& errShips, int& ret, const std::string player, std::shared_ptr<Logger> pLogger);
 	void logBadShipsCountError(int shipCountA, int shipCountB, const MyBoardData& board, std::shared_ptr<Logger> pLogger);
 
+	//TODO - not usage, is this intended?
 	/* a helper function to the initPlayerShipsList method */
 	Ship handleShipDiscovery(int iOrig, int jOrig, int numOfRows, int numOfCols, const char** board);
 
-	
+	bool isBoardFair(std::vector<Ship> playerA_ships, std::vector<Ship> playerB_ships);
 
 }
