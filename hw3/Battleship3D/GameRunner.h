@@ -65,7 +65,7 @@ private:
 		defenderNum ^= 1;
 	}
 
-
+	void AndTheWinnerIs();
 	/* initializes the given PlayerAttribute struct, according to the given board*/
 	void initPlayersAttributes(const MyBoardData& board, const int player_id);
 };
