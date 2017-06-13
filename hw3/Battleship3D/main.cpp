@@ -1,9 +1,6 @@
 #include "CommonUtilities.h"
-#include "GameResultsTable.h"
-#include "PlayerGameResults.h"
 #include "AlgorithmLoader.h"
 #include "MyBoardData.h"
-#include <string>
 #include "CompetitionManager.h"
 #include "InitUtilities.h"
 
@@ -34,6 +31,7 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 	filterDirFiles(dirFiles, boardFiles, dllFiles);
+	// check how many board and players DLL files we have
 	if (checkMinBoardsAndPlayersCount(boardFiles.size(), dllFiles.size(), dirPath, false, pLogger) < 0)
 	{
 		return EXIT_FAILURE;
@@ -41,10 +39,7 @@ int main(int argc, char** argv)
 	initBoards3D(boardFiles, boards, dirPath, pLogger);
 	AlgorithmLoader algoLoader(pLogger);
 	algoLoader.loadLibs(dllFiles, players, playerNames, dirPath);
-
-	// here we know that we have valid boards and players
-	pLogger->writeToLog("Number of legal players: " + to_string(players.size()), true);
-	pLogger->writeToLog("Number of legal boards: " + to_string(boards.size()), true);
+	// check how many *valid* boards and players we actually have
 	if (checkMinBoardsAndPlayersCount(boards.size(), players.size(), dirPath, true, pLogger) < 0)
 	{
 		return EXIT_FAILURE;

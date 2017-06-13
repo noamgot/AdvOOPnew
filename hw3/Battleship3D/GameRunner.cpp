@@ -3,7 +3,7 @@
 using namespace std;
 using namespace CommonUtilities;
 
-GameRunner::GameRunner(const Game& game, const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, 
+GameRunner::GameRunner(const CompetitionManager::Game& game, const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, 
 					const MyBoardData& boardData, const MyBoardData& boardA, const MyBoardData& boardB, shared_ptr<Logger> pLogger)
 	:_playerA(getAlgoA()), _playerB(getAlgoB()), _boardData(boardData), _boardA(boardA), _boardB(boardB), _pLogger(pLogger), _game(game),
 	 _attackerNum(0), _defenderNum(1)
@@ -26,7 +26,7 @@ string GameRunner::winnerConclusionStr() const
 	return "Tie";
 }
 
-void GameRunner::processGameResults()
+void GameRunner::processGameResults(int movesCnt, int maxMoves)
 {
 	_grA = PlayerGameResults(_game._idA, 0, 0, _playerAttributes[PLAYER_A].score, _playerAttributes[PLAYER_B].score, 0);
 	_grB = PlayerGameResults(_game._idB, 0, 0, _playerAttributes[PLAYER_B].score, _playerAttributes[PLAYER_A].score, 0);
@@ -42,6 +42,11 @@ void GameRunner::processGameResults()
 	}
 	_pLogger->writeToLog("Finished game: boardID=" + to_string(_game._boardID) + ", A=" + to_string(_game._idA) + ", B=" + to_string(_game._idB) +
 		" $$$ Results: A-" + to_string(_grA.ptsFor) + ", B-" + to_string(_grB.ptsFor) + " - " + winnerConclusionStr());
+	if(movesCnt > maxMoves)
+	{
+		_pLogger->writeToLog("Game was terminated due to very high moves count (only " + 
+								to_string(maxMoves) + " allowed", false, Logger::eLogType::LOG_WARNING);
+	}
 }
 
 void GameRunner::runGame()
@@ -50,12 +55,13 @@ void GameRunner::runGame()
 	initPlayer(_playerA.get(), PLAYER_A, _boardA);
 	initPlayer(_playerB.get(), PLAYER_B, _boardB);
 
-	auto boardSize = _boardData.rows() * _boardData.cols() * _boardData.depth();
+	// in order not to get stuck, we limit the amount of moves for a single game with a very generous maximal moves amount
+	auto maxMoves = _boardData.rows() * _boardData.cols() * _boardData.depth() * 10;
+	auto movesCnt = 0;
 	//The game goes on until one of the players has no more ships or both ran out of moves.
 	while (_playerAttributes[0].shipsCount > 0 && _playerAttributes[1].shipsCount > 0 &&
-		(_playerAttributes[0].hasMoves || _playerAttributes[1].hasMoves))
+		(_playerAttributes[0].hasMoves || _playerAttributes[1].hasMoves) && movesCnt <= maxMoves)
 	{
-		
 		// Skip if current player is out of moves.
 		if (!_playerAttributes[_attackerNum].hasMoves)
 		{
@@ -63,27 +69,20 @@ void GameRunner::runGame()
 			continue;
 		}
 
-		//if (_playerAttributes[_attackerNum].movesCnt++ > boardSize)
-		//{
-		//	Sleep(1);
-		//}
-
-
 		auto currentMove = pPlayers[_attackerNum]->attack();
+		movesCnt++; // we increment movesCnt only if a move is played
 		//_pLogger->writeToLog("Attacker: " + to_string(_attackerNum) + "; Got move: (" + to_string(currentMove.row) + "," + to_string(currentMove.col) + "," + to_string(currentMove.depth) + ")");
 		if (!isLegalMove(currentMove, _boardData.rows(), _boardData.cols(), _boardData.depth()))
 		{
-			//todo - add here - if a player return -1,-1,-1 - he loses automatically!
 			// Player returned a dumb move or refuses to play like a big cry baby (or maybe it has a bug)
 			// we switch player and continue - even if the move is invalid (i.e we ignore invalid moves)
 			_playerAttributes[_attackerNum].hasMoves = !(currentMove.row == -1 && currentMove.col == -1 && currentMove.depth == -1);
 			changeAttacker();
 			continue;
-
 		}
 		handleMove(currentMove);
 	}
-	processGameResults();
+	processGameResults(movesCnt,maxMoves);
 }
 
 void GameRunner::handleMove(Coordinate& move)
@@ -93,7 +92,6 @@ void GameRunner::handleMove(Coordinate& move)
 	if (hitChar == WATER)
 	{
 		// Miss
-		//_pLogger->writeToLog("MISS");
 		handleMiss(move);
 	}
 	else // Hit xor Sink xor double hit xor hit a sunken ship
@@ -124,11 +122,9 @@ void GameRunner::handleHitOrSink(Coordinate& move, bool& validAttack, char hitCh
 	_playerB->notifyOnAttackResult(_attackerNum, move, attackResult);
 	if (attackResult == AttackResult::Sink)
 	{
-		//_pLogger->writeToLog("SINK");
 		// if hitChar is an UPPERCASE char - than A was hit and B gets the points (and vice versa)
 		_playerAttributes[(isupper(hitChar) ? 1 : 0)].score += calculateSinkScore(hitChar);
 	}
-	//_pLogger->writeToLog("HIT");
 }
 
 int GameRunner::calculateSinkScore(char c)

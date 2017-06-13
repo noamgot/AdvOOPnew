@@ -21,8 +21,6 @@ namespace InitUtilities
 	const string PARAM_THREADS("-threads");
 	const string BOARD_FILE_SUFFIX(".sboard");
 	const string LIB_FILE_SUFFIX(".dll");
-	const string BAD_STRING("!@#"); // for getDirPath validation
-	const int MAX_PATH_LEN = 1024;
 
 	int processInputArguments(int argc, char** argv, string& dirPath, int& numThreads)
 	{
@@ -73,10 +71,10 @@ namespace InitUtilities
 
 	string getDirPath()
 	{
-		char buff[MAX_PATH_LEN];
-		if (!_getcwd(buff, MAX_PATH_LEN - 1))
+		char buff[BUF_SIZE];
+		if (!_getcwd(buff, BUF_SIZE - 1))
 		{
-			return BAD_STRING; //signs the string is bad
+			return string(); //signs the string is bad
 		}
 		string temp(buff);
 		return temp;
@@ -84,13 +82,13 @@ namespace InitUtilities
 
 	int convertToFullPath(string& dirPath)
 	{
-		if (dirPath == BAD_STRING) //error occurred in getDirPath()
+		if (dirPath.empty()) //error occurred in getDirPath()
 		{
 			return -1;
 		}
 		// get the full path of the directory
-		char fullPath[MAX_PATH_LEN];
-		if (!_fullpath(fullPath, dirPath.c_str(), MAX_PATH_LEN - 1))
+		char fullPath[BUF_SIZE];
+		if (!_fullpath(fullPath, dirPath.c_str(), BUF_SIZE - 1))
 		{
 			cout << "Error: conversion of directory path to full path failed" << endl;
 			return -1;
@@ -188,7 +186,7 @@ namespace InitUtilities
 		{
 			if (filteredLists)
 			{
-				msg = "Not enough valid algorithms (loaded " + to_string(playersCnt) + ")";
+				msg = "Not enough valid algorithms (loaded " + to_string(playersCnt) + ", needs at least 2)";
 			}
 			else
 			{

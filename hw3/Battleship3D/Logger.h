@@ -6,7 +6,8 @@
 #include "CommonUtilities.h"
 
 
-class Logger {
+class Logger 
+{
 
 public:
 
@@ -26,9 +27,7 @@ public:
 	Logger(const Logger& other) = delete;
 	Logger& operator=(const Logger& other) = delete;
 
-	void writeToLog(const std::string msg, bool writeToConsole = false, const eLogType logType = eLogType::LOG_INFO);
-	//todo move to private
-	
+	void writeToLog(const std::string msg, bool writeToConsole = false, const eLogType logType = eLogType::LOG_INFO);	
 
 private:
 	std::ofstream _logFile;

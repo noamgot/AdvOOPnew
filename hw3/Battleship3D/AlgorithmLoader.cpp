@@ -1,5 +1,6 @@
 ﻿#include "AlgorithmLoader.h"
 #include "InitUtilities.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -14,7 +15,7 @@ AlgorithmLoader::~AlgorithmLoader()
 
 void AlgorithmLoader::loadLibs(const vector<string>& dlls, vector<GetAlgoFuncType>& players, vector<string>& playerNames, const string& dirPath)
 {
-	for (auto fileName : dlls)
+	for (auto& fileName : dlls)
 	{
 		
 		auto dllFullPath = dirPath + "\\" + fileName;
@@ -42,13 +43,15 @@ void AlgorithmLoader::loadLibs(const vector<string>& dlls, vector<GetAlgoFuncTyp
 }
 
 
-string AlgorithmLoader::removeSuffix(const string& filename)
+string AlgorithmLoader::removeSuffix(const string& fileName)
 {
-	auto lastdot = filename.find_last_of(".");
+	// remove ".dll" (or any other) suffix
+	auto lastdot = fileName.find_last_of(".");
 	if (lastdot == string::npos)
 	{
-		return filename;
+		return fileName;
 	}
-	return filename.substr(0, lastdot);
+	return fileName.substr(0, lastdot);
+
 }
 

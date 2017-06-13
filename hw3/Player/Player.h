@@ -6,32 +6,20 @@
 #include <algorithm>
 #include "MyBoardData.h"
 
-enum Direction
-{
-	UP,
-	DOWN,
-	RIGHT,
-	LEFT,
-	BOTTOM,
-	TOP,
-	VERTICAL,
-	HORIZONAL,
-	DEPTH,
-	NONE
-};
-
-enum eSign : char
-{
-	EMPTY = 'O',
-	SHIP = 'S',
-	DESTROYED = 'D',
-	SANK = 'X',
-	UNKNOWN = ' '
-};
 
 class Player : public IBattleshipGameAlgo
 {
-protected:
+
+public:
+	Player() : _Rows(-1), _Cols(-1), _Depth(-1), _PlayerNum(-1) {}
+	~Player() {}
+	void setBoard(const BoardData& board) override; // called once to notify player about his board // called once to notify player on his boardd
+	void notifyOnAttackResult(int player, Coordinate move, AttackResult result) override; // notify on last move result
+	void setPlayer(int player) override;
+	Coordinate attack() override; // ask player for his move
+
+private:
+
 	static const int NUMBER_OF_DIRECTIONS = 6;
 	static const int SHIP_MAX_LENGTH = 4;
 
@@ -50,6 +38,29 @@ protected:
 	int _PlayerNum;
 	MyBoardData _Board;
 	std::deque<Coordinate> _MovesQueue;
+
+	enum Direction
+	{
+		UP,
+		DOWN,
+		RIGHT,
+		LEFT,
+		BOTTOM,
+		TOP,
+		VERTICAL,
+		HORIZONAL,
+		DEPTH,
+		NONE
+	};
+
+	enum eSign : char
+	{
+		EMPTY = 'O',
+		SHIP = 'S',
+		DESTROYED = 'D',
+		SANK = 'X',
+		UNKNOWN = ' '
+	};
 
 	//Returns whether the coordinates are valid - in the inner representation (0 - COL/ROW SIZE -1)
 	bool Player::isPointValid(int row, int col, int depth) const
@@ -78,7 +89,7 @@ protected:
 	//Returns whether this square is adjacent to a ship. Does not assumes coordinates are valid.
 	bool isNearChar(int row, int col, int depth, eSign s, Direction* dir = nullptr); 
 
-	Coordinate attackFromPriorityQuque(std::deque<Coordinate>& priorityQueue);
+	Coordinate attackFromPriorityQuque(std::deque<Coordinate>& priorityQueue) const;
 
 	// Convert the board the player received so that it is labeled by the enum eSign.
 	// Used for analysis purposes
@@ -131,14 +142,5 @@ protected:
 
 	// Perform initialization for the moves queue
 	bool queueInit();
-	
-
-public:
-	Player() : _Rows(-1), _Cols(-1), _Depth(-1), _PlayerNum(-1) {}
-	~Player(){}
-	void setBoard(const BoardData& board) override; // called once to notify player about his board // called once to notify player on his boardd
-	void notifyOnAttackResult(int player, Coordinate move, AttackResult result) override; // notify on last move result
-	void setPlayer(int player) override;
-	Coordinate attack() override; // ask player for his move
 
 };

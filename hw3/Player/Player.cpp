@@ -169,7 +169,7 @@ bool Player::queueInit()
 			}
 		}
 	}
-	srand(static_cast<unsigned int>(time(nullptr))); // Seed the PRG for all of our random needs.
+	srand(unsigned(time(nullptr)) + GetCurrentProcessId()); // Seed the PRG for all of our random needs.
 
 	random_shuffle(begin(valid_moves), end(valid_moves));
 	for (auto move : valid_moves)
@@ -179,7 +179,7 @@ bool Player::queueInit()
 	return true;
 }
 
-Coordinate Player::attackFromPriorityQuque(deque<Coordinate>& priorityQueue)
+Coordinate Player::attackFromPriorityQuque(deque<Coordinate>& priorityQueue) const
 {
 	auto& move = priorityQueue.front();
 	while (_Board.charAt(move) != UNKNOWN)
