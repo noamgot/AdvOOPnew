@@ -22,12 +22,16 @@ namespace InitUtilities
 	int getDirectoryFileList(const std::string dirPath, std::vector<std::string>& fileListVector, std::shared_ptr<Logger> pLogger);
 
 	/* filters the dirFiles vector (which contatins a list of the directory files) and stores the board files, dllFiles
-	 * (in a full path form) and player names (derived from the dll file names) in the corresponding vectors.	 */
+	 * (in a full path form) and config file in the corresponding vectors/string.	 */
 	void filterDirFiles(const std::vector<std::string>& dirFiles, std::vector<std::string>& boardFiles,
-	                    std::vector<std::string>& dllFiles);
+	                    std::vector<std::string>& dllFiles, std::string& configFile);
 
 	/* checks if the string "line" ends with the given suffix (return true if it does and false o.w) */
 	bool endsWith(const std::string line, const std::string suffix);
+
+	/* loads the game parameters defined in the config file located at cfgPath 
+	 * in case of failure, continues with default values */
+	int loadConfig(const std::string dirPath, const std::string cfgPath, int& numThreads, std::shared_ptr<Logger> pLogger);
 
 	/* checks a minimal requirements for boards count (boardsCnt >= 1) and players count (playersCnt >= 2)
 	 * returns 0 if those requirements are met and -1 otherwise	 

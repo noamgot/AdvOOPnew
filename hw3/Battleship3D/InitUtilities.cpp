@@ -21,6 +21,7 @@ namespace InitUtilities
 	const string PARAM_THREADS("-threads");
 	const string BOARD_FILE_SUFFIX(".sboard");
 	const string LIB_FILE_SUFFIX(".dll");
+	const string CONFIG_FILE_SUFFIX(".config");
 
 	int processInputArguments(int argc, char** argv, string& dirPath, int& numThreads)
 	{
@@ -141,7 +142,7 @@ namespace InitUtilities
 		return 0;
 	}
 
-	void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles, vector<string>& dllFiles)
+	void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles, vector<string>& dllFiles, string& configFile)
 	{
 		// copy all relevant files to the filteredFileList vector
 		for (auto& file : dirFiles)
@@ -153,8 +154,10 @@ namespace InitUtilities
 			else if (endsWith(file, LIB_FILE_SUFFIX))
 			{
 				dllFiles.push_back(file);
+			} else if (endsWith(file, CONFIG_FILE_SUFFIX))
+			{
+				configFile = file;
 			}
-
 		}
 	}
 
@@ -162,6 +165,52 @@ namespace InitUtilities
 	{
 		auto pos = line.rfind(suffix);
 		return pos != string::npos && pos == line.length() - suffix.length();
+	}
+
+	int loadConfig(const string dirPath, const string cfgPath, int& numThreads, shared_ptr<Logger> pLogger)
+	{
+		pLogger->writeToLog("Processing configuration file...");
+		char* p;
+		string line, arg;
+		size_t pos = 0;
+		vector<string> args;
+		ifstream cfgFile(dirPath + "\\" + cfgPath);
+		if (!cfgFile.is_open())
+		{
+			pLogger->writeToLog("Opening configuration file failed", false, Logger::eLogType::LOG_WARNING);
+			return -1;
+		}
+
+		getline(cfgFile, line);
+		if (cfgFile.fail())
+		{
+			pLogger->writeToLog("Failed to read from config file, or config file is empty", false, Logger::eLogType::LOG_WARNING);
+			return -1;
+		}
+
+		while ((pos = line.find(' ')) != string::npos) {
+			arg = line.substr(0, pos);
+			args.push_back(arg);
+			line.erase(0, pos + 1);
+		}
+		args.push_back(line);
+
+		for (auto i = 0; i < args.size(); ++i)
+		{
+			if (args[i] == PARAM_THREADS)
+			{
+				if (i + 1 < args.size())
+				{
+					int _numThreads = strtol(args[i + 1].c_str(), &p, 10);
+					if (!*p && _numThreads > 0)
+					{
+						numThreads = _numThreads;
+						return 1;
+					}
+				}
+			}
+		}
+		return 1;
 	}
 
 	int checkMinBoardsAndPlayersCount(size_t boardsCnt, size_t playersCnt, const string& dirPath,
