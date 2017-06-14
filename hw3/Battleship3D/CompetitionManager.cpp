@@ -29,7 +29,6 @@ void CompetitionManager::printCurrentResults(vector<PlayerGameResults>& cumulati
 {
 	static const auto generalWidth = 8;
 	static const auto playerNameWidth = maxStringLength(_playersNames) + 6;
-	//static const auto numGames = calcNumGames();
 	static auto firstTime = true;
 	gotoxy(2, 0);
 	cout << centeredStr("$$$   ROUND " + to_string(roundNum) + "/" + to_string(_numRounds) +
@@ -51,10 +50,7 @@ void CompetitionManager::printCurrentResults(vector<PlayerGameResults>& cumulati
 	{
 		printTableEntry(generalWidth, playerNameWidth, cnt++, gr);
 	}
-	//cout << "\n" + centeredStr("Total games played: " + to_string(_gamesPlayed) + "/" + to_string(numGames), generalWidth * 6 + playerNameWidth);
 	cout << endl;
-
-	//this_thread::sleep_for(500ms);
 }
 
 void CompetitionManager::reporterMethod()
@@ -104,7 +100,6 @@ void CompetitionManager::runGames(int id)
 								_boardsA[game._boardID], _boardsB[game._boardID],  _pLogger);
 		// Run the game!
 		gameRunner.runGame();
-		//++_gamesPlayed;
 
 		// note that _roundCnt is a vector of *atomic* ints - no need for mutex!
 		auto roundA = _roundsCnt[game._idA]++;

@@ -17,10 +17,8 @@ public:
 	// blocking copy ctor & assignment operator (rule of three)
 	AlgorithmLoader(const AlgorithmLoader& dllMngr) = delete;
 	AlgorithmLoader& operator=(const AlgorithmLoader& dllMngr) = delete;
-
 	void loadLibs(const std::vector<std::string>& dlls, std::vector<GetAlgoFuncType>& players, std::vector<std::string>& playerNames, const std::string& dirPath);
 	
-	//size_t size() const { return libs.size(); }
 
 private:
 	//data members
