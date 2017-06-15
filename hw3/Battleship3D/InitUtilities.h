@@ -31,7 +31,7 @@ namespace InitUtilities
 
 	/* loads the game parameters defined in the config file located at cfgPath 
 	 * in case of failure, continues with default values */
-	int loadConfig(const std::string dirPath, const std::string cfgPath, int& numThreads, std::shared_ptr<Logger> pLogger);
+	void loadConfig(const std::string& dirPath, const std::string& cfgPath, int& numThreads, std::shared_ptr<Logger> pLogger);
 
 	/* checks a minimal requirements for boards count (boardsCnt >= 1) and players count (playersCnt >= 2)
 	 * returns 0 if those requirements are met and -1 otherwise	 

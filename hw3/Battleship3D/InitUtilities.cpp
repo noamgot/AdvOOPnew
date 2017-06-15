@@ -1,18 +1,14 @@
-﻿#include "InitUtilities.h"
-#include <direct.h>
+﻿#include <direct.h>
 #include <iostream>
 #include <string>
 #include <Windows.h>
 #include <set>
 #include <bitset>
-#include <bitset>
-#include <bitset>
-#include <bitset>
 #include <algorithm>
+#include "InitUtilities.h"
 
 using namespace std;
 using namespace CommonUtilities;
-
 
 namespace InitUtilities
 {
@@ -155,9 +151,9 @@ namespace InitUtilities
 			{
 				dllFiles.push_back(file);
 			} 
-			else if (endsWith(file, CONFIG_FILE_SUFFIX))
+			else if (configFile.empty() && endsWith(file, CONFIG_FILE_SUFFIX))
 			{
-				configFile = file;
+				configFile = file; // we take the first config file we find
 			}
 		}
 	}
@@ -168,7 +164,7 @@ namespace InitUtilities
 		return pos != string::npos && pos == line.length() - suffix.length();
 	}
 
-	int loadConfig(const string dirPath, const string cfgPath, int& numThreads, shared_ptr<Logger> pLogger)
+	void loadConfig(const string& dirPath, const string& cfgPath, int& numThreads, shared_ptr<Logger> pLogger)
 	{
 		pLogger->writeToLog("Processing configuration file...");
 		char* p;
@@ -179,14 +175,14 @@ namespace InitUtilities
 		if (!cfgFile.is_open())
 		{
 			pLogger->writeToLog("Opening configuration file failed", false, Logger::eLogType::LOG_WARNING);
-			return -1;
+			return;
 		}
 
 		getline(cfgFile, line);
 		if (cfgFile.fail())
 		{
 			pLogger->writeToLog("Failed to read from config file, or config file is empty", false, Logger::eLogType::LOG_WARNING);
-			return -1;
+			return;
 		}
 
 		while ((pos = line.find(' ')) != string::npos) {
@@ -206,12 +202,11 @@ namespace InitUtilities
 					if (!*p && _numThreads > 0)
 					{
 						numThreads = _numThreads;
-						return 1;
+						return;
 					}
 				}
 			}
 		}
-		return 1;
 	}
 
 	int checkMinBoardsAndPlayersCount(size_t boardsCnt, size_t playersCnt, const string& dirPath,
@@ -252,7 +247,7 @@ namespace InitUtilities
 		return 0;
 	}
 
-	void initBoards3D(const vector<string>& boardPaths, vector<MyBoardData>& boards, const std::string& dirPath, shared_ptr<Logger> pLogger)
+	void initBoards3D(const vector<string>& boardPaths, vector<MyBoardData>& boards, const string& dirPath, shared_ptr<Logger> pLogger)
 	{
 		pLogger->writeToLog("Processing boards...");
 		for (auto& boardPath : boardPaths)
