@@ -5,6 +5,7 @@
 #include <fstream>
 #include "CommonUtilities.h"
 
+#define MAX_LOG_FILE_SIZE (8*1024*1024) // 8 MB
 
 class Logger 
 {
@@ -19,7 +20,7 @@ public:
 	};
 
 
-	explicit Logger(const std::string& dirPath, const std::string& fileName = "game.log");
+	Logger(const std::string& dirPath, const std::string& fileName = "game.log", long maxLogFileSize = MAX_LOG_FILE_SIZE);
 					
 	~Logger();
 	
@@ -37,6 +38,8 @@ private:
 
 
 	static std::string getCurrentTime();
+
+	static long getFileSize(std::string filename);
 
 	// Overload << operator using log type
 	friend Logger &operator << (Logger &logger, const eLogType logType);

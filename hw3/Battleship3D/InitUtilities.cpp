@@ -154,7 +154,8 @@ namespace InitUtilities
 			else if (endsWith(file, LIB_FILE_SUFFIX))
 			{
 				dllFiles.push_back(file);
-			} else if (endsWith(file, CONFIG_FILE_SUFFIX))
+			} 
+			else if (endsWith(file, CONFIG_FILE_SUFFIX))
 			{
 				configFile = file;
 			}
@@ -171,8 +172,8 @@ namespace InitUtilities
 	{
 		pLogger->writeToLog("Processing configuration file...");
 		char* p;
-		string line, arg;
-		size_t pos = 0;
+		string line;
+		size_t pos;
 		vector<string> args;
 		ifstream cfgFile(dirPath + "\\" + cfgPath);
 		if (!cfgFile.is_open())
@@ -189,7 +190,7 @@ namespace InitUtilities
 		}
 
 		while ((pos = line.find(' ')) != string::npos) {
-			arg = line.substr(0, pos);
+			string arg = line.substr(0, pos);
 			args.push_back(arg);
 			line.erase(0, pos + 1);
 		}
