@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 	filterDirFiles(dirFiles, boardFiles, dllFiles, configFile);
-	if (argc < 3)
+	if (argc < 3 && configFile != "")
 	{
 		loadConfig(dirPath, configFile, numThreads, pLogger);
 	}
