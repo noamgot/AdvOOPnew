@@ -125,13 +125,34 @@ void CompetitionManager::updateCumulativeResults(vector<PlayerGameResults>& cumu
 
 size_t CompetitionManager::factorial(size_t n)
 {
-
 	auto res = 1;
 	for (auto i = 1; i <= n; i++)
 	{
 		res *= i;
 	}
 	return res;
+}
+
+size_t CompetitionManager::binomialCoeff(size_t N, size_t K)
+{
+	// calculate binomial coeff using the multiplicative formula
+	auto n = static_cast<double> (N);
+	auto k = static_cast<double> (K);
+	double res = 1;
+	if (k < 0 || k > n)
+	{
+		return 0;
+	}
+	if (k == 0 || k == n)
+	{
+		return 1;
+	}
+	for (auto i = 0; i < k; i++)
+	{
+		res = res * (n - i) / (i + 1);
+	}
+
+	return static_cast<size_t> (round(res));
 }
 
 void CompetitionManager::printTableEntry(size_t generalWidth, size_t playerNameWidth, int index, const PlayerGameResults& gr)

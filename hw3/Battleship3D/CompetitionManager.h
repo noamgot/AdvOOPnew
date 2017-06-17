@@ -73,10 +73,7 @@ private:
 	size_t calcNumGames() const	{ return 2 * _numBoards * binomialCoeff(_numPlayers, 2); }
 	/* helper functions for calcNumGames */
 	static size_t factorial(size_t n);
-	static size_t binomialCoeff(size_t n, size_t k)
-	{
-		return factorial(n) / (factorial(k) * factorial(n - k));
-	}
+	static size_t binomialCoeff(size_t n, size_t k);
 
 	/* a comparator for strings sorting by length */
 	
