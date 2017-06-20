@@ -32,5 +32,8 @@
     <ClInclude Include="Matrix3d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Coord2d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

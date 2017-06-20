@@ -151,6 +151,7 @@
     <ClCompile Include="Matrix3d.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Coord2d.h" />
     <ClInclude Include="Matrix2d.h" />
     <ClInclude Include="Matrix3d.h" />
   </ItemGroup>
