@@ -6,6 +6,7 @@
 
 namespace InitUtilities
 {
+	bool searchForConfig = true; //TODO - this is a bit ugly, might wanna try and make it more snazzy
 	/* processing input arguments */
 	int processInputArguments(int argc, char** argv, std::string& dirPath, int& numThreads);
 
