@@ -1,9 +1,6 @@
 #include "CommonUtilities.h"
-#include "GameResultsTable.h"
-#include "PlayerGameResults.h"
 #include "AlgorithmLoader.h"
 #include "MyBoardData.h"
-#include <string>
 #include "CompetitionManager.h"
 #include "InitUtilities.h"
 
@@ -17,31 +14,31 @@ int main(int argc, char** argv)
 	vector<MyBoardData> boards;
 	vector<GetAlgoFuncType> players;
 	vector<string> dirFiles, boardFiles, dllFiles, playerNames;	
-	string dirPath;
-	string configFilePath;
-	int numThreads = CompetitionManager::DEFAULT_NUM_THREADS;
-
+	string dirPath, configFile;
+	auto numThreads = -1;
 	if (processInputArguments(argc, argv, dirPath, numThreads) < 0)
 	{
 		return EXIT_FAILURE;
 	}
-	
 	// intialize logger only after there is a valid path
 	// we will pass a raw pointer to whoever needs logging, but eventually it will be destructed only here!!!
 	shared_ptr<Logger> pLogger = make_shared<Logger>(dirPath);
-
 	if (getDirectoryFileList(dirPath, dirFiles, pLogger) < 0)
 	{
 		return EXIT_FAILURE;
 	}
-
-	filterDirFiles(dirFiles, boardFiles, dllFiles, searchForConfig, configFilePath);
-
-	if(argc > 2 && searchForConfig && !configFilePath.empty())
+	filterDirFiles(dirFiles, boardFiles, dllFiles, configFile);
+	// consider config file only if a threads parameter was not given and if this file exists...
+	if (numThreads < 0 && !configFile.empty()) 
 	{
-		//TODO - parse config file if there is one
+		loadConfig(dirPath, configFile, numThreads, pLogger);
 	}
-
+	if (numThreads < 0) // numThreads was not set by user or config file- set to hard-coded default
+	{
+		numThreads = CompetitionManager::DEFAULT_NUM_THREADS;
+	}
+	
+	// check how many board and players DLL files we have
 	if (checkMinBoardsAndPlayersCount(boardFiles.size(), dllFiles.size(), dirPath, false, pLogger) < 0)
 	{
 		return EXIT_FAILURE;
@@ -49,10 +46,7 @@ int main(int argc, char** argv)
 	initBoards3D(boardFiles, boards, dirPath, pLogger);
 	AlgorithmLoader algoLoader(pLogger);
 	algoLoader.loadLibs(dllFiles, players, playerNames, dirPath);
-
-	// here we know that we have valid boards and players
-	pLogger->writeToLog("Number of legal players: " + to_string(players.size()), true);
-	pLogger->writeToLog("Number of legal boards: " + to_string(boards.size()), true);
+	// check how many *valid* boards and players we actually have
 	if (checkMinBoardsAndPlayersCount(boards.size(), players.size(), dirPath, true, pLogger) < 0)
 	{
 		return EXIT_FAILURE;

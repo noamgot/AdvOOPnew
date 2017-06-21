@@ -2,19 +2,35 @@
 #include <iostream>
 #include <ctime>
 #include <mutex>
+#include <sys/types.h>
+#include <sys/stat.h>
+
+using namespace std;
 
 #define MAX_TIME_BUF_SIZE 64
 
-Logger::Logger(const std::string& dirPath, const std::string& fileName) 
+Logger::Logger(const string& dirPath, const string& fileName, long maxLogFileSize)
 				: _numWarnings(0U), _numErrors(0U)
 {
-	_logFile.open(dirPath + "\\" + fileName);
+	
+	auto fullPath = dirPath + "\\" + fileName;
+	auto fileSize = getFileSize(fullPath);
+	if (fileSize < 0 || fileSize > maxLogFileSize) // file does not exist or is already too big
+	{
+		_logFile.open(fullPath); // open log file regularly
+	}
+	else
+	{
+		_logFile.open(fullPath, ios_base::app);
+	}
 	// Write the first lines
 	if (_logFile.is_open())
 	{
+		_logFile << "##############################################################################################" << endl;
 		_logFile << getCurrentTime().c_str();
-		_logFile << " [START] LOG FILE CREATED. BATTLESHIP COMPETITION HAS STARTED RUNNING." << std::endl;
-		_logFile << "#################################################################################" << std::endl;
+		_logFile << " [START] LOG FILE CREATED. BATTLESHIP COMPETITION HAS STARTED RUNNING." << endl;
+		_logFile << "##############################################################################################" << endl;
+		
 	}
 
 }
@@ -25,32 +41,39 @@ Logger::~Logger()
 	if (_logFile.is_open())
 	{
 		_logFile << getCurrentTime().c_str();
-		_logFile << " [END]: GAME HAS ENDED. EXITING...\n" << std::endl;
+		_logFile << " [END]: GAME HAS ENDED. EXITING...\n" << endl;
 
 		// Report number of errors and warnings
-		_logFile << _numWarnings << " warnings" << std::endl;
-		_logFile << _numErrors << " errors" << std::endl;
+		_logFile << _numWarnings << " warnings" << endl;
+		_logFile << _numErrors << " errors" << endl << endl;
 		_logFile.close();
 	}
 }
 
-void Logger::writeToLog(const std::string msg, bool writeToConsole, const eLogType logType)
+void Logger::writeToLog(const string msg, bool writeToConsole, const eLogType logType)
 {
-	std::lock_guard<std::mutex> mlock(_mutex);
+	lock_guard<mutex> mlock(_mutex);
 	*this << logType << msg;
 	if (writeToConsole)
 	{
-		std::cout << msg.c_str() << std::endl;
+		cout << msg.c_str() << endl;
 	}
 }
-std::string Logger::getCurrentTime()
+string Logger::getCurrentTime()
 {
 	char timeBuf[MAX_TIME_BUF_SIZE];
-	auto currentTime = std::time(nullptr);
+	auto currentTime = time(nullptr);
 	ctime_s(timeBuf, sizeof timeBuf, &currentTime);
-	std::string timeStr(timeBuf);
+	string timeStr(timeBuf);
 	timeStr.pop_back(); // remove \n
 	return timeStr;
+}
+
+long Logger::getFileSize(string filename)
+{
+	struct _stat statBuf;
+	auto rc = _stat(filename.c_str(), &statBuf);
+	return rc == 0 ? statBuf.st_size : -1;	
 }
 
 Logger& operator<<(Logger& logger, const Logger::eLogType logType)

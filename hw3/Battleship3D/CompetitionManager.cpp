@@ -1,43 +1,50 @@
 ﻿#include "CompetitionManager.h"
+#include "GameRunner.h"
 #include <iostream>
 #include <iomanip>
 
-
+//#define printElement(t,width) /*std::left <<*/ std::setw(width) << std::setfill(' ') << t
 using namespace std;
 using namespace CommonUtilities;
 
-
-void CompetitionManager::produceGames(vector<Game>& games) const
+void CompetitionManager::showConsoleCursor(bool showFlag)
 {
-	for (auto i = 0; i < _numBoards; i++)
-	{
-		for (auto j = 0; j < _numPlayers; j++)
-		{
-			for (auto k = 0; k < _numPlayers; k++)
-			{
-				if (j != k)
-				{
-					games.push_back(Game(i, j, k));
-				}
-			}
-		}
-	}
-	srand(unsigned(time(nullptr)));
-	random_shuffle(games.begin(), games.end());
+	HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO cursorInfo;
+	GetConsoleCursorInfo(out, &cursorInfo);
+	cursorInfo.bVisible = showFlag; // set the cursor visibility
+	SetConsoleCursorInfo(out, &cursorInfo);
 }
 
-void CompetitionManager::printCurrentResults(vector<PlayerGameResults>& cumulativeResults, int roundNum) //const
+
+void CompetitionManager::gotoxy(int x, int y)
+{
+	COORD coord;
+	coord.X = static_cast<short>(y);
+	coord.Y = static_cast<short>(x);
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+void CompetitionManager::printCurrentResults(vector<PlayerGameResults>& cumulativeResults, int roundNum)
 {
 	static const auto generalWidth = 8;
 	static const auto playerNameWidth = maxStringLength(_playersNames) + 6;
-	cout << "\n" << centeredStr("$$$   ROUND " + to_string(roundNum) + " RESULTS   $$$", generalWidth * 6 + playerNameWidth) + "\n";
-	printElement("#", generalWidth);
-	printElement("Team Name", playerNameWidth);
-	printElement("Wins", generalWidth);
-	printElement("Losses", generalWidth);
-	printElement("%", generalWidth);
-	printElement("Pts For", generalWidth);
-	printElement("Pts Against\n\n", generalWidth);
+	static auto firstTime = true;
+	gotoxy(2, 0);
+	cout << centeredStr("$$$   ROUND " + to_string(roundNum) + "/" + to_string(_numRounds) +
+			(roundNum == _numRounds ? " - FINAL\a" : "") + " RESULTS   $$$", generalWidth * 6 + playerNameWidth) + "\n";
+	if (firstTime)
+	{
+		printElement("#", generalWidth);
+		printElement("Team Name", playerNameWidth);
+		printElement("Wins", generalWidth);
+		printElement("Losses", generalWidth);
+		printElement("%", generalWidth);
+		printElement("Pts For", generalWidth);
+		printElement("Pts Against\n\n", generalWidth);
+		firstTime = false;
+	}
+	gotoxy(5, 0);
 	auto cnt = 1;
 	for (auto& gr : cumulativeResults)
 	{
@@ -56,6 +63,7 @@ void CompetitionManager::reporterMethod()
 		cumulativeResults[i].ID = i;
 	}
 
+	showConsoleCursor(false);
 	for (auto i = 0; i < _numRounds; i++)
 	{
 		_pLogger->writeToLog("Reporter is waiting for round " + to_string(i+1) + " results");
@@ -66,6 +74,7 @@ void CompetitionManager::reporterMethod()
 		sort(sortedCumulativeResults.begin(), sortedCumulativeResults.end(), greater<PlayerGameResults>());
 		printCurrentResults(sortedCumulativeResults, i+1);
 	}
+	showConsoleCursor(true);
 }
 
 void CompetitionManager::runGames(int id)
@@ -91,14 +100,10 @@ void CompetitionManager::runGames(int id)
 								_boardsA[game._boardID], _boardsB[game._boardID],  _pLogger);
 		// Run the game!
 		gameRunner.runGame();
-		
-		// get the round count of the players
-		int roundA, roundB;
-		{
-			lock_guard<mutex> mlock(_mutex);
-			roundA = _roundsCnt[game._idA]++;
-			roundB = _roundsCnt[game._idB]++;
-		}
+
+		// note that _roundCnt is a vector of *atomic* ints - no need for mutex!
+		auto roundA = _roundsCnt[game._idA]++;
+		auto roundB = _roundsCnt[game._idB]++;
 /*		_pLogger->writeToLog("For game: boardID=" + to_string(game._boardID) + ", A=" + to_string(game._idA) + ", B=" + to_string(game._idB) +
 			" Got rounds count: A-" + to_string(roundA) + ", B-" + to_string(roundB));*/
 	
@@ -120,7 +125,6 @@ void CompetitionManager::updateCumulativeResults(vector<PlayerGameResults>& cumu
 
 size_t CompetitionManager::factorial(size_t n)
 {
-
 	auto res = 1;
 	for (auto i = 1; i <= n; i++)
 	{
@@ -129,7 +133,29 @@ size_t CompetitionManager::factorial(size_t n)
 	return res;
 }
 
-void CompetitionManager::printTableEntry(size_t generalWidth, size_t playerNameWidth, int index, PlayerGameResults& gr)
+size_t CompetitionManager::binomialCoeff(size_t N, size_t K)
+{
+	// calculate binomial coeff using the multiplicative formula
+	auto n = static_cast<double> (N);
+	auto k = static_cast<double> (K);
+	double res = 1;
+	if (k < 0 || k > n)
+	{
+		return 0;
+	}
+	if (k == 0 || k == n)
+	{
+		return 1;
+	}
+	for (auto i = 0; i < k; i++)
+	{
+		res = res * (n - i) / (i + 1);
+	}
+
+	return static_cast<size_t> (round(res));
+}
+
+void CompetitionManager::printTableEntry(size_t generalWidth, size_t playerNameWidth, int index, const PlayerGameResults& gr)
 {
 	printElement(to_string(index) + ".", generalWidth);
 	printElement(_playersNames[gr.ID], playerNameWidth);
@@ -163,17 +189,11 @@ void CompetitionManager::logBoardsAndPlayers() const
 
 CompetitionManager::CompetitionManager(vector<MyBoardData>& boards, vector<MyBoardData>& boardsA, vector<MyBoardData>& boardsB,
 						vector<GetAlgoFuncType>& players, vector<string>& playersNames, vector<string>& boardsNames,
-						shared_ptr<Logger> pLogger, size_t numThreads) : 
-	_numThreads(numThreads), _numBoards(boards.size()), _numPlayers(players.size()),
-	_numRounds(2 * _numBoards * (_numPlayers - 1)), _resultsTable(_numPlayers, _numRounds),
-	_roundsCnt(_numPlayers, 0), _pLogger(pLogger)
+						shared_ptr<Logger> pLogger, size_t numThreads) :
+	_boards(move(boards)), _boardsA(move(boardsA)), _boardsB(move(boardsB)), _players(move(players)), _playersNames(move(playersNames)), 
+	_boardsNames(move(boardsNames)), _numThreads(numThreads), _numBoards(boards.size()), _numPlayers(players.size()),
+	_numRounds(2 * _numBoards * (_numPlayers - 1)), _resultsTable(_numPlayers, _numRounds),	_roundsCnt(_numPlayers), _pLogger(pLogger)/*, _gamesPlayed(0)*/
 {
-	swap(_boards, boards);
-	swap(_boardsA, boardsA);
-	swap(_boardsB, boardsB);
-	swap(_players, players);
-	swap(_playersNames, playersNames);
-	swap(_boardsNames, boardsNames);
 	auto numGames = calcNumGames();
 	if (_numThreads > numGames)
 	{
@@ -184,26 +204,37 @@ CompetitionManager::CompetitionManager(vector<MyBoardData>& boards, vector<MyBoa
 
 void CompetitionManager::runCompetition()
 {
+	printOpeningMessage();
+	_pLogger->writeToLog("Number of legal players: " + to_string(_players.size()), true);
+	_pLogger->writeToLog("Number of legal boards: " + to_string(_boards.size()), true);
 	logBoardsAndPlayers();
 	_pLogger->writeToLog("Initializing competition threads");
+	
 	thread reporter(&CompetitionManager::reporterMethod, this);
 	for (auto i = 0; i < _numThreads; i++)
 	{
 		_threadsVector[i] = thread(&CompetitionManager::runGames, this, i+1);
 	}
-	vector<Game> games;
-	produceGames(games);
 	
-	// insert games to queue'
+	// insert games to queue
 	_pLogger->writeToLog("Inserting games to game queue");
-	for(auto g : games)
+	// for each board we put a balanced game order in the queue
+	for (auto k = 0; k < _numBoards; k++)
 	{
-		_gamesQueue.push(g);
+		for (auto i = 1; i < _numPlayers; ++i)
+		{
+			for (auto j = 0; j < _numPlayers; ++j)
+			{
+				_gamesQueue.push(Game(k, j, (j + i) % _numPlayers));
+			}
+		
+		}
 	}
+
 	//insert "poisoned" games to let the threads know we're done:
 	for (auto i = 0; i < _numThreads; i++)
 	{
-		_gamesQueue.push(Game());
+		_gamesQueue.push(Game(-1,-1,-1));
 	}
 	
 	_pLogger->writeToLog("Waiting for games to be played...");
@@ -215,4 +246,25 @@ void CompetitionManager::runCompetition()
 	// notify the reporter thread in case it is still waiting
 	_resultsTable.notifyEndGame();	
 	reporter.join();
+}
+
+void CompetitionManager::printOpeningMessage()
+{
+	system("cls");
+	cout << "********************************\n" << 
+		"*                              *\n" << 
+		"*        BATTLESHIP-3D         *\n" << 
+		"*                              *\n" << 
+		"*    Version 3.0, June 2017    *\n" << 
+		"*                              *\n" << 
+		"*         Created by:          *\n" << 
+		"*         Ben Ohayon           *\n" << 
+		"*         Uri Bracha           *\n" << 
+		"*        Noam Gottlieb         *\n" << 
+		"*                              *\n" << 
+		"*    (c) all rights reserved   *\n" << 
+		"*                              *\n" << 
+		"********************************";
+	Sleep(3000);
+	system("cls");
 }

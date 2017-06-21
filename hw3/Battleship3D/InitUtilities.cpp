@@ -1,18 +1,14 @@
-﻿#include "InitUtilities.h"
-#include <direct.h>
+﻿#include <direct.h>
 #include <iostream>
 #include <string>
 #include <Windows.h>
 #include <set>
 #include <bitset>
-#include <bitset>
-#include <bitset>
-#include <bitset>
 #include <algorithm>
+#include "InitUtilities.h"
 
 using namespace std;
 using namespace CommonUtilities;
-
 
 namespace InitUtilities
 {
@@ -21,10 +17,7 @@ namespace InitUtilities
 	const string PARAM_THREADS("-threads");
 	const string BOARD_FILE_SUFFIX(".sboard");
 	const string LIB_FILE_SUFFIX(".dll");
-	const string CONFIGURATION_FILE_SUFFIX(".config.txt");
-	const string BAD_STRING("!@#"); // for getDirPath validation
-	const int MAX_PATH_LEN = 1024;
-	
+	const string CONFIG_FILE_SUFFIX(".config");
 
 	int processInputArguments(int argc, char** argv, string& dirPath, int& numThreads)
 	{
@@ -32,7 +25,6 @@ namespace InitUtilities
 		auto gotDirPath = false;
 		if (argc >= 2)
 		{
-			searchForConfig = false;
 			// we accept the arguments in any order, 
 			// and we assume that if a folder path is given it is the first argument
 			for (auto i = 1; i < argc; ++i)
@@ -60,7 +52,6 @@ namespace InitUtilities
 		if (!gotDirPath) // directory path not given
 		{
 			dirPath = getDirPath();
-
 		}
 		// convert the given directory path to full path
 		if (convertToFullPath(dirPath) < 0)
@@ -77,10 +68,10 @@ namespace InitUtilities
 
 	string getDirPath()
 	{
-		char buff[MAX_PATH_LEN];
-		if (!_getcwd(buff, MAX_PATH_LEN - 1))
+		char buff[BUF_SIZE];
+		if (!_getcwd(buff, BUF_SIZE - 1))
 		{
-			return BAD_STRING; //signs the string is bad
+			return string(); //signs the string is bad
 		}
 		string temp(buff);
 		return temp;
@@ -88,13 +79,13 @@ namespace InitUtilities
 
 	int convertToFullPath(string& dirPath)
 	{
-		if (dirPath == BAD_STRING) //error occurred in getDirPath()
+		if (dirPath.empty()) //error occurred in getDirPath()
 		{
 			return -1;
 		}
 		// get the full path of the directory
-		char fullPath[MAX_PATH_LEN];
-		if (!_fullpath(fullPath, dirPath.c_str(), MAX_PATH_LEN - 1))
+		char fullPath[BUF_SIZE];
+		if (!_fullpath(fullPath, dirPath.c_str(), BUF_SIZE - 1))
 		{
 			cout << "Error: conversion of directory path to full path failed" << endl;
 			return -1;
@@ -147,10 +138,8 @@ namespace InitUtilities
 		return 0;
 	}
 
-	void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles, vector<string>& dllFiles, bool searchForConfig, std::string& configFile)
+	void filterDirFiles(const vector<string>& dirFiles, vector<string>& boardFiles, vector<string>& dllFiles, string& configFile)
 	{
-		auto foundConfig = false;
-		configFile = "";
 		// copy all relevant files to the filteredFileList vector
 		for (auto& file : dirFiles)
 		{
@@ -161,13 +150,11 @@ namespace InitUtilities
 			else if (endsWith(file, LIB_FILE_SUFFIX))
 			{
 				dllFiles.push_back(file);
-			}
-			else if (searchForConfig && endsWith(file, CONFIGURATION_FILE_SUFFIX) && !foundConfig)
+			} 
+			else if (configFile.empty() && endsWith(file, CONFIG_FILE_SUFFIX))
 			{
-				foundConfig = true;
-				configFile = file;
+				configFile = file; // we take the first config file we find
 			}
-
 		}
 	}
 
@@ -175,6 +162,51 @@ namespace InitUtilities
 	{
 		auto pos = line.rfind(suffix);
 		return pos != string::npos && pos == line.length() - suffix.length();
+	}
+
+	void loadConfig(const string& dirPath, const string& cfgPath, int& numThreads, shared_ptr<Logger> pLogger)
+	{
+		pLogger->writeToLog("Processing configuration file...");
+		char* p;
+		string line;
+		size_t pos;
+		vector<string> args;
+		ifstream cfgFile(dirPath + "\\" + cfgPath);
+		if (!cfgFile.is_open())
+		{
+			pLogger->writeToLog("Opening configuration file failed", false, Logger::eLogType::LOG_WARNING);
+			return;
+		}
+
+		getline(cfgFile, line);
+		if (cfgFile.fail())
+		{
+			pLogger->writeToLog("Failed to read from config file, or config file is empty", false, Logger::eLogType::LOG_WARNING);
+			return;
+		}
+
+		while ((pos = line.find(' ')) != string::npos) {
+			string arg = line.substr(0, pos);
+			args.push_back(arg);
+			line.erase(0, pos + 1);
+		}
+		args.push_back(line);
+
+		for (auto i = 0; i < args.size(); ++i)
+		{
+			if (args[i] == PARAM_THREADS)
+			{
+				if (i + 1 < args.size())
+				{
+					int _numThreads = strtol(args[i + 1].c_str(), &p, 10);
+					if (!*p && _numThreads > 0)
+					{
+						numThreads = _numThreads;
+						return;
+					}
+				}
+			}
+		}
 	}
 
 	int checkMinBoardsAndPlayersCount(size_t boardsCnt, size_t playersCnt, const string& dirPath,
@@ -199,7 +231,7 @@ namespace InitUtilities
 		{
 			if (filteredLists)
 			{
-				msg = "Not enough valid algorithms (loaded " + to_string(playersCnt) + ")";
+				msg = "Not enough valid algorithms (loaded " + to_string(playersCnt) + ", needs at least 2)";
 			}
 			else
 			{
@@ -215,7 +247,7 @@ namespace InitUtilities
 		return 0;
 	}
 
-	void initBoards3D(const vector<string>& boardPaths, vector<MyBoardData>& boards, const std::string& dirPath, shared_ptr<Logger> pLogger)
+	void initBoards3D(const vector<string>& boardPaths, vector<MyBoardData>& boards, const string& dirPath, shared_ptr<Logger> pLogger)
 	{
 		pLogger->writeToLog("Processing boards...");
 		for (auto& boardPath : boardPaths)
@@ -294,8 +326,6 @@ namespace InitUtilities
 			{
 				continue;
 			}
-
-			//TODO - is this log for debug purposes?
 			pLogger->writeToLog("Success!");
 			boards.push_back(board);
 		}

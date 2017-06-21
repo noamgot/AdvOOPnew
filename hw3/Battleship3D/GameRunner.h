@@ -1,17 +1,17 @@
 ﻿#pragma once
 #include "IBattleshipGameAlgo.h"
-#include "CommonUtilities.h"
 #include "PlayerGameResults.h"
 #include "AlgorithmLoader.h"
 #include "MyBoardData.h"
 #include "Logger.h"
+#include "CompetitionManager.h"
 
 
 class GameRunner
 {
 public:
 	GameRunner() = delete;
-	GameRunner(const CommonUtilities::Game& game, const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, 
+	GameRunner(const CompetitionManager::Game& game, const GetAlgoFuncType& getAlgoA, const GetAlgoFuncType& getAlgoB, 
 			const MyBoardData& boardData, const MyBoardData& boardA, const MyBoardData& boardB, std::shared_ptr<Logger> pLogger);
 
 	// block copy operations
@@ -44,7 +44,7 @@ private:
 	PlayerGameResults _grA;
 	PlayerGameResults _grB;
 	std::shared_ptr<Logger> _pLogger;
-	CommonUtilities::Game _game;
+	CompetitionManager::Game _game;
 	int _attackerNum;
 	int _defenderNum;
 	
@@ -79,5 +79,5 @@ private:
 	}
 
 	std::string winnerConclusionStr() const;
-	void processGameResults();
+	void processGameResults(int movesCnt, int maxMoves);
 };

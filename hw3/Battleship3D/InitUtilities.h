@@ -23,12 +23,16 @@ namespace InitUtilities
 	int getDirectoryFileList(const std::string dirPath, std::vector<std::string>& fileListVector, std::shared_ptr<Logger> pLogger);
 
 	/* filters the dirFiles vector (which contatins a list of the directory files) and stores the board files, dllFiles
-	 * (in a full path form) and player names (derived from the dll file names) in the corresponding vectors.	 */
+	 * (in a full path form) and config file in the corresponding vectors/string.	 */
 	void filterDirFiles(const std::vector<std::string>& dirFiles, std::vector<std::string>& boardFiles,
-	                    std::vector<std::string>& dllFiles, bool searchForConfig, std::string& configFile);
+	                    std::vector<std::string>& dllFiles, std::string& configFile);
 
 	/* checks if the string "line" ends with the given suffix (return true if it does and false o.w) */
 	bool endsWith(const std::string line, const std::string suffix);
+
+	/* loads the game parameters defined in the config file located at cfgPath 
+	 * in case of failure, continues with default values */
+	void loadConfig(const std::string& dirPath, const std::string& cfgPath, int& numThreads, std::shared_ptr<Logger> pLogger);
 
 	/* checks a minimal requirements for boards count (boardsCnt >= 1) and players count (playersCnt >= 2)
 	 * returns 0 if those requirements are met and -1 otherwise	 
@@ -56,22 +60,12 @@ namespace InitUtilities
 
 	/* init all the individual boards for players A and B*/
 	void initIndividualBoards(const std::vector<MyBoardData>& boards, std::vector<MyBoardData>& boardA, std::vector<MyBoardData>& boardB);
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-
-	//todo - might not need those - delete if uneeded
 	/* prints the various error encountered on the board (if any)*/
 	int logBoardErrors(std::bitset<4>& errShipsA, std::bitset<4>& errShipsB, int shipCountA, int shipCountB, int adjCheck, const MyBoardData& board, std::shared_ptr<Logger> pLogger);
 
 	/* helper functions for printBoardErrors */
 	void logWrongSizeOrShapeError(std::bitset<4>& errShips, int& ret, const std::string player, std::shared_ptr<Logger> pLogger);
 	void logBadShipsCountError(int shipCountA, int shipCountB, const MyBoardData& board, std::shared_ptr<Logger> pLogger);
-
-	//TODO - not usage, is this intended?
-	/* a helper function to the initPlayerShipsList method */
-	Ship handleShipDiscovery(int iOrig, int jOrig, int numOfRows, int numOfCols, const char** board);
-
-	bool isBoardFair(std::vector<Ship> playerA_ships, std::vector<Ship> playerB_ships);
 
 }
