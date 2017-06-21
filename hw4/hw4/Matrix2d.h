@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Coord2d.h"
+#include "Coordinate.h"
 #include <initializer_list>
 #include <iostream>
 #include <algorithm>
@@ -34,7 +34,7 @@ public:
 	auto groupValues(GroupingFunc groupingFunc)
 	{
 		using GroupingType = std::result_of_t<GroupingFunc(T&)>;
-		std::map<GroupingType, std::list<std::list<Coord2d>>> groups;
+		std::map<GroupingType, std::list<std::list<Coordinate>>> groups;
 		std::vector<std::vector<GroupingType>> groupMap(rows, std::vector<GroupingType>(cols));
 		std::vector<std::vector<bool>> visitMap(rows, std::vector<bool>(cols));
 		//GroupingType groupMap[rows][cols];
@@ -56,41 +56,41 @@ public:
 				{
 					// start bfs
 					GroupingType groupParent = groupMap[i][j];
-					std::list<Coord2d> queue;	// bfs queue
-					std::list<Coord2d> group;	// list of the bfs tree nodes
+					std::list<Coordinate> queue;	// bfs queue
+					std::list<Coordinate> group;	// list of the bfs tree nodes
 
 					visitMap[i][j] = true;
-					queue.push_back(Coord2d(i, j));
-					group.push_back(Coord2d(i, j));
+					queue.push_back(Coordinate(i, j));
+					group.push_back(Coordinate(i, j));
 
 					while (!queue.empty())
 					{
-						Coord2d c = queue.front();
+						Coordinate c = queue.front();
 						queue.pop_front();
 
 						// check all adjacent cells if visited and are the same type
 						if (i != 0 && !visitMap[i - 1][j] && groupMap[i - 1][j] == groupParent)
 						{
-							queue.push_back(Coord2d(i - 1, j));
-							group.push_back(Coord2d(i - 1, j));
+							queue.push_back(Coordinate(i - 1, j));
+							group.push_back(Coordinate(i - 1, j));
 							visitMap[i - 1][j] = true;
 						}
 						if (i != rows - 1 && !visitMap[i + 1][j] && groupMap[i + 1][j] == groupParent)
 						{
-							queue.push_back(Coord2d(i + 1, j));
-							group.push_back(Coord2d(i + 1, j));
+							queue.push_back(Coordinate(i + 1, j));
+							group.push_back(Coordinate(i + 1, j));
 							visitMap[i + 1][j] = true;
 						}
 						if (j != 0 && !visitMap[i][j - 1] && groupMap[i][j - 1] == groupParent)
 						{
-							queue.push_back(Coord2d(i, j - 1));
-							group.push_back(Coord2d(i, j - 1));
+							queue.push_back(Coordinate(i, j - 1));
+							group.push_back(Coordinate(i, j - 1));
 							visitMap[i][j - 1] = true;
 						}
 						if (j != cols - 1 && !visitMap[i][j + 1] && groupMap[i][j + 1] == groupParent)
 						{
-							queue.push_back(Coord2d(i, j + 1));
-							group.push_back(Coord2d(i, j + 1));
+							queue.push_back(Coordinate(i, j + 1));
+							group.push_back(Coordinate(i, j + 1));
 							visitMap[i][j + 1] = true;
 						}
 					}
