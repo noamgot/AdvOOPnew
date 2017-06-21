@@ -5,7 +5,7 @@
 #include <list>
 #include <map>
 #include <functional>
-#include "Coord2d.h"
+#include "Coordinate.h"
 
 template<typename T, size_t ROWS, size_t COLS>
 class Matrix2d 
