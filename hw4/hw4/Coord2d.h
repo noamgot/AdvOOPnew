@@ -3,6 +3,7 @@
 
 class Coord2d
 {
+public:
 	int arr[2];
 
 	Coord2d(int y, int x)
@@ -11,31 +12,10 @@ class Coord2d
 		arr[1] = x;
 	}
 
-	class iterator
-	{
-		int* pos;
-	public: 
-		iterator(int* _arr) : pos(_arr) {}
-		iterator operator++() 
-		{
-			pos++;
-			return *this;
-		}
-		int operator*() 
-		{
-			return *pos;
-		}
-		bool operator!=(iterator other)
-		{
-			return pos != other.pos;
-		}
-	};
-	const iterator begin()
-	{
+	const int* begin() const {
 		return arr;
 	}
-	const iterator end()
-	{
-		return arr + 1;
+	const int* end() const {
+		return arr + 2;
 	}
 };
