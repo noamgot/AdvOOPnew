@@ -9,7 +9,7 @@ void print(const Groups& all_groups) {
 		for (const auto& groupOfType : groupType.second) {
 			for (const auto& coord : groupOfType) {
 				std::cout << "{ ";
-				for (int i : coord) {
+				for (auto i : coord) {
 					std::cout << i << ' ';
 				}
 				std::cout << "} ";
