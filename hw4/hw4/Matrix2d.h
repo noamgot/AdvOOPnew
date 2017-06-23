@@ -16,9 +16,24 @@ class Matrix2d
 		int _rows;
 		int _cols;
 		std::vector<std::vector<T>> _dataMatrix;
-		Matrix2d(std::initializer_list<std::initializer_list<T>> v) :
-		_rows(v.size()), _cols(v.end()-v.begin()), _dataMatrix(_rows, std::vector<T>(_cols))
+		Matrix2d(std::initializer_list<std::initializer_list<T>> v) : _rows(0), _cols(0)
 		{
+			// First, let us find the REAL dimensions of the
+			auto row_counter = 0;
+			auto col_counter = 0;
+			for (auto& row : v)
+			{
+				row_counter++;
+				col_counter = 0;
+				for (auto& a : row)
+				{
+					col_counter++;
+				}
+				if (col_counter > _cols) { _cols = col_counter; }
+			}
+			if (row_counter > _rows) { _rows = row_counter; }
+			_dataMatrix = std::vector<std::vector<T>>(_rows, std::vector<T>(_cols));
+
 			auto i = 0;
 			for (auto& row : v) 
 			{
@@ -29,12 +44,6 @@ class Matrix2d
 				}
 				i++;
 			}
-		}
-
-		Matrix2d(std::initializer_list<std::initializer_list<T>> v, int rows = -1, int cols = -1) :
-		_rows(rows), _cols(cols), _dataMatrix(_rows, std::vector<T>(_cols))
-		{
-
 		}
 
 		template<class GroupingFunc>

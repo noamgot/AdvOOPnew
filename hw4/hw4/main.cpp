@@ -28,9 +28,9 @@ void print(const Groups& all_groups)
 
 int main() {
 	Matrix2d<char> m = { { 'a', 'A', 'a' },{ 'B', 'a', 'B' },{ 'B', 'a', 'B' } };
-	////auto all_groups = m.groupValues([](auto i) {return std::islower(i) ? "L" : "U"; });
-	//auto all_groups = m.groupValues([](auto i) {return islower(i) ? "L" : "U"; });
-	//print(all_groups);
+	///auto all_groups = m.groupValues([](auto i) {return std::islower(i) ? "L" : "U"; });
+	auto all_groups = m.groupValues([](auto i) {return islower(i) ? "l" : "u"; });
+	print(all_groups);
 	Matrix3d<int> m2 = { { { 1, 2, 3 },{ 1, 2 },{ 1, 2 } },{ { 1, 2 },{ 1, 2, 3, 4 } } };
 	//auto groups = m2.groupValues([](auto i) {return i % 3 ? "!x3" : "x3"; });
 	//print(groups);

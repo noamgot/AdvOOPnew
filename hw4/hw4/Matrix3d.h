@@ -8,20 +8,52 @@ public:
 	int _rows;
 	int _cols;
 	int _depth;
-	std::vector<Matrix2d<T>> _dataMatrix;
+	std::vector<std::vector<std::vector<T>>> _dataMatrix;
 	Matrix3d(std::initializer_list<std::initializer_list<std::initializer_list<T>>> v) :
 	_rows(v.begin()->size()), _cols(v.begin()->end() - v.begin()->begin()), _depth(v.size())
 	{
-		for (auto matrix2d : v)
+		// First, let us find the REAL dimensions of the
+		auto row_counter = 0;
+		auto col_counter = 0;
+		auto depth_counter = 0; 
+		for (auto& depth : v)
 		{
-			matrix2d.
-			if (matrix2d.size)
-			_dataMatrix.push_back(Matrix2d<T>(matrix2d));
+			row_counter = 0;
+			for (auto& row : depth)
+			{
+				col_counter = 0;
+				for (auto& col : row)
+				{
+					col_counter++;
+				}
+				if (col_counter > _cols) { _cols = col_counter; }
+				row_counter++;
+			}
+			if (row_counter > _rows) { _rows = row_counter; }
+			depth_counter++;
 		}
+		if (depth_counter > _depth) { _depth = depth_counter; }
+		_dataMatrix = std::vector<std::vector<std::vector<T>>>(_depth, std::vector<std::vector<T>>(_rows, std::vector<T>(_cols)));
 
-		
+		row_counter = 0;
+		col_counter = 0;
+		depth_counter = 0;
+
+		for (auto& depth : v)
+		{
+			row_counter = 0;
+			for (auto& row : depth)
+			{
+				col_counter = 0;
+				for (auto& col : row)
+				{
+					_dataMatrix[depth_counter][row_counter][col_counter++] = col;
+				}
+				row_counter++;
+			}
+			depth_counter++;
+		}
 	}
-
 
 	template<class GroupingFunc>
 	auto groupValues(GroupingFunc groupingFunc)
@@ -94,6 +126,4 @@ public:
 		}
 		return groups;
 	}
-
-	
 };
