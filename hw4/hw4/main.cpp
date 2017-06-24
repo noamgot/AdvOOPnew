@@ -4,6 +4,10 @@
 #include "Matrix2d.h"
 #include "Matrix3d.h"
 
+//#include "Matrix.h"
+
+using namespace std;
+
 template<typename Groups>
 void print(const Groups& all_groups) 
 {
@@ -31,9 +35,10 @@ int main() {
 	//auto all_groups = m.groupValues([](auto i) {return std::islower(i) ? "L" : "U"; });
 	auto all_groups = m.groupValues([](auto i) {return islower(i) ? "l" : "u"; });
 	print(all_groups);
-	//Matrix3d<int> m2 = { { { 1, 2, 3 },{ 1, 2 },{ 1, 2 } },{ { 1, 2 },{ 1, 2, 3, 4 } } };
-	Matrix3d<int> m2 = { { { 1, 2, 3, 0 },{ 1, 2, 0, 0 },{ 1, 2, 0, 0 } },{ { 1, 2, 0, 0 },{ 1, 2, 3, 4 },{ 0 , 0 , 0 , 0 } } };
+	Matrix3d<int> m2 = { { { 1, 2, 3 },{ 1, 2 },{ 1, 2 } },{ { 1, 2 },{ 1, 2, 3, 4 } } };
 	auto groups = m2.groupValues([](auto i) {return i % 3 ? "!x3" : "x3"; });
 	print(groups);
 
+
+	
 }

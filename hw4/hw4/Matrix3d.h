@@ -1,22 +1,20 @@
 ﻿#pragma once
-#include "Matrix2d.h"
+#include "Coordinate.h"
+#include <initializer_list>
+#include <algorithm>
+#include <list>
+#include <map>
+#include <functional>
+#include <vector>
 
 template<typename T>
 class Matrix3d
 {
-public:
-	//ben test
 	std::vector<T> _array;
 	std::vector<int> _dimensions;
 	size_t _size;
-
-	int _rows;
-	int _cols;
-	int _depth;
-	/*std::vector<std::vector<std::vector<T>>> _dataMatrix;*/
-	
-	Matrix3d(std::initializer_list<std::initializer_list<std::initializer_list<T>>> v) :
-	_rows(v.begin()->size()), _cols(v.begin()->end() - v.begin()->begin()), _depth(v.size())
+public:
+	Matrix3d(std::initializer_list<std::initializer_list<std::initializer_list<T>>> v) : _dimensions(3)
 	{
 		// First, let us find the REAL dimensions of the
 		auto row_counter = 0;
@@ -32,19 +30,18 @@ public:
 				{
 					col_counter++;
 				}
-				if (col_counter > _cols) { _cols = col_counter; }
+				if (col_counter > _dimensions[2]) { _dimensions[2] = col_counter; }
 				row_counter++;
 			}
-			if (row_counter > _rows) { _rows = row_counter; }
+			if (row_counter > _dimensions[1]) { _dimensions[1] = row_counter; }
 			depth_counter++;
 		}
-		if (depth_counter > _depth) { _depth = depth_counter; }
+		if (depth_counter > _dimensions[0]) { _dimensions[0] = depth_counter; }
 		
-		/*_dataMatrix = std::vector<std::vector<std::vector<T>>>(_depth, std::vector<std::vector<T>>(_rows, std::vector<T>(_cols)));
-		row_counter = 0;
-		col_counter = 0;
+		_size = _dimensions[0] * _dimensions[1] * _dimensions[2];
+		_array = std::vector<T>(_size);
+		
 		depth_counter = 0;
-
 		for (auto& depth : v)
 		{
 			row_counter = 0;
@@ -53,27 +50,12 @@ public:
 				col_counter = 0;
 				for (auto& col : row)
 				{
-					_dataMatrix[depth_counter][row_counter][col_counter++] = col;
+					_array[depth_counter + row_counter + col_counter] = col;
+					col_counter++;
 				}
-				row_counter++;
+				row_counter += _dimensions[2];
 			}
-			depth_counter++;
-		}*/
-
-	
-		_dimensions = { _depth, _rows, _cols };
-		_array = std::vector<T>();
-		_size = _rows*_cols*_depth;
-
-		for (auto& depth : v)
-		{
-			for (auto& row : depth)
-			{
-				for (auto& col : row)
-				{
-					_array.push_back(col);
-				}
-			}
+			depth_counter += _dimensions[2] * _dimensions[1];
 		}
 	}
 
@@ -81,7 +63,7 @@ public:
 	auto groupValues(GroupingFunc groupingFunc)
 	{
 		using GroupingType = std::result_of_t<GroupingFunc(T&)>;
-		std::map<GroupingType, std::list<std::list<Coordinate>>> groups;
+		std::map<GroupingType, std::vector<std::vector<Coordinate>>> groups;
 		std::vector<GroupingType> groupMapT(_size);
 		std::vector<bool> visitMapT(_size);
 		for (int i = 0; i < _size; i++)
@@ -89,14 +71,16 @@ public:
 			groupMapT[i] = groupingFunc(_array[i]);
 		}
 
-		// start bfs
+		// run through the whole matrix
 		for (int i = 0; i < _size; i++)
 		{
+			// start BFS if found unvisited node
+			// Adjacent Nodes: Coord1 and Coord2 are neighbors if they have the same GroupingType and |Coord1-Coord2| = 1
 			if (!visitMapT[i])
 			{
 				GroupingType groupParent = groupMapT[i];
 				std::list<Coordinate> queue;	// bfs queue
-				std::list<Coordinate> group;	// list of the bfs tree nodes
+				std::vector<Coordinate> group;	// list of the bfs tree nodes
 
 				Coordinate curr(i, _dimensions); // get coord
 				visitMapT[i] = true;
@@ -113,6 +97,7 @@ public:
 					{
 						auto back = arrayLoc - dimOffset;
 						auto front = arrayLoc + dimOffset;
+						// check back and front in dimension j for unvisited neighbor nodes
 						if (c[j] != 0 && !visitMapT[back] && groupMapT[back] == groupParent)
 						{
 							queue.push_back(c.changeDim(j, -1, back));
@@ -128,11 +113,10 @@ public:
 						dimOffset *= _dimensions[j];
 					}
 				}
+				std::sort(group.begin(), group.end());
 				groups[groupParent].push_back(group);
 			}
 		}
-
 		return groups;
 	}
-
 };

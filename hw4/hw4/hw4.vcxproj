@@ -155,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="Coordinate.h" />
     <ClInclude Include="Group.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="Matrix2d.h" />
     <ClInclude Include="Matrix3d.h" />
   </ItemGroup>
