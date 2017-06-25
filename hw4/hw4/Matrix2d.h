@@ -12,7 +12,7 @@ class Matrix2d
 {
 	std::vector<T> _array;
 	std::vector<int> _dimensions;
-	size_t _size;
+	int _size;
 public:
 	Matrix2d(std::initializer_list<std::initializer_list<T>> v) : _dimensions(2)
 	{
@@ -82,7 +82,7 @@ public:
 					queue.pop_front();
 					auto arrayLoc = c.getMatloc();
 					auto dimOffset = 1;
-					for (int j = _dimensions.size() - 1; j >= 0; j--)
+					for (int j = static_cast<int>(_dimensions.size()) - 1; j >= 0; j--)
 					{
 						auto back = arrayLoc - dimOffset;
 						auto front = arrayLoc + dimOffset;
