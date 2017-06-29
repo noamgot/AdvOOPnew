@@ -28,7 +28,7 @@ public:
 			{
 				return true;
 			}
-			if ( _position[i] > other[i] )
+			else if ( _position[i] > other[i] )
 			{
 				return false;
 			}

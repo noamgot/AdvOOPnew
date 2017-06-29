@@ -18,7 +18,7 @@ public:
 	{
 		// First, let us find the REAL dimensions of the
 		auto row_counter = 0;
-		int col_counter;
+		auto col_counter = 0;
 		for (auto& row : v)
 		{
 			row_counter++;
