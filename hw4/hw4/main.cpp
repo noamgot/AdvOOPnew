@@ -10,19 +10,19 @@ void print(const Groups& all_groups)
 {
 	for (const auto& groupType : all_groups) 
 	{
-		std::cout << groupType.first << ":" << std::endl;
+		cout << groupType.first << ":" << endl;
 		for (const auto& groupOfType : groupType.second) 
 		{
 			for (const auto& coord : groupOfType) 
 			{
-				std::cout << "{ ";
+				cout << "{ ";
 				for (auto i : coord) 
 				{
-					std::cout << i << ' ';
+					cout << i << ' ';
 				}
-				std::cout << "} ";
+				cout << "} ";
 			}
-			std::cout << std::endl;
+			cout << endl;
 		}
 	}
 }

@@ -25,7 +25,7 @@ Matrix2d<T>::Matrix2d(std::initializer_list<std::initializer_list<T>> v) : _dime
 {
 	// First, let us find the REAL dimensions of the
 	auto row_counter = 0;
-	auto col_counter = 0;
+	int col_counter;
 	for (auto& row : v)
 	{
 		row_counter++;

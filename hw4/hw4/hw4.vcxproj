@@ -147,15 +147,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Coordinate.cpp" />
-    <ClCompile Include="Group.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Matrix2d.cpp" />
-    <ClCompile Include="Matrix3d.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coordinate.h" />
-    <ClInclude Include="Group.h" />
-    <ClInclude Include="Matrix.h" />
     <ClInclude Include="Matrix2d.h" />
     <ClInclude Include="Matrix3d.h" />
   </ItemGroup>

@@ -24,8 +24,7 @@ template<typename T>
 Matrix3d<T>::Matrix3d(std::initializer_list<std::initializer_list<std::initializer_list<T>>> v) : _dimensions(3)
 {
 	// First, let us find the REAL dimensions of the
-	auto row_counter = 0;
-	auto col_counter = 0;
+	int row_counter, col_counter;
 	auto depth_counter = 0;
 	for (auto& depth : v)
 	{
