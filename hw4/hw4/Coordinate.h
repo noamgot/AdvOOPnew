@@ -20,30 +20,9 @@ public:
 
 	auto end() const { return _position.end(); }
 
-	bool operator< (const Coordinate& other)
-	{
-		for (int i = 0; i < _dimensions; i++)
-		{
-			if (_position[i] < other[i])
-			{
-				return true;
-			}
-			else if ( _position[i] > other[i] )
-			{
-				return false;
-			}
-		}
-		return false;
-	}
-
 	int operator[] (int dim) const { return (dim < _dimensions && dim >= 0) ? _position[dim] : 0; }
 
-	Coordinate changeDim (int dim, int offset, int matloc) const
-	{
-		std::vector<int> _new(_position);
-		_new[dim] += offset;
-		Coordinate coor = Coordinate(_new);
-		coor._matloc = matloc;
-		return coor;
-	}
+	bool operator< (const Coordinate& other);
+
+	Coordinate changeDim(int dim, int offset, int matloc) const;
 };
